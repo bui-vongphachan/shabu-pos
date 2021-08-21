@@ -1,28 +1,20 @@
 import mongoose from "mongoose";
-
-interface SizeDoc extends mongoose.Document {
-    name: String,
-    price: Number
-}
-
-interface Doc extends mongoose.Document {
-    id: String
-    name: String
-    category: String
+import { SizeDoc } from "./productSize.model";
+export interface ProductDoc extends mongoose.Document {
+    id: string
+    name: string
+    category: string
     sizes: SizeDoc[]
-    created_date: String
+    created_date: string
 }
 
 const Schema = new mongoose.Schema(
     {
         name: { type: String, default: null, require: true },
         category: { type: String, default: null, require: true },
-        sizes: [{
-            name: { type: String, default: null, require: true },
-            price: { type: Number, default: 0, require: true },
-        }],
+        sizes: [{ type: mongoose.Schema.Types.ObjectId, ref: "product_sizes" }],
         created_date: { type: Date, default: Date.now }
     }
 );
 
-export const ProductModel = mongoose.model<Doc>("products", Schema);
+export const ProductModel = mongoose.model<ProductDoc>("products", Schema);

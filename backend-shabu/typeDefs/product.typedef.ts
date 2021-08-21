@@ -1,10 +1,6 @@
 import { gql } from "apollo-server";
 
 export const productTypeDef = gql`
-  type ProductSize {
-    name: String
-    price: Float
-  },
   type Product {
     id: String
     name: String
@@ -17,12 +13,8 @@ export const productTypeDef = gql`
     count: Int
   }
   type Query {
-    products: [Product]
-    productCategories: [ProductCategory]
-  }
-  input ProductSizeInput {
-    name: String
-    price: Float
+    getProducts: [Product]
+    getProductCategories: [ProductCategory]
   }
   type Mutation {
     addProduct(

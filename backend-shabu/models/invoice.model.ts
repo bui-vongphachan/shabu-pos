@@ -1,37 +1,54 @@
 import mongoose from "mongoose";
+import { ProductDoc } from "./product.model";
 
+interface InvoiceProductDoc extends ProductDoc {
+    isReceived: boolean
+    size: {
+        id: string,
+        name: string,
+        price: number
+    }
+    quantity: number
+    totalPrice: number
+    ordered_date: string
+}
 interface Doc extends mongoose.Document {
-    id: String
-    isPaid: Boolean
-    table: String
-    customers: Number
-    products: String[]
-    time_spent: Number
-    total_price: Number
-    final_price: Number
-    money_received: Number
-    money_return: Number
-    printed_time: String
-    arrived_time: String
-    created_date: String
+    id: string
+    isPaid: boolean
+    table: string
+    customers: number
+    products: InvoiceProductDoc[]
+    time_spent: number
+    total_price: number
+    final_price: number
+    money_received: number
+    money_return: number
+    printed_time: string
+    arrived_time: string
+    created_date: string
 }
 
 const Schema = new mongoose.Schema(
     {
         table: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "table",
+            ref: "tables",
             require: true,
             default: null
         },
         isPaid: { type: Boolean, default: false, require: true },
         customers: { type: Number, default: 0, require: true },
-        orders: [{
-            product: { type: mongoose.Schema.Types.ObjectId, ref: "product" },
+        products: [{
+            id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
+            name: { type: String, default: null, require: true },
             isReceived: { type: Boolean, default: false, require: true },
+            size: {
+                id: { type: mongoose.Schema.Types.ObjectId, ref: "product_sizes" },
+                name: { type: String, default: null, require: true },
+                price: { type: Number, require: true },
+            },
             quantity: { type: Number, require: true },
-            size: { type: String, default: null, require: true },
-            price: { type: Number, require: true },
+            totalPrice: { type: Number, require: true },
             ordered_date: { type: Date, default: Date.now },
         }],
         time_spent: { type: Number, default: 0, require: true },

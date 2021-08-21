@@ -7,9 +7,9 @@ export const tableTypeDef = gql`
     created_date: Date
   },
   type Query {
-    tables: [Table],
+    getTables: [Table],
   },
   type Mutation {
-    createTable(name: String): [Table]
+    addTable(name: String): [Table]
   }
 `;

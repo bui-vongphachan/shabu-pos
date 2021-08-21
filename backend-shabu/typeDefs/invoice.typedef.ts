@@ -2,11 +2,12 @@ import { gql } from "apollo-server";
 
 export const invoiceTypeDef = gql`
   type InvoiceProduct {
-    product: ID,
+    id: ID,
+    name: String
     isReceived: Boolean,
+    size: ProductSize,
     quantity: Int,
-    size: String,
-    price: Float,
+    totalPrice: Float,
     ordered_date: Date
   }
   type Invoice {
@@ -25,20 +26,21 @@ export const invoiceTypeDef = gql`
     created_date: Date
   }
   type Query {
-    invoice(table_id: String): Invoice
+    getInvoice(table_id: String, isPaid: Boolean): Invoice
   },
   input InvoiceProductInput {
-    product: ID,
+    id: ID,
     quantity: Int,
-    size: String,
-    price: Float,
+    size: ID,
   }
   type Mutation {
     addInvoice(
       table: ID,
       customers: Int,
       products: [InvoiceProductInput],
-      total_price: Float,
+    ): Invoice,
+    addProductToInvoice(
+      products: [InvoiceProductInput],
     ): Invoice
   }
 `;

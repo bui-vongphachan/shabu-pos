@@ -4,7 +4,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import express from "express"
 import { ApolloServer } from "apollo-server-express";
-import { commonTypeDef, invoiceTypeDef, productTypeDef, tableTypeDef } from './typeDefs';
+import { commonTypeDef, invoiceTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from './typeDefs';
 import { invoiceResolver, productResolver, tableResolver } from './resolvers';
 import { connectToMongoDB } from './starters/mongo';
 
@@ -14,8 +14,18 @@ import { connectToMongoDB } from './starters/mongo';
     const httpServer = createServer(app);
 
     const schema = makeExecutableSchema({
-        typeDefs: [commonTypeDef, tableTypeDef, productTypeDef, invoiceTypeDef],
-        resolvers: [tableResolver, productResolver, invoiceResolver]
+        typeDefs: [
+            commonTypeDef,
+            tableTypeDef,
+            productTypeDef,
+            productSizeTypeDef,
+            invoiceTypeDef
+        ],
+        resolvers: [
+            tableResolver,
+            productResolver,
+            invoiceResolver
+        ]
     });
 
     const server = new ApolloServer({ schema, });
