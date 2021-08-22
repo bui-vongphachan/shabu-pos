@@ -1,24 +1,13 @@
 import mongoose from "mongoose";
+import { OrderDoc } from "./order.model";
 import { ProductDoc } from "./product.model";
 
-interface InvoiceOrderDoc extends ProductDoc {
-    product_id: string
-    isReceived: boolean
-    size: {
-        id: string,
-        name: string,
-        price: number
-    }
-    quantity: number
-    totalPrice: number
-    ordered_date: string
-}
 interface Doc extends mongoose.Document {
     id: string
     isPaid: boolean
     table: string
     customers: number
-    orders: InvoiceOrderDoc[]
+    orders: OrderDoc[]
     time_spent: number
     total_price: number
     final_price: number
@@ -31,27 +20,10 @@ interface Doc extends mongoose.Document {
 
 const Schema = new mongoose.Schema(
     {
-        table: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "tables",
-            require: true,
-            default: null
-        },
+        table: { type: mongoose.Schema.Types.ObjectId, ref: "tables", require: true, default: null },
         isPaid: { type: Boolean, default: false, require: true },
         customers: { type: Number, default: 0, require: true },
-        orders: [{
-            product_id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
-            name: { type: String, default: null, require: true },
-            isReceived: { type: Boolean, default: false, require: true },
-            size: {
-                id: { type: mongoose.Schema.Types.ObjectId, ref: "product_sizes" },
-                name: { type: String, default: null, require: true },
-                price: { type: Number, require: true },
-            },
-            quantity: { type: Number, require: true },
-            totalPrice: { type: Number, require: true },
-            ordered_date: { type: Date, default: Date.now },
-        }],
+        orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders", require: true }],
         time_spent: { type: Number, default: 0, require: true },
         total_price: { type: Number, default: 0, require: true },
         final_price: { type: Number, default: 0, require: true },
