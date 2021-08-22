@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { ProductDoc } from "./product.model";
 
-interface InvoiceProductDoc extends ProductDoc {
+interface InvoiceOrderDoc extends ProductDoc {
+    product_id: string
     isReceived: boolean
     size: {
         id: string,
@@ -17,7 +18,7 @@ interface Doc extends mongoose.Document {
     isPaid: boolean
     table: string
     customers: number
-    products: InvoiceProductDoc[]
+    orders: InvoiceOrderDoc[]
     time_spent: number
     total_price: number
     final_price: number
@@ -38,8 +39,8 @@ const Schema = new mongoose.Schema(
         },
         isPaid: { type: Boolean, default: false, require: true },
         customers: { type: Number, default: 0, require: true },
-        products: [{
-            id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
+        orders: [{
+            product_id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
             name: { type: String, default: null, require: true },
             isReceived: { type: Boolean, default: false, require: true },
             size: {
