@@ -16,6 +16,10 @@ export const productTypeDef = gql`
     getProducts: [Product]
     getProductCategories: [ProductCategory]
   }
+  input ProductSizeInput {
+    name: String
+    price: Float
+  }
   type Mutation {
     addProduct(
       name: String,

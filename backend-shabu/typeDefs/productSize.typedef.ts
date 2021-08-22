@@ -7,8 +7,11 @@ export const productSizeTypeDef = gql`
     price: Float
     created_date: Date
   },
-  input ProductSizeInput {
+  input addSizeInput {
     name: String
     price: Float
+  }
+  type Mutation {
+    addSize(product_id: ID, sizes: [addSizeInput]): Product
   }
 `;
