@@ -29,4 +29,4 @@ const Schema = new mongoose.Schema({
     ordered_date: { type: Date, default: Date.now },
 })
 
-export const InvoiceModel = mongoose.model<OrderDoc>("orders", Schema);
+export const OrderModel = mongoose.model<OrderDoc>("orders", Schema);

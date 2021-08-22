@@ -1,4 +1,4 @@
-import { InvoiceModel, ProductModel } from "../../models";
+import { InvoiceModel, ProductModel, OrderModel, TableModel } from "../../models";
 
 export const addInvoice = async (_: any, args: {
     table: string,
@@ -21,13 +21,13 @@ export const addInvoice = async (_: any, args: {
         const products = args.products.map(inputProduct => {
 
             const product = fullDetailProducts.find(fullDetailProduct => fullDetailProduct.id === inputProduct.id)
-            if(!product) throw new Error("Product not found")
+            if (!product) throw new Error("Product not found")
 
             const size = product.sizes.find(fullDetailProductSize => fullDetailProductSize.id === inputProduct?.size)
             if (!size) throw new Error("Size not found")
 
             return {
-                product_id: product.id,
+                product: product.id,
                 name: product.name,
                 size: {
                     id: size!.id,
@@ -39,15 +39,21 @@ export const addInvoice = async (_: any, args: {
             }
         })
 
+        const table = await TableModel.findOne({ _id: args.table })
+
+        const orders = await OrderModel.insertMany(products)
+
         const newInvoice = await new InvoiceModel({
-            table: args.table,
+            table: { id: table?.id, name: table?.name },
             customers: args.customers,
-            orders: products,
+            orders: orders.map(order => order.id),
             total_price: products.reduce((prev, curr) => prev + curr.totalPrice, 0)
         }).save()
 
-        const item = await InvoiceModel.findOne({ _id: newInvoice.id }).populate("table")
-
+        const item = await InvoiceModel.findOne({ _id: newInvoice.id })
+            .populate({ path: "table" })
+            .populate({ path: "orders" })
+ 
         return item;
     } catch (error) {
         return error

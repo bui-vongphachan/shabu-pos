@@ -24,7 +24,7 @@ describe('Add invoice', () => {
                 mutation AddInvoiceMutation(
                     $addInvoiceTable: ID,
                     $addInvoiceCustomers: Int, 
-                    $addInvoiceProducts: [InvoiceProductInput]
+                    $addInvoiceProducts: [addInvoiceProductInput]
                 ) {
                     addInvoice(
                         table: $addInvoiceTable, 

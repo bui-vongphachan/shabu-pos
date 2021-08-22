@@ -5,7 +5,10 @@ import { ProductDoc } from "./product.model";
 interface Doc extends mongoose.Document {
     id: string
     isPaid: boolean
-    table: string
+    table: {
+        id: string,
+        name: string
+    }
     customers: number
     orders: OrderDoc[]
     time_spent: number
@@ -20,7 +23,10 @@ interface Doc extends mongoose.Document {
 
 const Schema = new mongoose.Schema(
     {
-        table: { type: mongoose.Schema.Types.ObjectId, ref: "tables", require: true, default: null },
+        table: {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: "tables", require: true, default: null },
+            name: { type: String, default: null, require: true },
+        },
         isPaid: { type: Boolean, default: false, require: true },
         customers: { type: Number, default: 0, require: true },
         orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders", require: true }],
