@@ -26,7 +26,7 @@ export const addInvoice = async (_: any, args: {
             const fullDetailProductSize = fullDetailProduct.sizes.find(fullDetailProductSize => fullDetailProductSize.id === inputProduct?.size)
             if (!inputProduct || !fullDetailProductSize) throw new UserInputError("Error occurs")
             return {
-                id: fullDetailProduct.id,
+                product_id: fullDetailProduct.id,
                 name: fullDetailProduct.name,
                 size: {
                     id: fullDetailProductSize!.id,
@@ -41,7 +41,7 @@ export const addInvoice = async (_: any, args: {
         const newInvoice = await new InvoiceModel({
             table: args.table,
             customers: args.customers,
-            products: products,
+            orders: products,
             total_price: products.reduce((prev, curr) => prev + curr.totalPrice, 0)
         }).save()
 

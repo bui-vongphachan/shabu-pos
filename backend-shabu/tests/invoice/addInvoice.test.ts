@@ -39,7 +39,7 @@ describe('Add invoice', () => {
                             created_date
                         }
                         customers
-                        products {
+                        orders {
                             id
                             name
                             isReceived
@@ -84,10 +84,10 @@ describe('Add invoice', () => {
         expect(data.isPaid).toEqual(false)
         expect(data.table.id).toEqual(table.id)
         expect(data.customers).toEqual(4)
-        expect(data.products.length).toEqual(3)
+        expect(data.orders.length).toEqual(3)
         expect(data.time_spent).toEqual(0)
 
-        const totalPrice = data.products.reduce((prev: number, curr: any) => {
+        const totalPrice = data.orders.reduce((prev: number, curr: any) => {
             
             const size = productSizes.find(size => size.id === curr.size.id)
 

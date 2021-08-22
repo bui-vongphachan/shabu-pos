@@ -7,8 +7,9 @@ export const invoiceTypeDef = gql`
     price: Float
     ordered_date: Date
   }
-  type InvoiceProduct {
+  type InvoiceOrders {
     id: ID,
+    product_id: ID,
     name: String
     isReceived: Boolean,
     size: ProductSize,
@@ -21,7 +22,7 @@ export const invoiceTypeDef = gql`
     isPaid: Boolean
     table: Table
     customers: Int
-    products: [InvoiceProduct]
+    orders: [InvoiceOrders]
     time_spent: Int
     total_price: Float
     final_price: Float

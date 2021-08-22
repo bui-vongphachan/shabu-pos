@@ -21,13 +21,12 @@ const schema = makeExecutableSchema({
 
 const server = new ApolloServer({
     schema, formatError: (err): GraphQLFormattedError => {
-        console.log(err)
 
-        if (err.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
+        if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
             err.message = "Invalid inputs"
         }
 
-        if (err.extensions?.exception.name === "MongoError") {
+        if (err?.extensions?.exception.name === "MongoError") {
             if (err.extensions?.exception.code === 11000) {
                 err.message = "Duplicate data"
             }

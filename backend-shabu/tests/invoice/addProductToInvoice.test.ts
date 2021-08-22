@@ -10,7 +10,7 @@ describe('Add new orders to invoice', () => {
 
         expect(isValidObjectId(newInvoice.id)).toBeTruthy();
         expect(newInvoice.isPaid).toEqual(false)
-        expect(newInvoice.products.length).toEqual(0)
+        expect(newInvoice.orders.length).toEqual(0)
         expect(newInvoice.total_price).toEqual(0)
         expect(newInvoice.final_price).toEqual(0)
         expect(newInvoice.money_received).toEqual(0)
@@ -37,7 +37,7 @@ describe('Add new orders to invoice', () => {
                             created_date
                         }
                         customers
-                        products {
+                        orders {
                             id
                             name
                             isReceived
@@ -74,7 +74,7 @@ describe('Add new orders to invoice', () => {
 
         const data = result.data?.addProductToInvoice
         expect(data.isPaid).toEqual(false)
-        expect(data.products.length).toEqual(1)
+        expect(data.orders.length).toEqual(1)
 
         const totalPrice = newProductSize.price * 1
 
