@@ -1,6 +1,12 @@
 import { gql } from "apollo-server";
 
 export const invoiceTypeDef = gql`
+  type InvoiceProductSize {
+    id: ID
+    name: String
+    price: Float
+    ordered_date: Date
+  }
   type InvoiceProduct {
     id: ID,
     name: String
@@ -40,6 +46,7 @@ export const invoiceTypeDef = gql`
       products: [InvoiceProductInput],
     ): Invoice,
     addProductToInvoice(
+      invoice_id: ID,
       products: [InvoiceProductInput],
     ): Invoice
   }

@@ -8,6 +8,7 @@ export const connectToMongoDB = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
+        useFindAndModify: false
       }
     )
     .then(() => console.log("DATABASE CONNECTED!!!"))

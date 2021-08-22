@@ -8,7 +8,13 @@ interface Doc extends mongoose.Document {
 
 const Schema = new mongoose.Schema(
     {
-        name: { type: String, default: null, require: true, index: true },
+        name: {
+            type: String,
+            default: null,
+            require: true,
+            index: true,
+            unique: true
+        },
         created_date: { type: Date, default: Date.now }
     }
 );
