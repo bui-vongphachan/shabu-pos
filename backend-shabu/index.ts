@@ -5,7 +5,7 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import express from "express"
 import { ApolloServer, gql } from "apollo-server-express";
 import { invoiceTypeDef, orderTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from './typeDefs';
-import { invoiceResolver, productResolver, tableResolver, productSizeResolver } from './resolvers';
+import { invoiceResolver, productResolver, tableResolver, productSizeResolver, orderResolver } from './resolvers';
 import { connectToMongoDB } from './starters/mongo';
 
 (async function () {
@@ -26,7 +26,8 @@ import { connectToMongoDB } from './starters/mongo';
             tableResolver,
             productResolver,
             productSizeResolver,
-            invoiceResolver
+            invoiceResolver,
+            orderResolver
         ]
     });
 

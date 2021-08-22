@@ -1,8 +1,8 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLFormattedError } from "graphql";
-import { invoiceResolver, productResolver, tableResolver } from "../resolvers";
-import { invoiceTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from "../typeDefs";
+import { invoiceResolver, productResolver, tableResolver, productSizeResolver, orderResolver } from "../resolvers";
+import { invoiceTypeDef, orderTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from "../typeDefs";
 
 const schema = makeExecutableSchema({
     typeDefs: [
@@ -10,18 +10,21 @@ const schema = makeExecutableSchema({
         tableTypeDef,
         productTypeDef,
         productSizeTypeDef,
-        invoiceTypeDef
+        invoiceTypeDef,
+        orderTypeDef
     ],
     resolvers: [
         tableResolver,
         productResolver,
-        invoiceResolver
+        productSizeResolver,
+        invoiceResolver,
+        orderResolver
     ]
 });
 
 const server = new ApolloServer({
     schema, formatError: (err): GraphQLFormattedError => {
-
+        console.log(err)
         if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
             err.message = "Invalid inputs"
         }

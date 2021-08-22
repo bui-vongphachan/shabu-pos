@@ -11,7 +11,16 @@ export const orderTypeDef = gql`
     totalPrice: Float,
     ordered_date: Date
   },
+  input addOrderToInvoiceInput {
+    id: ID,
+    quantity: Int,
+    size: ID,
+  },
   type Mutation {
+    addOrderToInvoice(
+      invoice_id: ID,
+      products: [addOrderToInvoiceInput],
+    ): Invoice,
     increaseOrderQuantity(
       invoice_id: ID,
       order_id: ID,
