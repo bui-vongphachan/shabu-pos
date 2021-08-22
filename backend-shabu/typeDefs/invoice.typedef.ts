@@ -49,6 +49,11 @@ export const invoiceTypeDef = gql`
     addProductToInvoice(
       invoice_id: ID,
       products: [InvoiceProductInput],
+    ): Invoice,
+    increaseOrderQuantity(
+      invoice_id: ID,
+      order_id: ID,
+      quantity: Int
     ): Invoice
   }
 `;

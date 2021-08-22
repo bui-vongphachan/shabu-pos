@@ -1,6 +1,4 @@
-import { InvoiceModel, ProductModel, ProductSizeModel } from "../../models";
-import { Types } from "mongoose"
-import { UserInputError } from "apollo-server-express";
+import { InvoiceModel, ProductModel } from "../../models";
 
 export const addInvoice = async (_: any, args: {
     table: string,
@@ -14,27 +12,30 @@ export const addInvoice = async (_: any, args: {
     ]
 }) => {
     try {
-
         const fullDetailProducts = await ProductModel.find({
             _id: {
                 $in: args.products.map(item => item.id)
             }
         }).populate("sizes")
 
-        const products = fullDetailProducts.map(fullDetailProduct => {
-            const inputProduct = args.products.find(inputProduct => fullDetailProduct.id === inputProduct.id)
-            const fullDetailProductSize = fullDetailProduct.sizes.find(fullDetailProductSize => fullDetailProductSize.id === inputProduct?.size)
-            if (!inputProduct || !fullDetailProductSize) throw new UserInputError("Error occurs")
+        const products = args.products.map(inputProduct => {
+
+            const product = fullDetailProducts.find(fullDetailProduct => fullDetailProduct.id === inputProduct.id)
+            if(!product) throw new Error("Product not found")
+
+            const size = product.sizes.find(fullDetailProductSize => fullDetailProductSize.id === inputProduct?.size)
+            if (!size) throw new Error("Size not found")
+
             return {
-                product_id: fullDetailProduct.id,
-                name: fullDetailProduct.name,
+                product_id: product.id,
+                name: product.name,
                 size: {
-                    id: fullDetailProductSize!.id,
-                    name: fullDetailProductSize!.name,
-                    price: fullDetailProductSize!.price
+                    id: size!.id,
+                    name: size!.name,
+                    price: size!.price
                 },
                 quantity: inputProduct!.quantity,
-                totalPrice: inputProduct!.quantity * fullDetailProductSize!.price
+                totalPrice: inputProduct!.quantity * size!.price
             }
         })
 
