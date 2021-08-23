@@ -62,11 +62,13 @@ Schema.statics.updateTotalPrice = async function (invoice_id: string) {
         return prev + (curr.size.id.price * curr.quantity)
     }, 0)
 
-    return await InvoiceModel.findOneAndUpdate(
+    await InvoiceModel.findOneAndUpdate(
         { _id: invoice_id },
         { $set: { total_price } },
         { new: true })
-        .populate("orders")
+
+    return InvoiceModel.getFullDetail(invoice_id)
+
 }
 
 Schema.statics.getFullDetail = async (invoice_id: string) => {

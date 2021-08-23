@@ -44,15 +44,11 @@ export const addOrderToInvoice = async (_: any, args: {
                     $each: newOrders.map(order => order.id)
                 }
             },
-            $inc: { 
-                total_price: newOrders.reduce((prev, curr) => prev + curr.totalPrice, 0) 
+            $inc: {
+                total_price: newOrders.reduce((prev, curr) => prev + curr.totalPrice, 0)
             }
         }
     )
 
-    const invoice = await InvoiceModel.findOne({ _id: args.invoice_id })
-        .populate({ path: "table" })
-        .populate({ path: "orders" })
-
-    return invoice
+    return await InvoiceModel.getFullDetail(args.invoice_id)
 }

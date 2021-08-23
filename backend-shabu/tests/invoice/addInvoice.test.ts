@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-express";
 import { isValidObjectId } from "mongoose";
 import { OrderDoc, ProductModel, ProductSizeModel, SizeDoc, TableModel } from "../../models";
-import { addInvoiceQuery } from "../../typeDefs";
+import { gqlInvoiceFields } from "../../typeDefs";
 import { server } from "../apolloServer";
 
 describe('Add invoice', () => {
@@ -32,7 +32,7 @@ describe('Add invoice', () => {
                         customers: $addInvoiceCustomers, 
                         products: $addInvoiceProducts
                     )
-                    ${addInvoiceQuery}
+                    ${gqlInvoiceFields}
                 }
                 `,
             variables: {

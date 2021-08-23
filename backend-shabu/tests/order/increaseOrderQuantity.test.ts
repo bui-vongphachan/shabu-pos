@@ -1,5 +1,6 @@
 import { gql } from "apollo-server-express";
 import { InvoiceDoc, InvoiceModel, ProductModel, ProductSizeModel, TableModel } from "../../models";
+import { gqlInvoiceFields } from "../../typeDefs";
 import { server } from "../apolloServer";
 
 describe('Increase order quantity', () => {
@@ -80,41 +81,8 @@ describe('Increase order quantity', () => {
                         invoice_id: $increaseOrderQuantityInvoiceId
                         order_id: $increaseOrderQuantityOrderId
                         quantity: $increaseOrderQuantityQuantity
-                    ) {
-                        id
-                        isPaid
-                        table {
-                            id
-                            name
-                            created_date
-                        }
-                        customers
-                        orders {
-                            id 
-                            name
-                            isReceived
-                            size {
-                                id {
-                                    name,
-                                    price
-                                }
-                                name
-                                price
-                                created_date
-                            }
-                            quantity
-                            totalPrice
-                            ordered_date
-                        }
-                        time_spent
-                        total_price
-                        final_price
-                        money_received
-                        money_return
-                        printed_time
-                        arrived_time
-                        created_date
-                    }
+                    )
+                    ${gqlInvoiceFields}
                 }
                 `,
             variables: {

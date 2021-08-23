@@ -38,9 +38,8 @@ export const invoiceTypeDef = gql`
 `;
 
 
-export const addInvoiceQuery = gql`
+export const gqlInvoiceFields = gql`
     {
-      
         id
         isPaid
         table {
