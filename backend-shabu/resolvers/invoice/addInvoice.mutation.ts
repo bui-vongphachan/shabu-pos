@@ -50,11 +50,8 @@ export const addInvoice = async (_: any, args: {
             total_price: products.reduce((prev, curr) => prev + curr.totalPrice, 0)
         }).save()
 
-        const item = await InvoiceModel.findOne({ _id: newInvoice.id })
-            .populate({ path: "table" })
-            .populate({ path: "orders" })
- 
-        return item;
+        return await InvoiceModel.getFullDetail(newInvoice.id)
+
     } catch (error) {
         return error
     }
