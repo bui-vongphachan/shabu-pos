@@ -6,7 +6,7 @@ export const getInvoice = async (_: any, args: {
 }) => {
 
     const item = await InvoiceModel.findOne({
-        table: args.table_id,
+        "table.id": args.table_id,
         isPaid: args.isPaid
     }).populate("table")
 

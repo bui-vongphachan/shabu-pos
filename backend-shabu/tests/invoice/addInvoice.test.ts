@@ -1,6 +1,7 @@
 import { gql } from "apollo-server-express";
 import { isValidObjectId } from "mongoose";
-import { ProductModel, ProductSizeModel, TableModel } from "../../models";
+import { OrderDoc, ProductModel, ProductSizeModel, SizeDoc, TableModel } from "../../models";
+import { gqlInvoiceFields } from "../../typeDefs";
 import { server } from "../apolloServer";
 
 describe('Add invoice', () => {
@@ -8,7 +9,7 @@ describe('Add invoice', () => {
 
         const table = await new TableModel({ name: "A200" }).save()
 
-        const productSizes = await ProductSizeModel.insertMany([
+        const productSizes: SizeDoc[] = await ProductSizeModel.insertMany([
             { name: "small", price: 12000 },
             { name: "large", price: 15000 },
         ])
@@ -24,44 +25,14 @@ describe('Add invoice', () => {
                 mutation AddInvoiceMutation(
                     $addInvoiceTable: ID,
                     $addInvoiceCustomers: Int, 
-                    $addInvoiceProducts: [InvoiceProductInput]
+                    $addInvoiceProducts: [addInvoiceProductInput]
                 ) {
                     addInvoice(
                         table: $addInvoiceTable, 
                         customers: $addInvoiceCustomers, 
                         products: $addInvoiceProducts
-                    ) {
-                        id
-                        isPaid
-                        table {
-                            id
-                            name
-                            created_date
-                        }
-                        customers
-                        products {
-                            id
-                            name
-                            isReceived
-                            size {
-                                id
-                                name
-                                price
-                                created_date
-                            }
-                            quantity
-                            totalPrice
-                            ordered_date
-                        }
-                        time_spent
-                        total_price
-                        final_price
-                        money_received
-                        money_return
-                        printed_time
-                        arrived_time
-                        created_date
-                    }
+                    )
+                    ${gqlInvoiceFields}
                 }
                 `,
             variables: {
@@ -84,12 +55,12 @@ describe('Add invoice', () => {
         expect(data.isPaid).toEqual(false)
         expect(data.table.id).toEqual(table.id)
         expect(data.customers).toEqual(4)
-        expect(data.products.length).toEqual(3)
+        expect(data.orders.length).toEqual(3)
         expect(data.time_spent).toEqual(0)
 
-        const totalPrice = data.products.reduce((prev: number, curr: any) => {
-            
-            const size = productSizes.find(size => size.id === curr.size.id)
+        const totalPrice = data.orders.reduce((prev: number, curr: OrderDoc) => {
+
+            const size = productSizes.find(size => size.id === curr.size.id.id)
 
             const total_price = size!.price * curr.quantity
 

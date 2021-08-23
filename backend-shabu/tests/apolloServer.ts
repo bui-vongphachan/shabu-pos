@@ -1,33 +1,35 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLFormattedError } from "graphql";
-import { invoiceResolver, productResolver, tableResolver } from "../resolvers";
-import { commonTypeDef, invoiceTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from "../typeDefs";
+import { invoiceResolver, productResolver, tableResolver, productSizeResolver, orderResolver } from "../resolvers";
+import { invoiceTypeDef, orderTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from "../typeDefs";
 
 const schema = makeExecutableSchema({
     typeDefs: [
-        commonTypeDef,
+        gql` scalar Date `,
         tableTypeDef,
         productTypeDef,
         productSizeTypeDef,
-        invoiceTypeDef
+        invoiceTypeDef,
+        orderTypeDef
     ],
     resolvers: [
         tableResolver,
         productResolver,
-        invoiceResolver
+        productSizeResolver,
+        invoiceResolver,
+        orderResolver
     ]
 });
 
 const server = new ApolloServer({
     schema, formatError: (err): GraphQLFormattedError => {
         console.log(err)
-
-        if (err.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
+        if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
             err.message = "Invalid inputs"
         }
 
-        if (err.extensions?.exception.name === "MongoError") {
+        if (err?.extensions?.exception.name === "MongoError") {
             if (err.extensions?.exception.code === 11000) {
                 err.message = "Duplicate data"
             }

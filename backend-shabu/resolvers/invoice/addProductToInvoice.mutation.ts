@@ -24,7 +24,7 @@ export const addProductToInvoice = async (_: any, args: {
             const fullDetailProductSize = fullDetailProduct.sizes.find(fullDetailProductSize => fullDetailProductSize.id === inputProduct?.size)
             if (!inputProduct || !fullDetailProductSize) throw new UserInputError("Error occurs")
             return {
-                id: fullDetailProduct.id,
+                product_id: fullDetailProduct.id,
                 name: fullDetailProduct.name,
                 size: {
                     id: fullDetailProductSize!.id,
@@ -40,7 +40,7 @@ export const addProductToInvoice = async (_: any, args: {
             { _id: args.invoice_id },
             {
                 $addToSet: {
-                    products: {
+                    orders: {
                         $each: products
                     }
                 },

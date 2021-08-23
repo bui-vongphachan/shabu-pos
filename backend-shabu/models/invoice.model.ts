@@ -1,23 +1,16 @@
 import mongoose from "mongoose";
+import { OrderDoc, OrderModel } from "./order.model";
 import { ProductDoc } from "./product.model";
 
-interface InvoiceProductDoc extends ProductDoc {
-    isReceived: boolean
-    size: {
-        id: string,
-        name: string,
-        price: number
-    }
-    quantity: number
-    totalPrice: number
-    ordered_date: string
-}
-interface Doc extends mongoose.Document {
+export interface InvoiceDoc extends mongoose.Document {
     id: string
     isPaid: boolean
-    table: string
+    table: {
+        id: string,
+        name: string
+    }
     customers: number
-    products: InvoiceProductDoc[]
+    orders: OrderDoc[]
     time_spent: number
     total_price: number
     final_price: number
@@ -28,29 +21,20 @@ interface Doc extends mongoose.Document {
     created_date: string
 }
 
+interface Model extends mongoose.Model<InvoiceDoc> {
+    updateTotalPrice(invoice_id: string): Promise<InvoiceDoc>
+    getFullDetail(invoice_id: string): Promise<InvoiceDoc>
+}
+
 const Schema = new mongoose.Schema(
     {
         table: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "tables",
-            require: true,
-            default: null
+            id: { type: mongoose.Schema.Types.ObjectId, ref: "tables", require: true, default: null },
+            name: { type: String, default: null, require: true },
         },
         isPaid: { type: Boolean, default: false, require: true },
         customers: { type: Number, default: 0, require: true },
-        products: [{
-            id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
-            name: { type: String, default: null, require: true },
-            isReceived: { type: Boolean, default: false, require: true },
-            size: {
-                id: { type: mongoose.Schema.Types.ObjectId, ref: "product_sizes" },
-                name: { type: String, default: null, require: true },
-                price: { type: Number, require: true },
-            },
-            quantity: { type: Number, require: true },
-            totalPrice: { type: Number, require: true },
-            ordered_date: { type: Date, default: Date.now },
-        }],
+        orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders", require: true }],
         time_spent: { type: Number, default: 0, require: true },
         total_price: { type: Number, default: 0, require: true },
         final_price: { type: Number, default: 0, require: true },
@@ -62,4 +46,40 @@ const Schema = new mongoose.Schema(
     }
 );
 
-export const InvoiceModel = mongoose.model<Doc>("invoices", Schema);
+Schema.statics.updateTotalPrice = async function (invoice_id: string) {
+
+    const invoice = await InvoiceModel.findOne({ _id: invoice_id })
+        .populate({
+            path: "orders",
+            populate: {
+                path: "size.id"
+            }
+        })
+
+    if (!invoice) throw new Error("Invoice not found")
+
+    const total_price = invoice.orders.reduce((prev, curr) => {
+        return prev + (curr.size.id.price * curr.quantity)
+    }, 0)
+
+    await InvoiceModel.findOneAndUpdate(
+        { _id: invoice_id },
+        { $set: { total_price } },
+        { new: true })
+
+    return InvoiceModel.getFullDetail(invoice_id)
+
+}
+
+Schema.statics.getFullDetail = async (invoice_id: string) => {
+    return await InvoiceModel.findOne({ _id: invoice_id })
+        .populate({ path: "table" })
+        .populate({
+            path: "orders",
+            populate: {
+                path: "size.id",
+            }
+        })
+}
+
+export const InvoiceModel = mongoose.model<InvoiceDoc, Model>("invoices", Schema);

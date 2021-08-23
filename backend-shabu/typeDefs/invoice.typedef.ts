@@ -1,27 +1,12 @@
 import { gql } from "apollo-server";
 
 export const invoiceTypeDef = gql`
-  type InvoiceProductSize {
-    id: ID
-    name: String
-    price: Float
-    ordered_date: Date
-  }
-  type InvoiceProduct {
-    id: ID,
-    name: String
-    isReceived: Boolean,
-    size: ProductSize,
-    quantity: Int,
-    totalPrice: Float,
-    ordered_date: Date
-  }
   type Invoice {
     id: String
     isPaid: Boolean
     table: Table
     customers: Int
-    products: [InvoiceProduct]
+    orders: [Order]
     time_spent: Int
     total_price: Float
     final_price: Float
@@ -34,7 +19,7 @@ export const invoiceTypeDef = gql`
   type Query {
     getInvoice(table_id: String, isPaid: Boolean): Invoice
   },
-  input InvoiceProductInput {
+  input addInvoiceProductInput {
     id: ID,
     quantity: Int,
     size: ID,
@@ -43,11 +28,52 @@ export const invoiceTypeDef = gql`
     addInvoice(
       table: ID,
       customers: Int,
-      products: [InvoiceProductInput],
+      products: [addInvoiceProductInput],
     ): Invoice,
     addProductToInvoice(
       invoice_id: ID,
-      products: [InvoiceProductInput],
-    ): Invoice
+      products: [addInvoiceProductInput],
+    ): Invoice,
   }
 `;
+
+
+export const gqlInvoiceFields = gql`
+    {
+        id
+        isPaid
+        table {
+            id
+            name
+            created_date
+        }
+        customers
+        orders {
+            id
+            name
+            isReceived
+            size {
+                id {
+                    id
+                    name
+                    price
+                }
+                name
+                price
+                created_date
+            }
+            quantity
+            totalPrice
+            ordered_date
+        }
+        time_spent
+        total_price
+        final_price
+        money_received
+        money_return
+        printed_time
+        arrived_time
+        created_date
+
+    }
+    `

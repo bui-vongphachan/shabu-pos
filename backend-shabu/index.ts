@@ -3,9 +3,9 @@ import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import express from "express"
-import { ApolloServer } from "apollo-server-express";
-import { commonTypeDef, invoiceTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from './typeDefs';
-import { invoiceResolver, productResolver, tableResolver } from './resolvers';
+import { ApolloServer, gql } from "apollo-server-express";
+import { invoiceTypeDef, orderTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from './typeDefs';
+import { invoiceResolver, productResolver, tableResolver, productSizeResolver, orderResolver } from './resolvers';
 import { connectToMongoDB } from './starters/mongo';
 
 (async function () {
@@ -15,16 +15,19 @@ import { connectToMongoDB } from './starters/mongo';
 
     const schema = makeExecutableSchema({
         typeDefs: [
-            commonTypeDef,
+            gql` scalar Date `,
             tableTypeDef,
             productTypeDef,
             productSizeTypeDef,
-            invoiceTypeDef
+            invoiceTypeDef,
+            orderTypeDef
         ],
         resolvers: [
             tableResolver,
             productResolver,
-            invoiceResolver
+            productSizeResolver,
+            invoiceResolver,
+            orderResolver
         ]
     });
 
