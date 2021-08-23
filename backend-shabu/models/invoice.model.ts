@@ -19,6 +19,7 @@ export interface InvoiceDoc extends mongoose.Document {
     printed_time: string
     arrived_time: string
     created_date: string
+    schema_version: number
 }
 
 interface Model extends mongoose.Model<InvoiceDoc> {
@@ -43,6 +44,7 @@ const Schema = new mongoose.Schema(
         created_date: { type: Date, default: Date.now },
         arrived_time: { type: Date, default: Date.now },
         printed_time: { type: Date, default: null },
+        schema_version: { type: Number, default: 2 },
     }
 );
 

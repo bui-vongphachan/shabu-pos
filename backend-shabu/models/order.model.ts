@@ -14,6 +14,7 @@ export interface OrderDoc extends mongoose.Document {
     quantity: number
     totalPrice: number
     ordered_date: string
+    schema_version: number
 }
 
 const Schema = new mongoose.Schema({
@@ -28,6 +29,7 @@ const Schema = new mongoose.Schema({
     quantity: { type: Number, require: true },
     totalPrice: { type: Number, require: true },
     ordered_date: { type: Date, default: Date.now },
+    schema_version: { type: Number, default: 2 },
 })
 
 export const OrderModel = mongoose.model<OrderDoc>("orders", Schema);

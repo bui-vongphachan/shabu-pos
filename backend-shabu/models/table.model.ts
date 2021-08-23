@@ -4,6 +4,7 @@ interface Doc extends mongoose.Document {
     id: String
     name: String
     created_date: String
+    schema_version: number
 }
 
 const Schema = new mongoose.Schema(
@@ -15,7 +16,8 @@ const Schema = new mongoose.Schema(
             index: true,
             unique: true
         },
-        created_date: { type: Date, default: Date.now }
+        created_date: { type: Date, default: Date.now },
+        schema_version: { type: Number, default: 2 },
     }
 );
 

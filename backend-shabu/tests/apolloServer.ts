@@ -24,7 +24,6 @@ const schema = makeExecutableSchema({
 
 const server = new ApolloServer({
     schema, formatError: (err): GraphQLFormattedError => {
-        console.log(err)
         if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
             err.message = "Invalid inputs"
         }

@@ -15,6 +15,7 @@ export const invoiceTypeDef = gql`
     printed_time: Date
     arrived_time: Date
     created_date: Date
+    schema_version: Int
   }
   type Query {
     getInvoice(table_id: String, isPaid: Boolean): Invoice
@@ -34,6 +35,7 @@ export const invoiceTypeDef = gql`
       invoice_id: ID,
       products: [addInvoiceProductInput],
     ): Invoice,
+    completeInvoice(invoice_id: ID): String
   }
 `;
 
@@ -74,6 +76,6 @@ export const gqlInvoiceFields = gql`
         printed_time
         arrived_time
         created_date
-
+        schema_version
     }
     `

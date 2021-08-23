@@ -7,6 +7,7 @@ export const productTypeDef = gql`
     category: String
     sizes: [ProductSize]
     created_date: Date
+    schema_version: Int
   }
   type ProductCategory {
     _id: String

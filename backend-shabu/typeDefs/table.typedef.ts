@@ -5,6 +5,7 @@ export const tableTypeDef = gql`
     id: String
     name: String
     created_date: Date
+    schema_version: Int
   },
   type Query {
     getTables: [Table],
