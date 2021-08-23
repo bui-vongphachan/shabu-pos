@@ -5,7 +5,8 @@ export interface ProductDoc extends mongoose.Document {
     name: string
     category: string
     sizes: SizeDoc[]
-    created_date: string
+    created_date: string,
+    schema_version: number
 }
 
 const Schema = new mongoose.Schema(
@@ -13,7 +14,8 @@ const Schema = new mongoose.Schema(
         name: { type: String, default: null, require: true },
         category: { type: String, default: null, require: true },
         sizes: [{ type: mongoose.Schema.Types.ObjectId, ref: "product_sizes" }],
-        created_date: { type: Date, default: Date.now }
+        created_date: { type: Date, default: Date.now },
+        schema_version: { type: Number, default: 2 },
     }
 );
 

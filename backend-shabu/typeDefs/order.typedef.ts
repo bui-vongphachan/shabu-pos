@@ -15,7 +15,8 @@ export const orderTypeDef = gql`
     size: OrderProductSize,
     quantity: Int,
     totalPrice: Float,
-    ordered_date: Date
+    ordered_date: Date,
+    schema_version: Int
   },
   input addOrderToInvoiceInput {
     id: ID,

@@ -9,7 +9,6 @@ describe('Add product size', () => {
                     addSize(product_id: $addSizeProductId, sizes: $addSizeSizes) {
                         id
                         name
-                        price
                     }
                 }
             `,
@@ -38,6 +37,5 @@ describe('Add product size', () => {
         expect(result.errors).toBeUndefined()
         expect(result.data).not.toBeUndefined()
         expect(response).not.toBeUndefined()
-        expect(response.length).toBeGreaterThanOrEqual(1)
     });
 });

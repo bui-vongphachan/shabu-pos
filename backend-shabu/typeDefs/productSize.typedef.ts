@@ -6,6 +6,7 @@ export const productSizeTypeDef = gql`
     name: String
     price: Float
     created_date: Date
+    schema_version: Int
   },
   input addSizeInput {
     name: String
