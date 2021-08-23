@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { SizeDoc } from "./productSize.model";
 
 export interface OrderDoc extends mongoose.Document {
     id: string
@@ -6,7 +7,7 @@ export interface OrderDoc extends mongoose.Document {
     name: string
     isReceived: boolean
     size: {
-        id: string,
+        id: SizeDoc,
         name: string,
         price: number
     }

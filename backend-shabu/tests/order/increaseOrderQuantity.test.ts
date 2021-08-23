@@ -1,10 +1,10 @@
 import { gql } from "apollo-server-express";
-import { InvoiceModel, ProductModel, ProductSizeModel, TableModel } from "../../models";
+import { InvoiceDoc, InvoiceModel, ProductModel, ProductSizeModel, TableModel } from "../../models";
 import { server } from "../apolloServer";
 
-describe('Add invoice', () => {
-    it('should save new invoice', async () => {
-        const table = await new TableModel({ name: "A201" }).save()
+describe('Increase order quantity', () => {
+    it('should increase quantity', async () => {
+        const table = await new TableModel({ name: "A208" }).save()
 
         const newProductSize = await new ProductSizeModel({ name: "small", price: 1000 }).save()
         const newProduct = await new ProductModel({ name: "Bacon", sizes: [newProductSize.id] }).save()
@@ -14,7 +14,7 @@ describe('Add invoice', () => {
                 mutation AddInvoiceMutation(
                     $addInvoiceTable: ID,
                     $addInvoiceCustomers: Int, 
-                    $addInvoiceProducts: [InvoiceProductInput]
+                    $addInvoiceProducts: [addInvoiceProductInput]
                 ) {
                     addInvoice(
                         table: $addInvoiceTable, 
@@ -34,10 +34,8 @@ describe('Add invoice', () => {
                             name
                             isReceived
                             size {
-                                id
                                 name
                                 price
-                                created_date
                             }
                             quantity
                             totalPrice
@@ -67,19 +65,21 @@ describe('Add invoice', () => {
             }
         })
 
-        const newInvoice = addInvoiceResult.data!.addInvoice
+        const newInvoice: InvoiceDoc = addInvoiceResult.data!.addInvoice
+
+        expect(newInvoice.total_price).toEqual(newProductSize.price * 2)
 
         const increaseOrderQuantityResult = await server.executeOperation({
             query: gql`
-                mutation increaseOrderQuantityMutation(
-                    $increaseOrderQuantityMutationInvoiceId: ID,
-                    $increaseOrderQuantityMutationOrderId: ID, 
-                    $increaseOrderQuantityMutationQuantity: Int
+                mutation IncreaseOrderQuantityMutation(
+                    $increaseOrderQuantityInvoiceId: ID
+                    $increaseOrderQuantityOrderId: ID
+                    $increaseOrderQuantityQuantity: Int
                 ) {
                     increaseOrderQuantity(
-                        invoice_id: $increaseOrderQuantityMutationInvoiceId, 
-                        order_id: $increaseOrderQuantityMutationOrderId, 
-                        quantity: $increaseOrderQuantityMutationQuantity
+                        invoice_id: $increaseOrderQuantityInvoiceId
+                        order_id: $increaseOrderQuantityOrderId
+                        quantity: $increaseOrderQuantityQuantity
                     ) {
                         id
                         isPaid
@@ -90,11 +90,14 @@ describe('Add invoice', () => {
                         }
                         customers
                         orders {
-                            id
+                            id 
                             name
                             isReceived
                             size {
-                                id
+                                id {
+                                    name,
+                                    price
+                                }
                                 name
                                 price
                                 created_date
@@ -115,12 +118,17 @@ describe('Add invoice', () => {
                 }
                 `,
             variables: {
-                increaseOrderQuantityMutationInvoiceId: newInvoice.id,
-                increaseOrderQuantityMutationOrderId: newInvoice.orders[0].id,
-                increaseOrderQuantityMutationQuantity: 1,
+                increaseOrderQuantityInvoiceId: newInvoice.id,
+                increaseOrderQuantityOrderId: newInvoice.orders[0].id,
+                increaseOrderQuantityQuantity: 8
             }
         })
 
-       console.log(increaseOrderQuantityResult.data)
+        const updatedInvoice: InvoiceDoc = increaseOrderQuantityResult.data!.increaseOrderQuantity
+        const totalQuantity = updatedInvoice.orders.reduce((prev, curr) => (prev + curr.quantity), 0)
+        
+        expect(totalQuantity).toEqual(10)
+        expect(updatedInvoice.total_price).toEqual(newProductSize.price * totalQuantity)
+
     })
 })

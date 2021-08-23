@@ -1,12 +1,18 @@
 import { gql } from "apollo-server";
 
 export const orderTypeDef = gql`
+  type OrderProductSize {
+    id: ProductSize,
+    name: String,
+    price: Float,
+    created_date: Date
+  },
   type Order {
     id: ID,
     product: Product,
     name: String
     isReceived: Boolean,
-    size: ProductSize,
+    size: OrderProductSize,
     quantity: Int,
     totalPrice: Float,
     ordered_date: Date

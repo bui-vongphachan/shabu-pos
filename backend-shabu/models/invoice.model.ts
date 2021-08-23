@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { OrderDoc } from "./order.model";
+import { OrderDoc, OrderModel } from "./order.model";
 import { ProductDoc } from "./product.model";
 
-interface Doc extends mongoose.Document {
+export interface InvoiceDoc extends mongoose.Document {
     id: string
     isPaid: boolean
     table: {
@@ -19,6 +19,10 @@ interface Doc extends mongoose.Document {
     printed_time: string
     arrived_time: string
     created_date: string
+}
+
+interface Model extends mongoose.Model<InvoiceDoc> {
+    updateTotalPrice(invoice_id: string): Promise<InvoiceDoc>;
 }
 
 const Schema = new mongoose.Schema(
@@ -41,4 +45,27 @@ const Schema = new mongoose.Schema(
     }
 );
 
-export const InvoiceModel = mongoose.model<Doc>("invoices", Schema);
+Schema.statics.updateTotalPrice = async function (invoice_id: string) {
+
+    const invoice = await InvoiceModel.findOne({ _id: invoice_id })
+        .populate({
+            path: "orders",
+            populate: {
+                path: "size.id"
+            }
+        })
+
+    if (!invoice) throw new Error("Invoice not found")
+
+    const total_price = invoice.orders.reduce((prev, curr) => {
+        return prev + (curr.size.id.price * curr.quantity)
+    }, 0)
+
+    return await InvoiceModel.findOneAndUpdate(
+        { _id: invoice_id },
+        { $set: { total_price } },
+        { new: true })
+        .populate("orders")
+}
+
+export const InvoiceModel = mongoose.model<InvoiceDoc, Model>("invoices", Schema);
