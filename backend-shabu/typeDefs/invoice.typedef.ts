@@ -36,3 +36,45 @@ export const invoiceTypeDef = gql`
     ): Invoice,
   }
 `;
+
+
+export const addInvoiceQuery = gql`
+    {
+      
+        id
+        isPaid
+        table {
+            id
+            name
+            created_date
+        }
+        customers
+        orders {
+            id
+            name
+            isReceived
+            size {
+                id {
+                    id
+                    name
+                    price
+                }
+                name
+                price
+                created_date
+            }
+            quantity
+            totalPrice
+            ordered_date
+        }
+        time_spent
+        total_price
+        final_price
+        money_received
+        money_return
+        printed_time
+        arrived_time
+        created_date
+
+    }
+    `

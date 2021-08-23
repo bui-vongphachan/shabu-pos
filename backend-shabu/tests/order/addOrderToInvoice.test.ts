@@ -42,7 +42,10 @@ describe('Add new order to invoice', () => {
                             name
                             isReceived
                             size {
-                                id
+                                id {
+                                    name,
+                                    price
+                                }
                                 name
                                 price
                             }
