@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 import { OrderModel, InvoiceModel } from "../../models"
 
-export const increaseOrderQuantity = async (_: any, args: {
+export const updateOrderQuantity = async (_: any, args: {
     invoice_id: string,
     order_id: string,
     quantity: number

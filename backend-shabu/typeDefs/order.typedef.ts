@@ -28,7 +28,7 @@ export const orderTypeDef = gql`
       invoice_id: ID,
       products: [addOrderToInvoiceInput],
     ): Invoice,
-    increaseOrderQuantity(
+    updateOrderQuantity(
       invoice_id: ID,
       order_id: ID,
       quantity: Int

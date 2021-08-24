@@ -3,8 +3,8 @@ import { InvoiceDoc, InvoiceModel, ProductModel, ProductSizeModel, TableModel } 
 import { gqlInvoiceFields } from "../../typeDefs";
 import { server } from "../apolloServer";
 
-describe('Increase order quantity', () => {
-    it('should increase quantity', async () => {
+describe('update order quantity', () => {
+    it('should update quantity', async () => {
         const table = await new TableModel({ name: "A208" }).save()
 
         const newProductSize = await new ProductSizeModel({ name: "small", price: 1000 }).save()
@@ -43,29 +43,29 @@ describe('Increase order quantity', () => {
 
         expect(newInvoice.total_price).toEqual(newProductSize.price * 2)
 
-        const increaseOrderQuantityResult = await server.executeOperation({
+        const updateOrderQuantityResult = await server.executeOperation({
             query: gql`
-                mutation IncreaseOrderQuantityMutation(
-                    $increaseOrderQuantityInvoiceId: ID
-                    $increaseOrderQuantityOrderId: ID
-                    $increaseOrderQuantityQuantity: Int
+                mutation UpdateOrderQuantityMutation(
+                    $updateOrderQuantityInvoiceId: ID
+                    $updateOrderQuantityOrderId: ID
+                    $updateOrderQuantityQuantity: Int
                 ) {
-                    increaseOrderQuantity(
-                        invoice_id: $increaseOrderQuantityInvoiceId
-                        order_id: $increaseOrderQuantityOrderId
-                        quantity: $increaseOrderQuantityQuantity
+                    updateOrderQuantity(
+                        invoice_id: $updateOrderQuantityInvoiceId
+                        order_id: $updateOrderQuantityOrderId
+                        quantity: $updateOrderQuantityQuantity
                     )
                     ${gqlInvoiceFields}
                 }
                 `,
             variables: {
-                increaseOrderQuantityInvoiceId: newInvoice.id,
-                increaseOrderQuantityOrderId: newInvoice.orders[0].id,
-                increaseOrderQuantityQuantity: 8
+                updateOrderQuantityInvoiceId: newInvoice.id,
+                updateOrderQuantityOrderId: newInvoice.orders[0].id,
+                updateOrderQuantityQuantity: 8
             }
         })
 
-        const updatedInvoice: InvoiceDoc = increaseOrderQuantityResult.data!.increaseOrderQuantity
+        const updatedInvoice: InvoiceDoc = updateOrderQuantityResult.data!.updateOrderQuantity
         const totalQuantity = updatedInvoice.orders.reduce((prev, curr) => (prev + curr.quantity), 0)
 
         expect(totalQuantity).toEqual(9)

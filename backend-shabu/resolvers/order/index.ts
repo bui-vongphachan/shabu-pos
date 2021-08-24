@@ -1,6 +1,6 @@
 import { addOrderToInvoice } from "./addOrderToInvoice.mutation"
-import { increaseOrderQuantity } from "./increaseOrderQuantity.mutation"
+import { updateOrderQuantity } from "./updateOrderQuantity.mutation"
 export const orderResolver = {
     Query: {},
-    Mutation: { addOrderToInvoice, increaseOrderQuantity }
+    Mutation: { addOrderToInvoice, updateOrderQuantity }
 };
