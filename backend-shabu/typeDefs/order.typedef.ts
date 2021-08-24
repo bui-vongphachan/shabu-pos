@@ -33,5 +33,10 @@ export const orderTypeDef = gql`
       order_id: ID,
       quantity: Int
     ): Invoice,
+    changeOrderSize(
+      invoice_id: String
+      order_id: String
+      size_id: String
+    ): Invoice
   }
 `;
