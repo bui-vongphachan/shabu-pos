@@ -5,27 +5,7 @@ export const increaseOrderQuantity = async (_: any, args: {
     invoice_id: string,
     order_id: string,
     quantity: number
-}) => {
-
-    const orders = await OrderModel.aggregate([
-        {
-            $match: { _id: Types.ObjectId(args.order_id) }
-        },
-        {
-            $addFields: {
-                newQuantity: {
-                    $add: ["$quantity", args.quantity]
-                },
-                newTotalPrice: {
-                    $multiply: [
-                        { $add: ["$quantity", args.quantity] }, "$size.price"
-                    ]
-                }
-            }
-        }
-    ])
-
-    
+}) => {    
 
     const order = await OrderModel.findOne({ _id: args.order_id})
 
