@@ -3,7 +3,7 @@ import { OrderDoc, OrderModel } from "./order.model";
 import { ProductDoc } from "./product.model";
 
 export enum PaymentMethods {
-    CASH = "ເງິນສົດ",
+    CASH = "CASH",
     BCEL = "BCEL"
 }
 export interface InvoiceDoc extends mongoose.Document {
