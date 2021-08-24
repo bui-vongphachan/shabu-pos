@@ -21,36 +21,9 @@ describe('Increase order quantity', () => {
                         table: $addInvoiceTable, 
                         customers: $addInvoiceCustomers, 
                         products: $addInvoiceProducts
-                    ) {
-                        id
-                        isPaid
-                        table {
-                            id
-                            name
-                            created_date
-                        }
-                        customers
-                        orders {
-                            id
-                            name
-                            isReceived
-                            size {
-                                name
-                                price
-                            }
-                            quantity
-                            totalPrice
-                            ordered_date
-                        }
-                        time_spent
-                        total_price
-                        final_price
-                        money_received
-                        money_return
-                        printed_time
-                        arrived_time
-                        created_date
-                    }
+                    ) 
+                    ${gqlInvoiceFields}
+                    
                 }
                 `,
             variables: {
@@ -94,7 +67,7 @@ describe('Increase order quantity', () => {
 
         const updatedInvoice: InvoiceDoc = increaseOrderQuantityResult.data!.increaseOrderQuantity
         const totalQuantity = updatedInvoice.orders.reduce((prev, curr) => (prev + curr.quantity), 0)
-        
+
         expect(totalQuantity).toEqual(9)
         expect(updatedInvoice.total_price).toEqual(newProductSize.price * totalQuantity)
 

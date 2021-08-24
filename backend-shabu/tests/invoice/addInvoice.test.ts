@@ -72,7 +72,5 @@ describe('Add invoice', () => {
         expect(data.total_price).toEqual(totalPrice)
         expect(data.final_price).toEqual(0)
         expect(data.money_received).toEqual(0)
-        expect(data.money_return).toEqual(0)
-        expect(data.printed_time).toEqual(null)
     });
 });

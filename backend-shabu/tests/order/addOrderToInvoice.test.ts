@@ -15,7 +15,6 @@ describe('Add new order to invoice', () => {
         expect(newInvoice.total_price).toEqual(0)
         expect(newInvoice.final_price).toEqual(0)
         expect(newInvoice.money_received).toEqual(0)
-        expect(newInvoice.money_return).toEqual(0)
 
         const newProductSize = await new ProductSizeModel({ name: "small", price: 1000 }).save()
         const newProduct = await new ProductModel({ name: "Bacon", sizes: [newProductSize.id] }).save()
