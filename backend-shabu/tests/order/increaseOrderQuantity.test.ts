@@ -95,7 +95,7 @@ describe('Increase order quantity', () => {
         const updatedInvoice: InvoiceDoc = increaseOrderQuantityResult.data!.increaseOrderQuantity
         const totalQuantity = updatedInvoice.orders.reduce((prev, curr) => (prev + curr.quantity), 0)
         
-        expect(totalQuantity).toEqual(10)
+        expect(totalQuantity).toEqual(9)
         expect(updatedInvoice.total_price).toEqual(newProductSize.price * totalQuantity)
 
     })

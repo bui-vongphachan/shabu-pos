@@ -25,14 +25,18 @@ export const increaseOrderQuantity = async (_: any, args: {
         }
     ])
 
-    if (orders.length !== 1) throw new Error("Order not found")
+    
+
+    const order = await OrderModel.findOne({ _id: args.order_id})
+
+    if (!order) throw new Error("Order not found")
 
     await OrderModel.findOneAndUpdate(
         { _id: args.order_id },
         {
             $set: {
-                quantity: orders[0].newQuantity,
-                totalPrice: orders[0].newTotalPrice
+                quantity: args.quantity,
+                totalPrice: args.quantity * order.size.price
             }
         },
         { new: true }

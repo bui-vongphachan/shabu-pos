@@ -1,9 +1,10 @@
 import mongoose from "mongoose"
+import { ProductDoc } from "./product.model";
 import { SizeDoc } from "./productSize.model";
 
 export interface OrderDoc extends mongoose.Document {
     id: string
-    product: string
+    product: ProductDoc
     name: string
     isReceived: boolean
     size: {
@@ -15,6 +16,9 @@ export interface OrderDoc extends mongoose.Document {
     totalPrice: number
     ordered_date: string
     schema_version: number
+}
+interface Model extends mongoose.Model<OrderDoc> {
+    getFullDetail(order_id: string): Promise<OrderDoc>
 }
 
 const Schema = new mongoose.Schema({
