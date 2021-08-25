@@ -1,4 +1,4 @@
-import { InvoiceDoc, InvoiceModel, OrderDoc, OrderModel, ProductModel, ProductSizeModel, SizeDoc, TableDoc, TableModel } from "../../models"
+import { InvoiceDoc, InvoiceModel, OrderDoc, OrderModel, ProductDoc, ProductModel, ProductSizeModel, SizeDoc, TableDoc, TableModel } from "../../models"
 import { completeInvoiceQuery } from "../../resolvers/invoice/completeInvoice.mutation"
 import { deleteSizeQuery } from "../../resolvers/productSize/deleteSize.mutation"
 import { server } from "../../starters/apolloServer"
@@ -75,7 +75,14 @@ describe('Delete product size', () => {
         })
 
         expect(deleteOrderResult.errors).toBeUndefined()
+
+        const products: ProductDoc[] = deleteOrderResult.data?.deleteSize
+
+        products.forEach(product => {
+            product.sizes.forEach(size => {
+                expect(size.isDeleted).toEqual(false)
+            })
+        })
+
     })
-
-
 })

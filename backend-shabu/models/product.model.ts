@@ -25,7 +25,7 @@ const Schema = new mongoose.Schema(
 
 Schema.statics.getFullDetails = async () => {
     const products = await ProductModel.find()
-        .populate({ path: "sizes" })
+        .populate({ path: "sizes", match: { isDeleted: false } })
 
     return products
 }
