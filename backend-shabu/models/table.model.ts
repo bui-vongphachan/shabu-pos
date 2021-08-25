@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface Doc extends mongoose.Document {
+export interface TableDoc extends mongoose.Document {
     id: String
     name: String
     created_date: String
@@ -21,4 +21,4 @@ const Schema = new mongoose.Schema(
     }
 );
 
-export const TableModel = mongoose.model<Doc>("tables", Schema);
+export const TableModel = mongoose.model<TableDoc>("tables", Schema);

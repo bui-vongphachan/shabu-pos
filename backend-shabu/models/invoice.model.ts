@@ -71,6 +71,7 @@ Schema.statics.updateTotalPrice = async function (invoice_id: string) {
     if (!invoice) throw new Error("Invoice not found")
 
     const total_price = invoice.orders.reduce((prev, curr) => {
+        if (curr.isDeleted) return prev + 0
         return prev + (curr.size.id.price * curr.quantity)
     }, 0)
 
@@ -84,14 +85,16 @@ Schema.statics.updateTotalPrice = async function (invoice_id: string) {
 }
 
 Schema.statics.getFullDetail = async (invoice_id: string) => {
-    return await InvoiceModel.findOne({ _id: invoice_id })
+    const invoice = await InvoiceModel.findOne({ _id: invoice_id })
         .populate({ path: "table" })
         .populate({
             path: "orders",
             populate: {
                 path: "size.id",
             }
-        })
+        }) 
+        
+    return invoice
 }
 
 export const InvoiceModel = mongoose.model<InvoiceDoc, Model>("invoices", Schema);

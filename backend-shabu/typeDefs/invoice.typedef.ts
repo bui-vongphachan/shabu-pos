@@ -76,6 +76,7 @@ export const gqlInvoiceFields = gql`
             }
             quantity
             totalPrice
+            isDeleted
             ordered_date
         }
         time_spent
