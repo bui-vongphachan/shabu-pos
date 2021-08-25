@@ -1,8 +1,9 @@
 import { gql } from "apollo-server-express";
 import { isValidObjectId } from "mongoose";
 import { InvoiceDoc, OrderDoc, ProductModel, ProductSizeModel, SizeDoc, TableModel } from "../../models";
-import { gqlInvoiceFields } from "../../typeDefs";
-import { server } from "../apolloServer";
+import { addInvoiceQuery } from "../../resolvers/invoice/addInvoice.mutation";
+import { completeInvoiceQuery } from "../../resolvers/invoice/completeInvoice.mutation";
+import { server } from "../../starters/apolloServer";
 
 describe('Complete an invoice', () => {
     it('should update invoice payment', async () => {
@@ -21,20 +22,7 @@ describe('Complete an invoice', () => {
         ])
 
         const result = await server.executeOperation({
-            query: gql`
-                mutation AddInvoiceMutation(
-                    $addInvoiceTable: ID,
-                    $addInvoiceCustomers: Int, 
-                    $addInvoiceProducts: [addInvoiceProductInput]
-                ) {
-                    addInvoice(
-                        table: $addInvoiceTable, 
-                        customers: $addInvoiceCustomers, 
-                        products: $addInvoiceProducts
-                    )
-                    ${gqlInvoiceFields}
-                }
-                `,
+            query: addInvoiceQuery,
             variables: {
                 addInvoiceTable: table.id,
                 addInvoiceCustomers: 4,
@@ -75,26 +63,7 @@ describe('Complete an invoice', () => {
         expect(newInvoice.money_received).toEqual(0)
 
         const completeInvoiceResult = await server.executeOperation({
-            query: gql`
-                mutation CompleteInvoiceMutation(
-                    $completeInvoiceInvoiceId: ID
-                    $completeInvoicePaymentMethod: String
-                    $completeInvoiceMoneyReceived: Float
-                    $completeInvoicePayerName: String
-                    $completeInvoicePayerContact: String
-                    $completeInvoiceIsLeft: Boolean
-                ) {
-                    completeInvoice(
-                        invoice_id: $completeInvoiceInvoiceId
-                        payment_method: $completeInvoicePaymentMethod
-                        money_received: $completeInvoiceMoneyReceived
-                        payer_name: $completeInvoicePayerName
-                        payer_contact: $completeInvoicePayerContact
-                        isLeft: $completeInvoiceIsLeft
-                    )
-                    ${gqlInvoiceFields}
-                }
-                `,
+            query: completeInvoiceQuery,
             variables: {
                 completeInvoiceInvoiceId: newInvoice.id,
                 completeInvoicePaymentMethod: "CASH",
@@ -133,20 +102,7 @@ describe('Complete an invoice', () => {
         ])
 
         const result = await server.executeOperation({
-            query: gql`
-                mutation AddInvoiceMutation(
-                    $addInvoiceTable: ID,
-                    $addInvoiceCustomers: Int, 
-                    $addInvoiceProducts: [addInvoiceProductInput]
-                ) {
-                    addInvoice(
-                        table: $addInvoiceTable, 
-                        customers: $addInvoiceCustomers, 
-                        products: $addInvoiceProducts
-                    )
-                    ${gqlInvoiceFields}
-                }
-                `,
+            query: addInvoiceQuery,
             variables: {
                 addInvoiceTable: table.id,
                 addInvoiceCustomers: 4,
@@ -187,26 +143,7 @@ describe('Complete an invoice', () => {
         expect(newInvoice.money_received).toEqual(0)
 
         const completeInvoiceResult = await server.executeOperation({
-            query: gql`
-                mutation CompleteInvoiceMutation(
-                    $completeInvoiceInvoiceId: ID
-                    $completeInvoicePaymentMethod: String
-                    $completeInvoiceMoneyReceived: Float
-                    $completeInvoicePayerName: String
-                    $completeInvoicePayerContact: String
-                    $completeInvoiceIsLeft: Boolean
-                ) {
-                    completeInvoice(
-                        invoice_id: $completeInvoiceInvoiceId
-                        payment_method: $completeInvoicePaymentMethod
-                        money_received: $completeInvoiceMoneyReceived
-                        payer_name: $completeInvoicePayerName
-                        payer_contact: $completeInvoicePayerContact
-                        isLeft: $completeInvoiceIsLeft
-                    )
-                    ${gqlInvoiceFields}
-                }
-                `,
+            query: completeInvoiceQuery,
             variables: {
                 completeInvoiceInvoiceId: newInvoice.id,
                 completeInvoicePaymentMethod: "CASH",

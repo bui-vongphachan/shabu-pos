@@ -1,4 +1,6 @@
+import { gql } from "apollo-server-express";
 import { InvoiceModel, PaymentMethods } from "../../models";
+import { gqlInvoiceFields } from "../../typeDefs";
 
 export const completeInvoice = async (_: any, args: {
     invoice_id: string,
@@ -50,3 +52,24 @@ export const completeInvoice = async (_: any, args: {
 
     return updateInvoice;
 }
+
+export const completeInvoiceQuery = gql`
+        mutation CompleteInvoiceMutation(
+            $completeInvoiceInvoiceId: ID
+            $completeInvoicePaymentMethod: String
+            $completeInvoiceMoneyReceived: Float
+            $completeInvoicePayerName: String
+            $completeInvoicePayerContact: String
+            $completeInvoiceIsLeft: Boolean
+        ) {
+            completeInvoice(
+                invoice_id: $completeInvoiceInvoiceId
+                payment_method: $completeInvoicePaymentMethod
+                money_received: $completeInvoiceMoneyReceived
+                payer_name: $completeInvoicePayerName
+                payer_contact: $completeInvoicePayerContact
+                isLeft: $completeInvoiceIsLeft
+            )
+            ${gqlInvoiceFields}
+        }
+    `

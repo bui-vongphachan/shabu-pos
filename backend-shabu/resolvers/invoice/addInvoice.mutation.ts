@@ -1,4 +1,6 @@
+import { gql } from "apollo-server-express";
 import { InvoiceModel, ProductModel, OrderModel, TableModel } from "../../models";
+import { gqlInvoiceFields } from "../../typeDefs";
 
 export const addInvoice = async (_: any, args: {
     table: string,
@@ -56,3 +58,18 @@ export const addInvoice = async (_: any, args: {
         return error
     }
 }
+
+export const addInvoiceQuery = gql`
+    mutation AddInvoiceMutation(
+        $addInvoiceTable: ID,
+        $addInvoiceCustomers: Int, 
+        $addInvoiceProducts: [addInvoiceProductInput]
+    ) {
+        addInvoice(
+            table: $addInvoiceTable, 
+            customers: $addInvoiceCustomers, 
+            products: $addInvoiceProducts
+        )
+        ${gqlInvoiceFields}
+    }
+    `

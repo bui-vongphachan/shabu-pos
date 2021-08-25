@@ -1,8 +1,8 @@
 import { gql } from "apollo-server-express";
 import { isValidObjectId } from "mongoose";
 import { OrderDoc, ProductModel, ProductSizeModel, SizeDoc, TableModel } from "../../models";
-import { gqlInvoiceFields } from "../../typeDefs";
-import { server } from "../apolloServer";
+import { addInvoiceQuery } from "../../resolvers/invoice/addInvoice.mutation";
+import { server } from "../../starters/apolloServer";
 
 describe('Add invoice', () => {
     it('should save new invoice', async () => {
@@ -21,20 +21,7 @@ describe('Add invoice', () => {
         ])
 
         const result = await server.executeOperation({
-            query: gql`
-                mutation AddInvoiceMutation(
-                    $addInvoiceTable: ID,
-                    $addInvoiceCustomers: Int, 
-                    $addInvoiceProducts: [addInvoiceProductInput]
-                ) {
-                    addInvoice(
-                        table: $addInvoiceTable, 
-                        customers: $addInvoiceCustomers, 
-                        products: $addInvoiceProducts
-                    )
-                    ${gqlInvoiceFields}
-                }
-                `,
+            query: addInvoiceQuery,
             variables: {
                 addInvoiceTable: table.id,
                 addInvoiceCustomers: 4,
