@@ -92,8 +92,8 @@ Schema.statics.getFullDetail = async (invoice_id: string) => {
             populate: {
                 path: "size.id",
             }
-        }) 
-        
+        })
+
     return invoice
 }
 

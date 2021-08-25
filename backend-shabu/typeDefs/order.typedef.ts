@@ -15,6 +15,7 @@ export const orderTypeDef = gql`
     size: OrderProductSize,
     quantity: Int,
     totalPrice: Float,
+    isPaid: Boolean,
     isDeleted: Boolean,
     ordered_date: Date,
     schema_version: Int

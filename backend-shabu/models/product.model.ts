@@ -9,6 +9,10 @@ export interface ProductDoc extends mongoose.Document {
     schema_version: number
 }
 
+interface Model extends mongoose.Model<ProductDoc> {
+    getFullDetails(): Promise<ProductDoc>
+}
+
 const Schema = new mongoose.Schema(
     {
         name: { type: String, default: null, require: true },
@@ -19,4 +23,11 @@ const Schema = new mongoose.Schema(
     }
 );
 
-export const ProductModel = mongoose.model<ProductDoc>("products", Schema);
+Schema.statics.getFullDetails = async () => {
+    const products = await ProductModel.find()
+        .populate({ path: "sizes" })
+
+    return products
+}
+
+export const ProductModel = mongoose.model<ProductDoc, Model>("products", Schema);

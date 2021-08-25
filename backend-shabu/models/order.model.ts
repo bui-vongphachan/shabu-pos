@@ -14,6 +14,7 @@ export interface OrderDoc extends mongoose.Document {
     }
     quantity: number
     totalPrice: number
+    isPaid: boolean
     isDeleted: boolean
     ordered_date: string
     schema_version: number
@@ -30,6 +31,7 @@ const Schema = new mongoose.Schema({
     },
     quantity: { type: Number, default: 0, require: true },
     totalPrice: { type: Number, default: 0, require: true },
+    isPaid: { type: Boolean, default: false, require: true },
     isDeleted: { type: Boolean, default: false, require: true },
     ordered_date: { type: Date, default: Date.now },
     schema_version: { type: Number, default: 2 },
