@@ -1,6 +1,6 @@
 import { gql } from "apollo-server-express";
 import { ProductModel } from "../../models";
-import { server } from "../apolloServer";
+import { server } from "../../starters/apolloServer";
 
 describe('Get product categories', () => {
     it('should response product categories', async () => {
