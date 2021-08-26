@@ -1,12 +1,11 @@
-import { gql } from "apollo-server-express";
-import { isValidObjectId } from "mongoose";
-import { InvoiceDoc, InvoiceModel, OrderModel, ProductDoc, ProductModel, ProductSizeModel, SizeDoc, TableDoc, TableModel } from "../../models";
-import { server } from "../../starters/apolloServer";
+
+import { InvoiceDoc, OrderModel, ProductDoc, ProductModel, ProductSizeModel, SizeDoc, TableDoc, TableModel } from "../../models";
 import { commerce, lorem } from "faker"
 import { addInvoiceQuery } from "../../resolvers/invoice/addInvoice.mutation";
-import { addOrderToInvoiceMutation } from "../../resolvers/order/addOrderToInvoice.mutation";
+import { server } from "../../starters/apolloServer";
+import { changeOrderSizeMutation } from "../../resolvers/order/changeProductSize.mutation";
 
-describe('Add new order to invoice', () => {
+describe('change order size', () => {
 
     const setupData = async (): Promise<{
         table: TableDoc,
@@ -16,10 +15,11 @@ describe('Add new order to invoice', () => {
     }> => {
         const table = await new TableModel({ name: lorem.word() }).save()
         const productSize = await new ProductSizeModel({ name: "large", price: commerce.price() }).save()
+        const productSizeTwo = await new ProductSizeModel({ name: "large", price: commerce.price() }).save()
         const product = await new ProductModel({
             name: commerce.productName(),
             category: "alcohol",
-            sizes: [productSize.id]
+            sizes: [productSize.id, productSizeTwo.id]
         }).save()
 
         let result = await server.executeOperation({
@@ -36,42 +36,39 @@ describe('Add new order to invoice', () => {
                 ]
             }
         })
+
         let invoice: InvoiceDoc = result.data?.addInvoice
 
-        const newProductSize = await new ProductSizeModel({ name: "small", price: 1000 }).save()
-        const newProduct = await new ProductModel({ name: "Bacon", sizes: [newProductSize.id] }).save()
-
         result = await server.executeOperation({
-            query: addOrderToInvoiceMutation,
+            query: changeOrderSizeMutation,
             variables: {
-                addOrderToInvoiceInvoiceId: invoice.id,
-                addOrderToInvoiceProducts: [
-                    {
-                        id: newProduct.id,
-                        quantity: 1,
-                        size: newProductSize.id
-                    }
-                ]
+                changeOrderSizeInvoiceId: invoice.id,
+                changeOrderSizeOrderId: invoice.orders[0].id,
+                changeOrderSizeSizeId: productSizeTwo.id
             }
         })
 
-        invoice = result.data?.addOrderToInvoice
+        invoice = result.data!.changeOrderSize
 
         return {
             table,
             product,
-            productSizes: [productSize, newProductSize],
+            productSizes: [productSize, productSizeTwo],
             invoice
         }
     }
 
-    it('should save new order to invoice', async () => {
-        let { invoice } = await setupData()
+    it('should update order size', async () => {
+        const { invoice, productSizes } = await setupData()
+        expect(invoice).not.toBeNull()
+        expect(invoice.orders[0].size.id.id).toEqual(productSizes[1].id)
+        expect(invoice.orders[0].size.id.name).toEqual(productSizes[1].name)
+        expect(invoice.orders[0].size.id.price).toEqual(productSizes[1].price)
+        expect(invoice.orders[0].totalPrice)
+            .toEqual(invoice.orders[0].quantity * productSizes[1].price)
+    })
 
-        expect(invoice.orders.length).toEqual(2)
-    });
-
-    it("should recalculate totalPrice", async () => {
+    it('should recalculate totalPrice', async () => {
         const { invoice } = await setupData()
 
         const orders = await OrderModel.find({
@@ -83,5 +80,5 @@ describe('Add new order to invoice', () => {
         }, 0)
 
         expect(invoice.total_price).toEqual(totalPrice)
-    })
+    });
 })

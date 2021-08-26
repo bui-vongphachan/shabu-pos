@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-express";
-import { server } from "../apolloServer";
+import { server } from "../../starters/apolloServer";
 
 describe('Add table', () => {
     it('should save new table', async () => {

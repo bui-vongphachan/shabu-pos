@@ -5,6 +5,7 @@ export const productSizeTypeDef = gql`
     id: ID
     name: String
     price: Float
+    isDeleted: Boolean
     created_date: Date
     schema_version: Int
   },
@@ -13,6 +14,7 @@ export const productSizeTypeDef = gql`
     price: Float
   }
   type Mutation {
-    addSize(product_id: ID, sizes: [addSizeInput]): Product
+    addSize(product_id: ID, sizes: [addSizeInput]): Product,
+    deleteSize(size_id: ID): [Product]
   }
 `;

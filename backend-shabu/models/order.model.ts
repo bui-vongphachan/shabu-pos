@@ -1,9 +1,10 @@
 import mongoose from "mongoose"
+import { ProductDoc } from "./product.model";
 import { SizeDoc } from "./productSize.model";
 
 export interface OrderDoc extends mongoose.Document {
     id: string
-    product: string
+    product: ProductDoc
     name: string
     isReceived: boolean
     size: {
@@ -13,21 +14,25 @@ export interface OrderDoc extends mongoose.Document {
     }
     quantity: number
     totalPrice: number
+    isPaid: boolean
+    isDeleted: boolean
     ordered_date: string
     schema_version: number
 }
 
 const Schema = new mongoose.Schema({
-    product: { type: mongoose.Schema.Types.ObjectId, ref: "products", require: true },
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "products", default: null, require: true },
     name: { type: String, default: null, require: true },
     isReceived: { type: Boolean, default: false, require: true },
     size: {
-        id: { type: mongoose.Schema.Types.ObjectId, ref: "product_sizes" },
+        id: { type: mongoose.Schema.Types.ObjectId, ref: "product_sizes", default: null, require: true },
         name: { type: String, default: null, require: true },
-        price: { type: Number, require: true },
+        price: { type: Number, default: 0, require: true },
     },
-    quantity: { type: Number, require: true },
-    totalPrice: { type: Number, require: true },
+    quantity: { type: Number, default: 0, require: true },
+    totalPrice: { type: Number, default: 0, require: true },
+    isPaid: { type: Boolean, default: false, require: true },
+    isDeleted: { type: Boolean, default: false, require: true },
     ordered_date: { type: Date, default: Date.now },
     schema_version: { type: Number, default: 2 },
 })

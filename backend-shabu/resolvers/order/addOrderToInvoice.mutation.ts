@@ -1,5 +1,6 @@
-import { UserInputError } from "apollo-server-express";
+import { gql, UserInputError } from "apollo-server-express";
 import { InvoiceModel, OrderModel, ProductModel } from "../../models";
+import { gqlInvoiceFields } from "../../typeDefs";
 
 export const addOrderToInvoice = async (_: any, args: {
     invoice_id: string,
@@ -52,3 +53,16 @@ export const addOrderToInvoice = async (_: any, args: {
 
     return await InvoiceModel.getFullDetail(args.invoice_id)
 }
+
+export const addOrderToInvoiceMutation = gql`
+    mutation AddOrderToInvoiceMutation(
+        $addOrderToInvoiceInvoiceId: ID
+        $addOrderToInvoiceProducts: [addOrderToInvoiceInput]
+    ) {
+        addOrderToInvoice(
+            invoice_id: $addOrderToInvoiceInvoiceId
+            products: $addOrderToInvoiceProducts
+        )
+        ${gqlInvoiceFields}
+    }
+`

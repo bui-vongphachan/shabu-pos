@@ -1,3 +1,4 @@
+import { gql } from "apollo-server-express"
 import { ProductSizeModel, ProductModel } from "../../models"
 
 export const addSize = async (_: any, args: {
@@ -25,3 +26,12 @@ export const addSize = async (_: any, args: {
     }
 
 }
+
+export const addSizeMutation = gql`
+    mutation AddSizeMutation($addSizeProductId: ID, $addSizeSizes: [addSizeInput]) {
+        addSize(product_id: $addSizeProductId, sizes: $addSizeSizes) {
+            id
+            name
+        }
+    }
+`

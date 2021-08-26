@@ -15,6 +15,8 @@ export const orderTypeDef = gql`
     size: OrderProductSize,
     quantity: Int,
     totalPrice: Float,
+    isPaid: Boolean,
+    isDeleted: Boolean,
     ordered_date: Date,
     schema_version: Int
   },
@@ -28,10 +30,19 @@ export const orderTypeDef = gql`
       invoice_id: ID,
       products: [addOrderToInvoiceInput],
     ): Invoice,
-    increaseOrderQuantity(
+    updateOrderQuantity(
       invoice_id: ID,
       order_id: ID,
       quantity: Int
+    ): Invoice,
+    changeOrderSize(
+      invoice_id: String
+      order_id: String
+      size_id: String
+    ): Invoice,
+    deleteOrder(
+      invoice_id: String
+      order_id: String
     ): Invoice,
   }
 `;

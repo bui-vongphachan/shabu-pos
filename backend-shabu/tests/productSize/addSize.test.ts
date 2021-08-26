@@ -1,17 +1,10 @@
-import { gql } from "apollo-server-express";
-import { server } from "../apolloServer";
+import { addSizeMutation } from "../../resolvers/productSize/addSize.mutation";
+import { server } from "../../starters/apolloServer";
 
 describe('Add product size', () => {
     it('should save new product size', async () => {
         const result = await server.executeOperation({
-            query: gql`
-                mutation AddSizeMutation($addSizeProductId: ID, $addSizeSizes: [addSizeInput]) {
-                    addSize(product_id: $addSizeProductId, sizes: $addSizeSizes) {
-                        id
-                        name
-                    }
-                }
-            `,
+            query: addSizeMutation,
             variables: {
                 "addSizeProductId": null,
                 "addSizeSizes": [

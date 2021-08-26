@@ -3,17 +3,20 @@ import { gql } from "apollo-server";
 export const invoiceTypeDef = gql`
   type Invoice {
     id: String
-    isPaid: Boolean
     table: Table
     customers: Int
+    arrived_time: Date
     orders: [Order]
     time_spent: Int
     total_price: Float
     final_price: Float
+    payment_method: String
     money_received: Float
-    money_return: Float
-    printed_time: Date
-    arrived_time: Date
+    change: Float
+    isPaid: Boolean
+    payer_name: String
+    payer_contact: String
+    isLeft: Boolean
     created_date: Date
     schema_version: Int
   }
@@ -35,7 +38,14 @@ export const invoiceTypeDef = gql`
       invoice_id: ID,
       products: [addInvoiceProductInput],
     ): Invoice,
-    completeInvoice(invoice_id: ID): String
+    completeInvoice(
+      invoice_id: ID,
+      payment_method: String,
+      money_received: Float,
+      payer_name: String,
+      payer_contact: String,
+      isLeft: Boolean
+      ): Invoice
   }
 `;
 
@@ -43,13 +53,13 @@ export const invoiceTypeDef = gql`
 export const gqlInvoiceFields = gql`
     {
         id
-        isPaid
         table {
             id
             name
             created_date
         }
         customers
+        arrived_time
         orders {
             id
             name
@@ -66,15 +76,19 @@ export const gqlInvoiceFields = gql`
             }
             quantity
             totalPrice
+            isDeleted
             ordered_date
         }
         time_spent
         total_price
         final_price
+        payment_method
         money_received
-        money_return
-        printed_time
-        arrived_time
+        change
+        isPaid
+        payer_name
+        payer_contact
+        isLeft
         created_date
         schema_version
     }
