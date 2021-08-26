@@ -14,6 +14,11 @@ export const addInvoice = async (_: any, args: {
     ]
 }) => {
     try {
+
+        const table = await TableModel.findOne({ _id: args.table })
+        
+        if (!table) throw new Error("Table not found")
+
         const fullDetailProducts = await ProductModel.find({
             _id: {
                 $in: args.products.map(item => item.id)
@@ -40,8 +45,6 @@ export const addInvoice = async (_: any, args: {
                 totalPrice: inputProduct!.quantity * size!.price
             }
         })
-
-        const table = await TableModel.findOne({ _id: args.table })
 
         const orders = await OrderModel.insertMany(products)
 

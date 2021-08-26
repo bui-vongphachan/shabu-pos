@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-express"
 import { InvoiceDoc, InvoiceModel, OrderDoc, OrderModel, ProductModel, ProductSizeModel, SizeDoc, TableDoc, TableModel } from "../../models"
+import { server } from "../../starters/apolloServer";
 import { gqlInvoiceFields } from "../../typeDefs";
-import { server } from "../apolloServer";
 
 describe('delete order', () => {
     const updatedInvoice = (async function (): Promise<{
