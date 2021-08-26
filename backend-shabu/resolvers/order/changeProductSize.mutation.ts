@@ -1,4 +1,6 @@
+import { gql } from "apollo-server-express"
 import { InvoiceModel, OrderModel, ProductSizeModel } from "../../models"
+import { gqlInvoiceFields } from "../../typeDefs"
 
 export const changeOrderSize = async (_: any, args: {
     invoice_id: string,
@@ -28,3 +30,18 @@ export const changeOrderSize = async (_: any, args: {
 
     return  await InvoiceModel.updateTotalPrice(args.invoice_id)
 }
+
+export const changeOrderSizeMutation = gql`
+    mutation CompleteInvoiceMutation(
+        $changeOrderSizeInvoiceId: String
+        $changeOrderSizeOrderId: String
+        $changeOrderSizeSizeId: String
+    ) {
+        changeOrderSize(
+            invoice_id: $changeOrderSizeInvoiceId
+            order_id: $changeOrderSizeOrderId
+            size_id: $changeOrderSizeSizeId
+        ) 
+        ${gqlInvoiceFields}
+    }
+`

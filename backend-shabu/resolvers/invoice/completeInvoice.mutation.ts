@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-express";
-import { InvoiceModel, PaymentMethods } from "../../models";
+import { InvoiceModel, PaymentMethods, TableModel } from "../../models";
 import { gqlInvoiceFields } from "../../typeDefs";
 
 export const completeInvoice = async (_: any, args: {
@@ -10,7 +10,6 @@ export const completeInvoice = async (_: any, args: {
     payer_contact: string,
     isLeft: boolean
 }) => {
-
     const {
         invoice_id,
         payment_method,

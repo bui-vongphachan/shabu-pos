@@ -14,9 +14,8 @@ export const addInvoice = async (_: any, args: {
     ]
 }) => {
     try {
-
         const table = await TableModel.findOne({ _id: args.table })
-        
+
         if (!table) throw new Error("Table not found")
 
         const fullDetailProducts = await ProductModel.find({

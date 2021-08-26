@@ -1,75 +1,85 @@
 import { gql } from "apollo-server-express";
-import { InvoiceDoc, InvoiceModel, ProductModel, ProductSizeModel, TableModel } from "../../models";
+import { InvoiceDoc, OrderModel, ProductDoc, ProductModel, ProductSizeModel, SizeDoc, TableDoc, TableModel } from "../../models";
 import { gqlInvoiceFields } from "../../typeDefs";
-import { server } from "../apolloServer";
+import { commerce, lorem } from "faker"
+import { addInvoiceQuery } from "../../resolvers/invoice/addInvoice.mutation";
+import { server } from "../../starters/apolloServer";
+import { updateOrderQuantityMutation } from "../../resolvers/order/updateOrderQuantity.mutation";
+import { invoiceResolver } from "../../resolvers";
 
 describe('update order quantity', () => {
-    it('should update quantity', async () => {
-        const table = await new TableModel({ name: "A208" }).save()
 
-        const newProductSize = await new ProductSizeModel({ name: "small", price: 1000 }).save()
-        const newProduct = await new ProductModel({ name: "Bacon", sizes: [newProductSize.id] }).save()
+    const setupData = async (): Promise<{
+        table: TableDoc,
+        productSizes: SizeDoc,
+        product: ProductDoc,
+        invoice: InvoiceDoc,
+        newQuantity: number
+    }> => {
+        const table = await new TableModel({ name: lorem.word() }).save()
+        const productSize = await new ProductSizeModel({ name: "large", price: commerce.price() }).save()
+        const product = await new ProductModel({
+            name: commerce.productName(),
+            category: "alcohol",
+            sizes: [productSize.id]
+        }).save()
 
-        const addInvoiceResult = await server.executeOperation({
-            query: gql`
-                mutation AddInvoiceMutation(
-                    $addInvoiceTable: ID,
-                    $addInvoiceCustomers: Int, 
-                    $addInvoiceProducts: [addInvoiceProductInput]
-                ) {
-                    addInvoice(
-                        table: $addInvoiceTable, 
-                        customers: $addInvoiceCustomers, 
-                        products: $addInvoiceProducts
-                    ) 
-                    ${gqlInvoiceFields}
-                    
-                }
-                `,
+        let result = await server.executeOperation({
+            query: addInvoiceQuery,
             variables: {
                 addInvoiceTable: table.id,
                 addInvoiceCustomers: 4,
-                addInvoiceProducts: [1, 2].map(() => {
-                    return {
-                        id: newProduct.id,
+                addInvoiceProducts: [
+                    {
+                        id: product.id,
                         quantity: 1,
-                        size: newProductSize.id
+                        size: productSize.id,
                     }
-                })
+                ]
             }
         })
 
-        const newInvoice: InvoiceDoc = addInvoiceResult.data!.addInvoice
+        let invoice: InvoiceDoc = result.data?.addInvoice
 
-        expect(newInvoice.total_price).toEqual(newProductSize.price * 2)
-
-        const updateOrderQuantityResult = await server.executeOperation({
-            query: gql`
-                mutation UpdateOrderQuantityMutation(
-                    $updateOrderQuantityInvoiceId: ID
-                    $updateOrderQuantityOrderId: ID
-                    $updateOrderQuantityQuantity: Int
-                ) {
-                    updateOrderQuantity(
-                        invoice_id: $updateOrderQuantityInvoiceId
-                        order_id: $updateOrderQuantityOrderId
-                        quantity: $updateOrderQuantityQuantity
-                    )
-                    ${gqlInvoiceFields}
-                }
-                `,
+        result = await server.executeOperation({
+            query: updateOrderQuantityMutation,
             variables: {
-                updateOrderQuantityInvoiceId: newInvoice.id,
-                updateOrderQuantityOrderId: newInvoice.orders[0].id,
-                updateOrderQuantityQuantity: 8
+                updateOrderQuantityInvoiceId: invoice.id,
+                updateOrderQuantityOrderId: invoice.orders[0].id,
+                updateOrderQuantityQuantity: 10
             }
         })
 
-        const updatedInvoice: InvoiceDoc = updateOrderQuantityResult.data!.updateOrderQuantity
-        const totalQuantity = updatedInvoice.orders.reduce((prev, curr) => (prev + curr.quantity), 0)
+        invoice = result.data!.updateOrderQuantity
 
-        expect(totalQuantity).toEqual(9)
-        expect(updatedInvoice.total_price).toEqual(newProductSize.price * totalQuantity)
+        return {
+            table,
+            product,
+            productSizes: productSize,
+            invoice,
+            newQuantity: 10
+        }
+    }
 
+    it('should update quantity', async () => {
+        const { newQuantity, invoice } = await setupData()
+
+        const order = await OrderModel.findOne({ _id: invoice.orders[0].id })
+
+        expect(order?.quantity).toEqual(newQuantity)
     })
+
+    it('should recalculate totalPrice', async () => {
+        const { invoice } = await setupData()
+
+        const orders = await OrderModel.find({
+            _id: { $in: invoice.orders.map(order => order.id) }
+        })
+
+        const totalPrice = orders.reduce((sum, order) => {
+            return sum + (order.quantity * order.size.price)
+        }, 0)
+
+        expect(invoice.total_price).toEqual(totalPrice)
+    });
 })

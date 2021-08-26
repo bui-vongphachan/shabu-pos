@@ -5,12 +5,7 @@ describe('Add product size', () => {
     it('should save new product size', async () => {
         const result = await server.executeOperation({
             query: gql`
-                mutation AddSizeMutation($addSizeProductId: ID, $addSizeSizes: [addSizeInput]) {
-                    addSize(product_id: $addSizeProductId, sizes: $addSizeSizes) {
-                        id
-                        name
-                    }
-                }
+                
             `,
             variables: {
                 "addSizeProductId": null,

@@ -3,7 +3,7 @@ import { InvoiceDoc, InvoiceModel, OrderDoc, OrderModel, ProductDoc, ProductMode
 import { addInvoiceQuery } from "../../resolvers/invoice/addInvoice.mutation";
 import { server } from "../../starters/apolloServer";
 import { ObjectId } from "mongoose"
-import { commerce, lorem } from "faker"
+import { commerce, lorem, name } from "faker"
 
 describe('Add invoice', () => {
 
@@ -12,7 +12,7 @@ describe('Add invoice', () => {
         productSizes: SizeDoc[],
         products: ProductDoc[],
     }> => {
-        const table = await new TableModel({ name: lorem.word() }).save()
+        const table = await new TableModel({ name: `${name.firstName()} ${lorem.word()}` }).save()
         const productSizes: SizeDoc[] = await ProductSizeModel.insertMany([
             { name: "small", price: commerce.price() },
             { name: "large", price: commerce.price() },
