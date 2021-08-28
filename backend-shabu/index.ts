@@ -4,9 +4,12 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import express from "express"
 import { connectToMongoDB } from './starters/mongo';
 import { server, schema } from './starters/apolloServer';
+import { printBillRoute } from './routes/printBill.route';
 
 (async function () {
     const app = express();
+
+    app.use(printBillRoute)
 
     const httpServer = createServer(app);
 
