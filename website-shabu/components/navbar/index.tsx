@@ -1,15 +1,27 @@
 import { Menu } from "antd"
-import { SettingOutlined, HomeOutlined } from '@ant-design/icons'
-import { Fragment, useState } from "react"
-import { GiHotMeal, GiTable } from "react-icons/gi"
 import { Layout } from "antd"
 import Link from "next/link"
+import { useRouter } from "next/dist/client/router"
+import { useEffect } from "react"
+import { useState } from "react"
 
-const Navbar = () => {
-    const [state, setState] = useState({ current: "mail" })
+const Navbar = (props: any) => {
+
+    const [active, setActive] = useState("home")
+
+    const router = useRouter()
+
+    useEffect(() => {
+        const checkPath = (currentPath: string, activePath: string) => currentPath.startsWith(activePath, 0)
+        if (checkPath(router.pathname, "/menu")) setActive("menu")
+        else if (checkPath(router.pathname, "/table")) setActive("table")
+        else if (checkPath(router.pathname, "/report")) setActive("report")
+        else if (checkPath(router.pathname, "/")) setActive("home")
+    }, [router.pathname])
+
     return (
         <Layout.Header style={{ backgroundColor: "white" }}>
-            <Menu mode="horizontal" defaultSelectedKeys={['home']}>
+            <Menu mode="horizontal" selectedKeys={[active]}>
                 <Menu.Item key="home">
                     <Link href="/">Home</Link>
                 </Menu.Item>
@@ -26,5 +38,6 @@ const Navbar = () => {
         </Layout.Header>
     )
 }
+
 
 export default Navbar

@@ -1,13 +1,13 @@
 import DefaultLayout from "../../layouts/default"
 
-const Table = () => {
+const Menu = () => {
     return (
         <div>
-            TABLE
+            Menu
         </div>
     )
 }
 
-Table.getLayout = DefaultLayout
+Menu.getLayout = DefaultLayout
 
-export default Table
+export default Menu

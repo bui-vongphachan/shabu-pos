@@ -1,12 +1,17 @@
 import '../styles/globals.css'
 import { Fragment } from 'react';
 import 'antd/dist/antd.css';
-import { GetStaticProps } from 'next';
+import { useRouter } from 'next/dist/client/router';
 
 function MyApp({ Component, pageProps }: any) {
-  const getLayout = Component.getLayout || ((page: any) => page)
-
-  return getLayout(<Component {...pageProps} />)
+  const Layout = Component.getLayout || ((props: any) => <Fragment>{props.children}</Fragment>);
+  return (
+    <Fragment>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </Fragment>
+  )
 }
 
 

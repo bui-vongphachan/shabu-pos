@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import DefaultLayout from '../layouts'
+import DefaultLayout from '../layouts/default'
 import Head from 'next/head'
 
 

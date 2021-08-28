@@ -1,6 +1,5 @@
-import { Fragment } from "react"
-import Navbar from "../components/navbar"
 import { Layout, Menu } from "antd"
+import Navbar from "../../components/navbar";
 
 const { Footer, Content } = Layout;
 
