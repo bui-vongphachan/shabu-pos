@@ -30,10 +30,14 @@ const Menu = (props: {
 
     return (
         <MenuPageContext.Provider value={context}>
-            <div className=" mt-3 mx-auto grid grid-cols-3 container bg-purple-200">
-                <AddProductMenuComponent />
-                <ProductListMenuComponent />
-                <ProductEditorMenuComponent />
+            <div className="mt-3 mx-auto grid gap-3 md:grid-cols-3 sm:grid-cols-1 container">
+              
+                    <AddProductMenuComponent />
+               
+                    <ProductListMenuComponent />
+              
+                    <ProductEditorMenuComponent /> 
+
             </div>
         </MenuPageContext.Provider>
     )

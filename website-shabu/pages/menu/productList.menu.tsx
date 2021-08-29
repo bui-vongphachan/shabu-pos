@@ -1,4 +1,4 @@
-import { List, Skeleton } from "antd"
+import { Avatar, List, Skeleton } from "antd"
 import { useContext } from "react"
 import { MenuPageContext } from "."
 import { ProductModel } from "../../models"
@@ -9,7 +9,7 @@ const ProductListMenuComponent = () => {
 
     return (
         <List
-            className=" m-3 w-full"
+            className=""
             itemLayout="horizontal"
             dataSource={menuPageContext.products}
             locale={{ emptyText: "ບໍ່ມີລາຍການອາຫານ" }}
@@ -21,7 +21,12 @@ const ProductListMenuComponent = () => {
                 >
 
                     <Skeleton loading={false}>
-                        {`${++index}. ${item.name}`}
+                        <List.Item.Meta
+                            avatar={<Avatar src={'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} />}
+                            title={`${++index}. ${item.name}`}
+                            description={item.category}
+                        />
+                        {item.category}
                     </Skeleton>
                 </List.Item>
             )}
