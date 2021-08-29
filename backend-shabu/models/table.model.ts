@@ -13,7 +13,6 @@ const Schema = new mongoose.Schema(
             type: String,
             default: null,
             require: true,
-            index: true,
             unique: true
         },
         created_date: { type: Date, default: Date.now },
