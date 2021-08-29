@@ -5,10 +5,12 @@ import express from "express"
 import { connectToMongoDB } from './starters/mongo';
 import { server, schema } from './starters/apolloServer';
 import { printBillRoute } from './routes/printBill.route';
+import cors from "cors"
 
 (async function () {
     const app = express();
 
+    app.use(cors())
     app.use(printBillRoute)
 
     const httpServer = createServer(app);
