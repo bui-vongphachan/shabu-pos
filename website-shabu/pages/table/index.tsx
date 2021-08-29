@@ -31,7 +31,7 @@ const TablePage = (props: PageProps) => {
             setValidation("")
 
         } catch (error) {
-
+            console.log(error.message)
         }
     }
     useEffect(() => {
@@ -44,17 +44,18 @@ const TablePage = (props: PageProps) => {
             setErrorMessage(addTableMutation.error.message)
         }
     }, [addTableMutation.error])
+
     return (
         <div className=" container m-auto">
             <div className=" grid md:grid-cols-2 sm:grid-cols-1 justify-center">
                 <div>
                     <Card className=" rounded-md m-3" title="ເພີ່ມໂຕະ">
-                        <Form layout="vertical" requiredMark>
-                            <Form.Item validateStatus={validation} label="ເລກໂຕະ / ຊື່ໂຕະ" hasFeedback={errorMessage !== null} required help={errorMessage}>
+                        <Form layout="vertical" requiredMark onFinish={submitForm}>
+                            <Form.Item validateStatus={validation} label="ເລກໂຕະ / ຊື່ໂຕະ" required help={errorMessage}>
                                 <Input disabled={addTableMutation.loading} value={name} onChange={e => setName(e.target.value)} />
                             </Form.Item>
                             <Form.Item>
-                                <Button disabled={name === "" || addTableMutation.loading} onClick={submitForm} >ເພີ່ມ</Button>
+                                <Button disabled={name === "" || addTableMutation.loading} htmlType="submit" >ເພີ່ມ</Button>
                             </Form.Item>
                         </Form>
                     </Card>
