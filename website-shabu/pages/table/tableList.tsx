@@ -8,7 +8,7 @@ interface TableListProps {
 const TableList = (props: TableListProps) => {
     return (
         <List
-            className=" m-3"
+            className=" m-3 w-full"
             itemLayout="horizontal"
             dataSource={props.tables}
             renderItem={(item, index) => (

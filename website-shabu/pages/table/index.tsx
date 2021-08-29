@@ -49,11 +49,11 @@ const TablePage = (props: PageProps) => {
             <div className=" grid md:grid-cols-2 sm:grid-cols-1 justify-center">
                 <div>
                     <Card className=" rounded-md m-3" title="ເພີ່ມໂຕະ">
-                        <Form requiredMark labelCol={{ span: 5 }}>
+                        <Form layout="vertical" requiredMark>
                             <Form.Item validateStatus={validation} label="ເລກໂຕະ / ຊື່ໂຕະ" hasFeedback={errorMessage !== null} required help={errorMessage}>
                                 <Input disabled={addTableMutation.loading} value={name} onChange={e => setName(e.target.value)} />
                             </Form.Item>
-                            <Form.Item wrapperCol={{ offset: 5, span: 5 }}>
+                            <Form.Item>
                                 <Button disabled={name === "" || addTableMutation.loading} onClick={submitForm} >ເພີ່ມ</Button>
                             </Form.Item>
                         </Form>
