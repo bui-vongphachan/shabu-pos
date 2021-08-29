@@ -13,7 +13,7 @@ export const addProduct = async (_: any, args: {
 
     await new ProductModel({ name, category, sizes: productSizes }).save()
 
-    const items = await ProductModel.find().populate("sizes")
+    const items = await ProductModel.find().populate("sizes").sort({ created_date: -1 })
 
     return items
 }

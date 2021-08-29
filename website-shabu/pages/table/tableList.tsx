@@ -8,6 +8,7 @@ interface TableListProps {
 const TableList = (props: TableListProps) => {
     return (
         <List
+            locale={{ emptyText: "ຍັງບໍ່ມີໂຕະ" }}
             className=" m-3 w-full"
             itemLayout="horizontal"
             dataSource={props.tables}
