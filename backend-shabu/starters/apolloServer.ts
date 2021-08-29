@@ -26,20 +26,18 @@ const server = new ApolloServer({
     schema, formatError: (err): GraphQLFormattedError => {
         // console.trace(err)
 
-        
-        if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
-            err.message = "Invalid inputs"
-        }
 
-        /* if (err.extensions?.exception.name === "MongoError") {
+        if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
+            err.message = "ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ"
+        } else if (err.extensions?.exception.name === "MongoError") {
             if (err.extensions?.exception.code === 11000) {
-                err.message = "Duplicate data"
+                err.message = "ຂໍ້ມູນຊ້ຳກັນ"
             }
-        } */
+        }
 
 
         return err
-        
+
     },
 });
 
