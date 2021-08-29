@@ -1,16 +1,18 @@
 import '../styles/globals.css'
 import { Fragment } from 'react';
 import 'antd/dist/antd.css';
-import { useRouter } from 'next/dist/client/router';
+import 'tailwindcss/tailwind.css'
+import { ApolloProvider } from '@apollo/client';
+import { client } from '../lib/apolloSetup';
 
 function MyApp({ Component, pageProps }: any) {
   const Layout = Component.getLayout || ((props: any) => <Fragment>{props.children}</Fragment>);
   return (
-    <Fragment>
+    <ApolloProvider client={client}>
       <Layout>
         <Component {...pageProps} />
       </Layout>
-    </Fragment>
+    </ApolloProvider>
   )
 }
 

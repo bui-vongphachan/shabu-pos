@@ -8,7 +8,6 @@ import { useState } from "react"
 const Navbar = (props: any) => {
 
     const [active, setActive] = useState("home")
-
     const router = useRouter()
 
     useEffect(() => {
