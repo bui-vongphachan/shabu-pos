@@ -1,6 +1,8 @@
 import { Layout, Menu } from "antd"
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Navbar from "../../components/navbar";
+import dynamic from 'next/dynamic'
+
+const Navbar = dynamic(() => import('../../components/navbar'))
 
 const { Footer, Content } = Layout;
 
