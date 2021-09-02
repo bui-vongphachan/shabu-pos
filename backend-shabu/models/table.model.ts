@@ -7,6 +7,12 @@ export interface TableDoc extends mongoose.Document {
     schema_version: number
 }
 
+export interface ReadyTableDoc extends mongoose.Document {
+    table: TableDoc
+    status: String
+    orders: Number
+}
+
 const Schema = new mongoose.Schema(
     {
         name: {
