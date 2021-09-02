@@ -1,72 +1,176 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import { useMutation } from '@apollo/client'
+import { createContext, useEffect, useState } from 'react'
+import DefaultLayout from '../layouts/default'
+import { client } from '../lib/apolloSetup'
+import { HomePageQueryString } from '../lib/graphql/home/homeQueryString.gql'
+import { ProductInCartModel, ProductModel, ReadyTableModel } from '../models'
+import { addInvoiceToTableQueryString, InvoiceModel } from '../models/invoice'
+import ControlPanelHome from './home/controlPanel/controlPanel.home'
+import OrderListHomeComponent from './home/orderList/orderList.home'
+import TableListHomeComponent from './home/tableList/tableList.home'
 
-const Home: NextPage = () => {
+export const HomePageContext = createContext<{
+  invoice: InvoiceModel | null
+  productsInCart: ProductInCartModel[],
+  selectedProduct: ProductModel | null,
+  products: ProductModel[],
+  readyTables: ReadyTableModel[],
+  selectedTable: ReadyTableModel | null,
+  isActionCLicked: boolean,
+  setSelectedTable: (readyTables: ReadyTableModel | null) => void,
+  setActionClicked: (status: boolean) => void,
+  selectProduct: (product: ProductModel | null) => void,
+  saveItemToCart: (quantity: number, sizeIndex: number) => void
+  setProductsInCart: (item: ProductInCartModel[]) => void,
+  removeItemFromCart: (productInCartIndex: number) => void,
+  addInvoiceToTable: () => Promise<void>
+}>({
+  invoice: null,
+  productsInCart: [],
+  selectedProduct: null,
+  products: [],
+  readyTables: [],
+  selectedTable: null,
+  isActionCLicked: false,
+  setSelectedTable: function () { },
+  setActionClicked: function () { },
+  selectProduct: function () { },
+  saveItemToCart: function () { },
+  setProductsInCart: function () { },
+  removeItemFromCart: function () { },
+  addInvoiceToTable: async function () { },
+});
+
+const Home: any = (props: {
+  readyTables: ReadyTableModel[],
+  products: ProductModel[],
+}) => {
+  const [invoice, setInvoice] = useState<InvoiceModel | null>(null)
+  const [productsInCart, setProductsInCart] = useState<ProductInCartModel[]>([])
+  const [selectedProduct, selectProduct] = useState<ProductModel | null>(null)
+  const [products, setProducts] = useState<ProductModel[]>([])
+  const [selectedTable, setSelectedTable] = useState<ReadyTableModel | null>(null)
+  const [readyTables, setReadyTables] = useState<ReadyTableModel[]>([]);
+  const [isActionCLicked, setActionClicked] = useState(false)
+  const [layoutStyle, setLayoutStyle] = useState({
+    table: "",
+    invoice: "",
+    action: ""
+  })
+  const [addInvoiceToTableMutation, addInvoiceToTableResponse] = useMutation(addInvoiceToTableQueryString)
+  const saveItemToCart = (quantity: number, sizeIndex: number) => {
+    const productIndex = productsInCart.findIndex(item => item.id === selectedProduct?.id)
+    if (productIndex > -1 && productsInCart[productIndex].sizeIndex === sizeIndex) {
+      productsInCart[productIndex].quantity += quantity
+    } else {
+      productsInCart.push({
+        ...selectedProduct!,
+        quantity,
+        sizeIndex
+      })
+    }
+
+    setProductsInCart([...productsInCart])
+    selectProduct(null)
+  }
+  const removeItemFromCart = (productInCartIndex: number) => {
+    productsInCart.splice(productInCartIndex, 1);
+    setProductsInCart([...productsInCart])
+  }
+  const addInvoiceToTable = async () => {
+    try {
+      const { data } = await addInvoiceToTableMutation({
+        variables: {
+          addInvoiceTable: selectedTable?.table.id,
+          addInvoiceCustomers: 0,
+          addInvoiceProducts: productsInCart.map(item => {
+            return {
+              id: item.id,
+              quantity: item.quantity,
+              size: item.sizes[item.sizeIndex].id,
+            }
+          })
+        }
+      })
+
+      setInvoice(data.addInvoice)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const context = {
+    invoice,
+    productsInCart,
+    selectedProduct,
+    products,
+    readyTables,
+    selectedTable,
+    isActionCLicked,
+    setSelectedTable,
+    setActionClicked,
+    selectProduct,
+    saveItemToCart,
+    setProductsInCart,
+    removeItemFromCart,
+    addInvoiceToTable
+  };
+
+  useEffect(() => {
+    setReadyTables(props.readyTables)
+    setProducts(props.products)
+  }, [])
+  useEffect(() => {
+    if (!!selectedTable && isActionCLicked) {
+
+    } else if (!!selectedTable && !isActionCLicked) {
+      setLayoutStyle({
+        table: "lg:col-span-6",
+        invoice: "lg:col-span-6",
+        action: ""
+      })
+    } else {
+      setLayoutStyle({
+        table: "lg:col-span-12",
+        invoice: "",
+        action: ""
+      })
+    }
+  }, [selectedTable])
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <meta name="description" content="Generated by create next app" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+    <HomePageContext.Provider value={context}>
+      <div className={`container mt-3 mx-auto grid gap-3 xl:grid-cols-12`}>
+        <div className={layoutStyle.table}>
+          <TableListHomeComponent />
         </div>
-      </main>
+        {
+          !!selectedTable ? <div className={layoutStyle.invoice}>
+            <ControlPanelHome />
+            <OrderListHomeComponent />
+          </div> : null
+        }
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
+        <div className=" lg:col-span-4 md:col-span-12 bg-green-400">
+          as
+        </div>
+      </div>
+    </HomePageContext.Provider>
   )
 }
+
+export const getServerSideProps = async () => {
+  const { data } = await client.query({
+    query: HomePageQueryString
+  })
+  return {
+    props: {
+      readyTables: data.getReadyTables,
+      products: data.getProducts
+    }
+  }
+}
+
+
+Home.getLayout = DefaultLayout
 
 export default Home

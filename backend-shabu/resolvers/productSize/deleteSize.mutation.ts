@@ -28,7 +28,7 @@ export const deleteSize = async (_: any, args: { size_id: string }) => {
         return await ProductModel.getFullDetails()
 
     } catch (error) {
-        throw new Error(error)
+        throw new Error()
     }
 }
 
