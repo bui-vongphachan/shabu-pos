@@ -1,8 +1,7 @@
-import { isValidObjectId, Types } from "mongoose";
+import { Types } from "mongoose";
 import { InvoiceDoc, InvoiceModel, OrderDoc, OrderModel, ProductDoc, ProductModel, ProductSizeModel, SizeDoc, TableDoc, TableModel } from "../../models";
 import { addInvoiceQuery } from "../../resolvers/invoice/addInvoice.mutation";
 import { server } from "../../starters/apolloServer";
-import { ObjectId } from "mongoose"
 import { commerce, lorem, name } from "faker"
 
 describe('Add invoice', () => {
