@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.10",
+    "@types/use-resize-observer": "^6.1.0",
     "antd": "^4.16.13",
     "apollo-link-ws": "^1.0.20",
     "graphql": "^15.5.1",
@@ -17,7 +18,8 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.2.0",
-    "subscriptions-transport-ws": "^0.9.19"
+    "subscriptions-transport-ws": "^0.9.19",
+    "use-resize-observer": "^8.0.0"
   },
   "devDependencies": {
     "@types/react": "17.0.19",
