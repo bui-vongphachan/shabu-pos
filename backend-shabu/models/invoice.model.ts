@@ -58,6 +58,8 @@ const Schema = new mongoose.Schema(
     }
 );
 
+Schema.index({ isLeft: 1, type: 1 })
+
 Schema.statics.updateTotalPrice = async function (invoice_id: string) {
 
     const invoice = await InvoiceModel.findOne({ _id: invoice_id })
