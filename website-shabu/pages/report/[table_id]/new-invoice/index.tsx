@@ -10,10 +10,11 @@ import SizeSelectionNewInvoiceComponent from "./sizeSelection.newInvoice"
 const NewInvoicePage = (props: {
     products: ProductModel[]
 }) => {
+
     const { products } = props
     const [productsInCart, setProductInCart] = useState<ProductInCartModel[]>([])
     const router = useRouter()
-
+    console.log(productsInCart)
     const handleProductChange = (product_id: string, productInCartIndex: number) => {
         const foundProduct = products.find(item => item.id === product_id)
         productsInCart[productInCartIndex] = {
@@ -30,6 +31,10 @@ const NewInvoicePage = (props: {
     }
 
     const columns = [
+        {
+            title: '#',
+            render: (value: any, product: ProductInCartModel, index: number) => <span>{++index}</span>
+        },
         {
             title: 'ຊື່',
             dataIndex: 'name',
@@ -78,18 +83,18 @@ const NewInvoicePage = (props: {
     return (
         <Fragment>
             <PageHeader
-                className="site-page-header"
+                className="site-page-header bg-yellow-400 w-full"
                 onBack={() => router.back()}
                 title="ເພີ່ມລາຍການອາຫານ"
             />
             <Table
                 locale={{ emptyText: "ວ່າງ" }}
-                rowKey="id"
+                rowKey={(record, index) => index!.toString()}
                 pagination={false}
                 columns={columns}
                 dataSource={productsInCart}
             />
-             <Button size="small" onClick={() => {
+            <Button size="small" onClick={() => {
                 productsInCart.push({ ...products[0], sizeIndex: 0, quantity: 1 })
                 setProductInCart([...productsInCart])
             }}>ເພີ່ມລາຍການ</Button>
@@ -108,7 +113,7 @@ const NewInvoicePage = (props: {
                 <Button size="large" block type="primary" className=" my-10 mx-auto h-auto rounded-md">
                     <span style={{ fontSize: 20 }}>ສັ່ງອາຫານ</span>
                 </Button>
-            </div>  
+            </div>
         </Fragment>
     )
 }
