@@ -83,3 +83,17 @@ export const addInvoiceToTableQueryString = gql`
         ${gqlInvoiceFields}
     }
     `
+
+export const getInvoiceQueryString = gql`
+    query Query(
+        $getInvoiceTableId: String, 
+        $getInvoiceIsPaid: Boolean
+    ) {
+        getInvoice(
+            table_id: $getInvoiceTableId, 
+            isPaid: $getInvoiceIsPaid
+        ) 
+        ${gqlInvoiceFields}
+    }
+`
+

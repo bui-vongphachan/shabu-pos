@@ -21,8 +21,10 @@ const Report = (props: {
             className=""
             itemLayout="horizontal"
             dataSource={props.readyTables}
-            renderItem={(item, index) => (
-                <List.Item key={index}>
+            renderItem={(item, index) => {
+                let link = `report/${item.table.id}`
+                if (item.status === "ວ່າງ") link = link + `/new-invoice`
+                return <List.Item key={index}>
                     <Link href={`report/${item.table.id}`}>
                         <Card
                             style={{ cursor: "pointer" }}
@@ -31,9 +33,8 @@ const Report = (props: {
                             {`${item.status}`}
                         </Card>
                     </Link>
-
                 </List.Item>
-            )}
+            }}
         />
     )
 }
