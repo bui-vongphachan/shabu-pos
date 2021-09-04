@@ -28,7 +28,7 @@ const DefaultLayout = (props: any) => {
                 <Content>{props.children}</Content>
             </div>
             <div ref={footerRef}>
-                <Footer>Footer</Footer>
+                {/* <Footer>Footer</Footer> */}
             </div>
         </Layout>
     )

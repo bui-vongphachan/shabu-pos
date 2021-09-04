@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-  reactStrictMode: true,
+  images: {
+    domains: ['www.aclproduct.com', 'localhost:3000'],
+  },
 }

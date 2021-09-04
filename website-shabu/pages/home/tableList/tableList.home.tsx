@@ -6,8 +6,7 @@ const TableListHomeComponent = () => {
     const homePageContext = useContext(HomePageContext);
     return (
         <List
-            grid={{
-                gutter: 3,
+            grid={{ 
                 xs: 2,
                 sm: 3,
                 md: 3,

@@ -12,8 +12,6 @@ export const getReadyTables = async () => {
             orders: 0
         }
         const found = invoices.find(invoice => {
-            console.log(typeof invoice.table.id ,typeof table.id)
-            console.log( invoice.table.id , table.id)
             return invoice.table.id.toString() === table.id
         })
         if (found) {
