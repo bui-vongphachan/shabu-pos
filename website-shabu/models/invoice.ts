@@ -29,7 +29,6 @@ export const gqlInvoiceFields = gql`
     {
         id
         table {
-            id
             name
             created_date
         }

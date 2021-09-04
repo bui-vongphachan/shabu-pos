@@ -41,7 +41,10 @@ const TableDetail = (props: {
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const { data } = await client.query({
         query: getInvoiceQueryString,
-        variables: { table_id: context.params!.table_id, isPaid: false }
+        variables: {
+            getInvoiceTableId: context.params!.table_id,
+            getInvoiceIsPaid: false
+        }
     })
     return {
         props: {

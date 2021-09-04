@@ -1,19 +1,21 @@
+import { useMutation } from "@apollo/client"
 import { Button, Descriptions, InputNumber, PageHeader, Select, Table } from "antd"
 import { useRouter } from "next/router"
 import { Fragment, useState } from "react"
 import DefaultLayout from "../../../../layouts/default"
 import { client } from "../../../../lib/apolloSetup"
 import { getProducts, ProductInCartModel, ProductModel } from "../../../../models"
+import { addInvoiceToTableQueryString } from "../../../../models/invoice"
 import ProductSelectionNewInvoiceComponent from "./productSelection.newInvoice"
 import SizeSelectionNewInvoiceComponent from "./sizeSelection.newInvoice"
 
 const NewInvoicePage = (props: {
     products: ProductModel[]
 }) => {
-
     const { products } = props
     const [productsInCart, setProductInCart] = useState<ProductInCartModel[]>([])
     const router = useRouter()
+    const { table_id } = router.query;
     const handleProductChange = (product_id: string, productInCartIndex: number) => {
         const foundProduct = products.find(item => item.id === product_id)
         productsInCart[productInCartIndex] = {
@@ -28,7 +30,30 @@ const NewInvoicePage = (props: {
         productsInCart[productInCartIndex].sizeIndex = sizeIndex
         setProductInCart([...productsInCart])
     }
+    const [addInvoiceToTableMutation, addInvoiceToTableResponse] = useMutation(addInvoiceToTableQueryString)
+    const addInvoiceToTable = async () => {
+        try {
+            const { errors } = await addInvoiceToTableMutation({
+                variables: {
+                    addInvoiceTable: table_id,
+                    addInvoiceCustomers: 0,
+                    addInvoiceProducts: productsInCart.map(item => {
+                        return {
+                            id: item.id,
+                            quantity: item.quantity,
+                            size: item.sizes[item.sizeIndex].id,
+                        }
+                    })
+                }
+            })
 
+            if (!errors) {
+
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const columns = [
         {
             title: '#',
@@ -89,6 +114,7 @@ const NewInvoicePage = (props: {
                 title="ເພີ່ມລາຍການອາຫານ"
             />
             <Table
+                loading={addInvoiceToTableResponse.loading}
                 className=" overflow-scroll"
                 locale={{ emptyText: "ວ່າງ" }}
                 rowKey={(record, index) => index!.toString()}
@@ -96,10 +122,14 @@ const NewInvoicePage = (props: {
                 columns={columns}
                 dataSource={productsInCart}
             />
-            <Button size="small" onClick={() => {
-                productsInCart.push({ ...products[0], sizeIndex: 0, quantity: 1 })
-                setProductInCart([...productsInCart])
-            }}>ເພີ່ມລາຍການ</Button>
+            <Button
+                loading={addInvoiceToTableResponse.loading}
+                disabled={addInvoiceToTableResponse.loading}
+                size="small"
+                onClick={() => {
+                    productsInCart.push({ ...products[0], sizeIndex: 0, quantity: 1 })
+                    setProductInCart([...productsInCart])
+                }}>ເພີ່ມລາຍການ</Button>
             <div className=" px-3 mt-10 w-full">
                 <Descriptions title="ສະຫຼຸບ" bordered>
                     <Descriptions.Item label="ລາຄາລວມ">
@@ -112,7 +142,15 @@ const NewInvoicePage = (props: {
                         } KIP
                     </Descriptions.Item>
                 </Descriptions>
-                <Button size="large" block type="primary" className=" my-10 mx-auto h-auto rounded-md">
+                <Button
+                    size="large"
+                    block
+                    type="primary"
+                    className=" my-10 mx-auto h-auto rounded-md"
+                    loading={addInvoiceToTableResponse.loading}
+                    disabled={addInvoiceToTableResponse.loading || productsInCart.length === 0}
+                    onClick={() => addInvoiceToTable()}
+                >
                     <span style={{ fontSize: 20 }}>ສັ່ງອາຫານ</span>
                 </Button>
             </div>
