@@ -1,6 +1,6 @@
-import { Button, InputNumber, PageHeader, Select, Table } from "antd"
+import { Button, Descriptions, InputNumber, PageHeader, Select, Table } from "antd"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import DefaultLayout from "../../../../layouts/default"
 import { client } from "../../../../lib/apolloSetup"
 import { getProducts, ProductInCartModel, ProductModel } from "../../../../models"
@@ -56,27 +56,60 @@ const NewInvoicePage = (props: {
             title: 'ຈຳນວນ',
             dataIndex: 'category',
             id: 'id',
+            render: (value: any, product: ProductInCartModel, productIndex: number) =>
+                <InputNumber
+                    min={1}
+                    max={100}
+                    defaultValue={product.quantity}
+                    value={product.quantity}
+                    onChange={(value) => {
+                        if (!!value) {
+                            productsInCart[productIndex].quantity = value
+                            setProductInCart([...productsInCart])
+                        }
+                    }}
+                />
+        },
+        {
+            title: 'ຈັດການ',
+            render: () => <Button>ລົບອອກ</Button>
         }
     ]
     return (
-        <div>
+        <Fragment>
             <PageHeader
                 className="site-page-header"
                 onBack={() => router.back()}
                 title="ເພີ່ມລາຍການອາຫານ"
             />
             <Table
+                locale={{ emptyText: "ວ່າງ" }}
                 rowKey="id"
-                scroll={{ y: 300, x: 300 }}
                 pagination={false}
                 columns={columns}
                 dataSource={productsInCart}
             />
-            <Button size="small" onClick={() => {
+             <Button size="small" onClick={() => {
                 productsInCart.push({ ...products[0], sizeIndex: 0, quantity: 1 })
                 setProductInCart([...productsInCart])
             }}>ເພີ່ມລາຍການ</Button>
-        </div>
+            <div className=" mt-10 bg-gray-500 w-full">
+                <Descriptions title="ສະຫຼຸບ" bordered>
+                    <Descriptions.Item label="ລາຄາລວມ">
+                        {
+                            (
+                                productsInCart.reduce((sum, product) => (
+                                    sum + (product.quantity * product.sizes[product.sizeIndex].price)
+                                ), 0)
+                            ).toLocaleString()
+                        } KIP
+                    </Descriptions.Item>
+                </Descriptions>
+                <Button size="large" block type="primary" className=" my-10 mx-auto h-auto rounded-md">
+                    <span style={{ fontSize: 20 }}>ສັ່ງອາຫານ</span>
+                </Button>
+            </div>  
+        </Fragment>
     )
 }
 
