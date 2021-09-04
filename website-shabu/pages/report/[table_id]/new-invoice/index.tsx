@@ -14,7 +14,6 @@ const NewInvoicePage = (props: {
     const { products } = props
     const [productsInCart, setProductInCart] = useState<ProductInCartModel[]>([])
     const router = useRouter()
-    console.log(productsInCart)
     const handleProductChange = (product_id: string, productInCartIndex: number) => {
         const foundProduct = products.find(item => item.id === product_id)
         productsInCart[productInCartIndex] = {
@@ -68,16 +67,18 @@ const NewInvoicePage = (props: {
                     defaultValue={product.quantity}
                     value={product.quantity}
                     onChange={(value) => {
-                        if (!!value) {
-                            productsInCart[productIndex].quantity = value
-                            setProductInCart([...productsInCart])
-                        }
+                        productsInCart[productIndex].quantity = value
+                        setProductInCart([...productsInCart])
                     }}
                 />
         },
         {
             title: 'ຈັດການ',
-            render: () => <Button>ລົບອອກ</Button>
+            render: (value: any, product: ProductInCartModel, productIndex: number) =>
+                <Button onClick={() => {
+                    productsInCart.splice(productIndex, 1);
+                    setProductInCart([...productsInCart])
+                }}>ລົບອອກ</Button>
         }
     ]
     return (
