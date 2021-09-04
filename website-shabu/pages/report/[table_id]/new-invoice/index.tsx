@@ -89,6 +89,7 @@ const NewInvoicePage = (props: {
                 title="ເພີ່ມລາຍການອາຫານ"
             />
             <Table
+                className=" overflow-scroll"
                 locale={{ emptyText: "ວ່າງ" }}
                 rowKey={(record, index) => index!.toString()}
                 pagination={false}
@@ -99,7 +100,7 @@ const NewInvoicePage = (props: {
                 productsInCart.push({ ...products[0], sizeIndex: 0, quantity: 1 })
                 setProductInCart([...productsInCart])
             }}>ເພີ່ມລາຍການ</Button>
-            <div className=" mt-10 bg-gray-500 w-full">
+            <div className=" px-3 mt-10 w-full">
                 <Descriptions title="ສະຫຼຸບ" bordered>
                     <Descriptions.Item label="ລາຄາລວມ">
                         {
