@@ -47,7 +47,7 @@ export const completeInvoice = async (_: any, args: {
 
     if (isLeft) return null
 
-    const updateInvoice = await InvoiceModel.getFullDetail(invoice.id)
+    const updateInvoice = await InvoiceModel.getFullDetail({ invoice_id: invoice.id })
 
     return updateInvoice;
 }

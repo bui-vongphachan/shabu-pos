@@ -51,7 +51,7 @@ export const addOrderToInvoice = async (_: any, args: {
         }
     )
 
-    return await InvoiceModel.getFullDetail(args.invoice_id)
+    return await InvoiceModel.getFullDetail({ invoice_id: args.invoice_id })
 }
 
 export const addOrderToInvoiceMutation = gql`

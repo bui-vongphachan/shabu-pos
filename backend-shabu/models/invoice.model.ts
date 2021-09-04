@@ -31,7 +31,11 @@ export interface InvoiceDoc extends mongoose.Document {
 
 interface Model extends mongoose.Model<InvoiceDoc> {
     updateTotalPrice(invoice_id: string): Promise<InvoiceDoc>
-    getFullDetail(invoice_id: string): Promise<InvoiceDoc>
+    getFullDetail(params: {
+        invoice_id?: string,
+        isPaid?: boolean,
+        table_id?: string,
+    }): Promise<InvoiceDoc>
 }
 
 const Schema = new mongoose.Schema(
@@ -82,13 +86,22 @@ Schema.statics.updateTotalPrice = async function (invoice_id: string) {
         { $set: { total_price } },
         { new: true })
 
-    return InvoiceModel.getFullDetail(invoice_id)
+    return InvoiceModel.getFullDetail({ invoice_id })
 
 }
 
-Schema.statics.getFullDetail = async (invoice_id: string) => {
-    const invoice = await InvoiceModel.findOne({ _id: invoice_id })
-        .populate({ path: "table" })
+Schema.statics.getFullDetail = async (params: {
+    invoice_id?: string,
+    isPaid?: boolean,
+    table_id?: string,
+}) => {
+
+    let condition = {}
+    if (params.invoice_id) condition = { ...condition, _id: params.invoice_id }
+    else if (params.isPaid) condition = { ...condition, isPaid: params.isPaid }
+    else if (params.table_id) condition = { ...condition, "table.id": params.table_id }
+    const invoice = await InvoiceModel.findOne(condition)
+        .populate({ path: "table.id" })
         .populate({
             path: "orders",
             populate: {
