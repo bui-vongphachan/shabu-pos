@@ -1,13 +1,13 @@
 import { useMutation } from "@apollo/client"
-import { Button, Descriptions, InputNumber, PageHeader, Select, Table } from "antd"
+import { Button, Descriptions, InputNumber, Table } from "antd"
 import { useRouter } from "next/router"
 import { Fragment, useState } from "react"
-import DefaultLayout from "../../../../layouts/default"
 import { client } from "../../../../lib/apolloSetup"
 import { getProducts, ProductInCartModel, ProductModel } from "../../../../models"
 import { addInvoiceToTableQueryString } from "../../../../models/invoice"
 import ProductSelectionNewInvoiceComponent from "./productSelection.newInvoice"
 import SizeSelectionNewInvoiceComponent from "./sizeSelection.newInvoice"
+import { ArrowLeftOutlined } from "@ant-design/icons"
 
 const NewInvoicePage = (props: {
     products: ProductModel[]
@@ -33,7 +33,7 @@ const NewInvoicePage = (props: {
     const [addInvoiceToTableMutation, addInvoiceToTableResponse] = useMutation(addInvoiceToTableQueryString)
     const addInvoiceToTable = async () => {
         try {
-            const { errors } = await addInvoiceToTableMutation({
+            const { data, errors } = await addInvoiceToTableMutation({
                 variables: {
                     addInvoiceTable: table_id,
                     addInvoiceCustomers: 0,
@@ -48,8 +48,9 @@ const NewInvoicePage = (props: {
             })
 
             if (!errors) {
-
+                router.back()
             }
+            console.log(data)
         } catch (error) {
             console.log(error)
         }
@@ -91,6 +92,7 @@ const NewInvoicePage = (props: {
                     max={100}
                     defaultValue={product.quantity}
                     value={product.quantity}
+                    inputMode="numeric"
                     onChange={(value) => {
                         productsInCart[productIndex].quantity = value
                         setProductInCart([...productsInCart])
@@ -108,11 +110,18 @@ const NewInvoicePage = (props: {
     ]
     return (
         <Fragment>
-            <PageHeader
-                className="site-page-header bg-yellow-400 w-full"
-                onBack={() => router.back()}
-                title="ເພີ່ມລາຍການອາຫານ"
-            />
+            <div className="ant-page-header-heading bg-indigo-500">
+                <div className="ant-page-header-heading-left my-3">
+                    <Button
+                        type="primary"
+                        className=" bg-indigo-500 border-0 font-bold ml-3"
+                        icon={<ArrowLeftOutlined style={{ fontSize: 20 }} />}
+                        size={"large"}
+                        onClick={() => router.back()}
+                    />
+                    <span className="ant-page-header-heading-title text-white text-xl" title="ເພີ່ມລາຍການອາຫານ">ເພີ່ມລາຍການອາຫານ</span>
+                </div>
+            </div>
             <Table
                 loading={addInvoiceToTableResponse.loading}
                 className=" overflow-scroll"

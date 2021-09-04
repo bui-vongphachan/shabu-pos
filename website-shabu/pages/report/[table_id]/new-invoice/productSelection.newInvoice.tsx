@@ -16,6 +16,7 @@ const ProductSelectionNewInvoiceComponent = (props: {
     })
     return (
         <Select
+            style={{ minWidth: 100 }}
             className=" block"
             value={selected}
             options={options}
