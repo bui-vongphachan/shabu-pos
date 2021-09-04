@@ -20,6 +20,11 @@ const ProductSelectionNewInvoiceComponent = (props: {
             value={selected}
             options={options}
             onChange={value => handleProductChange(value)}
+            showSearch
+            filterOption={(input, option) => {
+                const result = (option?.label as string).includes(input)
+                return result
+            }}
         />
     )
 }
