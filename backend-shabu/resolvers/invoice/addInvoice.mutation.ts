@@ -54,7 +54,7 @@ export const addInvoice = async (_: any, args: {
             total_price: products.reduce((prev, curr) => prev + curr.totalPrice, 0)
         }).save()
 
-        return await InvoiceModel.getFullDetail(newInvoice.id)
+        return await InvoiceModel.getFullDetail({ invoice_id: newInvoice.id })
 
     } catch (error) {
         return error
