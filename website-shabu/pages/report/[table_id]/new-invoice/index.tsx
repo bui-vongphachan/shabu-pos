@@ -5,6 +5,7 @@ import DefaultLayout from "../../../../layouts/default"
 import { client } from "../../../../lib/apolloSetup"
 import { getProducts, ProductInCartModel, ProductModel } from "../../../../models"
 import ProductSelectionNewInvoiceComponent from "./productSelection.newInvoice"
+import SizeSelectionNewInvoiceComponent from "./sizeSelection.newInvoice"
 
 const NewInvoicePage = (props: {
     products: ProductModel[]
@@ -12,28 +13,10 @@ const NewInvoicePage = (props: {
     const { products } = props
     const [productsInCart, setProductInCart] = useState<ProductInCartModel[]>([])
     const router = useRouter()
-    const columns = [
-        {
-            title: 'ຊື່',
-            dataIndex: 'name',
-            id: 'id',
-        },
-        {
-            title: 'ຂະໜາດ',
-            dataIndex: 'category',
-            id: 'id',
-        },
-        {
-            title: 'ຈຳນວນ',
-            dataIndex: 'category',
-            id: 'id',
-        }
-    ]
-    const handleProductChange = (new_product_id: string, previous_product_id: string) => {
-        const foundProduct = products.find(item => item.id === new_product_id)
-        const foundProductIndex = productsInCart.findIndex(item => item.id === previous_product_id)
 
-        productsInCart[foundProductIndex] = {
+    const handleProductChange = (product_id: string, productInCartIndex: number) => {
+        const foundProduct = products.find(item => item.id === product_id)
+        productsInCart[productInCartIndex] = {
             ...foundProduct!,
             sizeIndex: 0,
             quantity: 1
@@ -41,6 +24,40 @@ const NewInvoicePage = (props: {
 
         setProductInCart([...productsInCart])
     }
+    const handleSizeChange = (sizeIndex: number, productInCartIndex: number) => {
+        productsInCart[productInCartIndex].sizeIndex = sizeIndex
+        setProductInCart([...productsInCart])
+    }
+
+    const columns = [
+        {
+            title: 'ຊື່',
+            dataIndex: 'name',
+            id: 'id',
+            render: (value: any, product: ProductInCartModel, index: number) =>
+                <ProductSelectionNewInvoiceComponent
+                    products={products}
+                    selected={product.id}
+                    handleProductChange={(product_id) => handleProductChange(product_id, index)}
+                />
+        },
+        {
+            title: 'ຂະໜາດ',
+            dataIndex: 'category',
+            id: 'id',
+            render: (value: any, product: ProductInCartModel, productIndex: number) =>
+                <SizeSelectionNewInvoiceComponent
+                    sizes={product.sizes}
+                    selected={product.sizeIndex}
+                    handleSizeChange={(sizeIndex) => handleSizeChange(sizeIndex, productIndex)}
+                />
+        },
+        {
+            title: 'ຈຳນວນ',
+            dataIndex: 'category',
+            id: 'id',
+        }
+    ]
     return (
         <div>
             <PageHeader
@@ -54,47 +71,6 @@ const NewInvoicePage = (props: {
                 pagination={false}
                 columns={columns}
                 dataSource={productsInCart}
-                components={{
-                    body: {
-                        row: (row: any, i: any) => {
-                            if (!row.children[0]) {
-                                return (
-                                    <tr>
-                                        <td colSpan={3} className=" text-center">ວ່າງ</td>
-                                    </tr>
-                                )
-                            }
-
-                            const product = (row.children[0].props.record as ProductInCartModel)
-
-                            const sizes = product.sizes
-
-                            return (
-                                <tr key={product.id}>
-                                    <td>
-                                        <ProductSelectionNewInvoiceComponent
-                                            products={products}
-                                            selected={product.id}
-                                            handleProductChange={handleProductChange}
-                                        />
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <InputNumber
-                                            min={1}
-                                            max={100}
-                                            defaultValue={product.quantity}
-                                            value={product.quantity}
-                                            onChange={(value) => {
-
-                                            }}
-                                        />
-                                    </td>
-                                </tr>
-                            )
-                        }
-                    }
-                }}
             />
             <Button size="small" onClick={() => {
                 productsInCart.push({ ...products[0], sizeIndex: 0, quantity: 1 })
