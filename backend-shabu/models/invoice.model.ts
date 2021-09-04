@@ -100,7 +100,6 @@ Schema.statics.getFullDetail = async (params: {
     if (params.invoice_id) condition = { ...condition, _id: params.invoice_id }
     else if (params.isPaid) condition = { ...condition, isPaid: params.isPaid }
     else if (params.table_id) condition = { ...condition, "table.id": params.table_id }
-    console.log(condition)
     const invoice = await InvoiceModel.findOne(condition)
         .populate({ path: "table.id" })
         .populate({
