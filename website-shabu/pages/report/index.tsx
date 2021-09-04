@@ -37,7 +37,7 @@ const Report = () => {
                 dataSource={(data.getReadyTables)}
                 renderItem={(item: ReadyTableModel, index) => {
                     let link = `report/${item.table.id}`
-                    if (item.status === "ວ່າງ") link = link + `/new-invoice`
+                 //   if (item.status === "ວ່າງ") link = link + `/new-invoice`
                     return <List.Item key={index}>
                         <a
                             href={link}
