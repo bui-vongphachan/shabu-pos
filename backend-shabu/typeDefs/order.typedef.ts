@@ -2,7 +2,7 @@ import { gql } from "apollo-server";
 
 export const orderTypeDef = gql`
   type OrderProductSize {
-    id: ProductSize,
+    id: ID,
     name: String,
     price: Float,
     created_date: Date
@@ -24,6 +24,9 @@ export const orderTypeDef = gql`
     id: ID,
     quantity: Int,
     size: ID,
+  },
+  type Query {
+    getOrder(order_id: ID): Order
   },
   type Mutation {
     addOrderToInvoice(
