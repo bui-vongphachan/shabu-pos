@@ -19,6 +19,11 @@ export interface OrderDoc extends mongoose.Document {
     ordered_date: string
     schema_version: number
 }
+interface Model extends mongoose.Model<OrderDoc> {
+    getFullDetail(params: {
+        order_id?: string,
+    }): Promise<OrderDoc>
+}
 
 const Schema = new mongoose.Schema({
     product: { type: mongoose.Schema.Types.ObjectId, ref: "products", default: null, require: true },
@@ -37,4 +42,18 @@ const Schema = new mongoose.Schema({
     schema_version: { type: Number, default: 2 },
 })
 
-export const OrderModel = mongoose.model<OrderDoc>("orders", Schema);
+Schema.statics.getFullDetail = async (params: {
+    order_id?: string,
+}) => {
+
+    let condition = {}
+    if (params.order_id) condition = { ...condition, _id: params.order_id }
+
+    const order = await OrderModel.findOne(condition)
+        .populate({ path: "product", populate: { path: "sizes" } })
+        .populate({ path: "size.id" })
+
+    return order
+}
+
+export const OrderModel = mongoose.model<OrderDoc, Model>("orders", Schema);
