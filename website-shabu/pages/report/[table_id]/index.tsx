@@ -82,6 +82,7 @@ const GET_INVOICE = gql`
         name
         quantity
         totalPrice
+        isDeleted
         product {
           name
           sizes {
