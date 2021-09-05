@@ -1,25 +1,20 @@
-import { useMutation, gql } from "@apollo/client";
-import {
-  Button,
-  Descriptions,
-  Divider,
-  Form,
-  InputNumber,
-  Modal,
-  Select,
-  Typography
-} from "antd";
+import { Divider, Form, InputNumber, Modal, Select, Typography } from "antd";
+import { useState } from "react";
+import { useEffect } from "react";
 import { useContext } from "react";
+import { useChangeOrderQuantity } from "../../lib/graphql/order/useChangeOrderQuantity.mutation";
 import { useChangeOrderSize } from "../../lib/graphql/order/useChangeOrderSize.mutation";
+import { InvoiceModel } from "../../models/invoice";
+import { OrderModel } from "../../models/order";
 import { TableInvoiceContext } from "../../pages/report/[table_id]";
 
 const UpdateOrderTableInvoiceComponent = () => {
-  const [updateSizeResult, updateSize] = useChangeOrderSize(gql`
-    {
-      id
-    }
-  `);
+  const [updateSizeResult, updateSize] = useChangeOrderSize();
+  const [updateQuantityResult, updateQuantity] = useChangeOrderQuantity();
+  const [order, setOrder] = useState<OrderModel | null>(null);
+
   const tableInvoiceContext = useContext(TableInvoiceContext);
+
   const {
     table_id,
     GET_INVOICE,
@@ -29,15 +24,20 @@ const UpdateOrderTableInvoiceComponent = () => {
     setUpdateOrderModalOpen
   } = tableInvoiceContext;
 
-  if (!selectedOrder) return <span>Empty</span>;
+  useEffect(() => {
+    setOrder(selectedOrder);
+  }, [selectedOrder]);
 
-  const { sizes } = selectedOrder.product;
+  if (!order) return null;
 
   const close = () => setUpdateOrderModalOpen(false);
 
+  const { sizes } = order.product;
+
+  // console.log(order.totalPrice);
   return (
     <Modal
-      title={selectedOrder?.name}
+      title={order.name}
       visible={isUpdateOrderModalOpen}
       onCancel={() => close()}
       footer={[]}
@@ -47,6 +47,7 @@ const UpdateOrderTableInvoiceComponent = () => {
           label="ຂະໜາດ"
           name="size"
           hasFeedback
+          initialValue={order.size.name}
           validateStatus={
             updateSizeResult.loading
               ? "validating"
@@ -56,9 +57,8 @@ const UpdateOrderTableInvoiceComponent = () => {
           }
         >
           <Select
-            loading={updateSizeResult.loading}
             disabled={updateSizeResult.loading}
-            defaultValue={selectedOrder.size.name}
+            defaultValue={order.size.name}
             style={{ width: "100%" }}
             options={sizes.map((item) => {
               return {
@@ -71,7 +71,7 @@ const UpdateOrderTableInvoiceComponent = () => {
                 value: item.id
               };
             })}
-            onChange={(value) =>
+            onChange={(value) => {
               updateSize(
                 {
                   changeOrderSizeInvoiceId: invoice!.id,
@@ -86,34 +86,63 @@ const UpdateOrderTableInvoiceComponent = () => {
                       getInvoiceIsPaid: false
                     }
                   }
-                ]
-              )
-            }
+                ],
+                (data) => {
+                  const { orders } = data.getInvoice as InvoiceModel;
+                  const found = orders.find((item) => item.id === order.id);
+                  setOrder(found!);
+                }
+              );
+            }}
           />
-          {(() => {
-            const { error } = updateSizeResult;
-            if (!error) return null;
-            return (
-              <ul>
-                {error.clientErrors.map((item, index) => (
-                  <li key={index}>{item.message}</li>
-                ))}
-              </ul>
-            );
-          })()}
         </Form.Item>
-        {/*  <Form.Item label="ຈຳນວນ" name="quantity" className="mb-2">
+        <Form.Item
+          initialValue={order.quantity}
+          label="ຈຳນວນ"
+          name="quantity"
+          className="mb-2"
+          hasFeedback
+          validateStatus={
+            updateQuantityResult.loading
+              ? "validating"
+              : updateQuantityResult.error
+              ? "error"
+              : "success"
+          }
+        >
           <InputNumber
             min={1}
             max={100}
-            defaultValue={selectedOrder.quantity}
+            defaultValue={order.quantity}
             inputMode="numeric"
-            onBlur={() => console.log("HAH")}
+            name="quantity"
+            onBlur={(event) => {
+              const num = parseInt(event.target.value);
+              if (num < 1 || num > 100) return null;
+              updateQuantity(
+                {
+                  updateOrderQuantityInvoiceId: invoice!.id,
+                  updateOrderQuantityOrderId: order!.id,
+                  updateOrderQuantityQuantity: parseInt(event.target.value)
+                },
+                [
+                  {
+                    query: GET_INVOICE!,
+                    variables: {
+                      getInvoiceTableId: table_id,
+                      getInvoiceIsPaid: false
+                    }
+                  }
+                ]
+              );
+            }}
           />
-          <span>&nbsp; x {1000}</span>
-        </Form.Item> */}
+          <span>&nbsp; x {order.size.price.toLocaleString()}</span>
+        </Form.Item>
         <Divider orientation="left">ສະຫຼຸບ</Divider>
-        <Typography.Text>dd</Typography.Text>
+        <Typography.Text>
+          {(order.quantity * order.size.price).toLocaleString()}
+        </Typography.Text>
       </Form>
     </Modal>
   );
