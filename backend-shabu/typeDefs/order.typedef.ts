@@ -2,7 +2,7 @@ import { gql } from "apollo-server";
 
 export const orderTypeDef = gql`
   type OrderProductSize {
-    id: ID,
+    id: ProductSize,
     name: String,
     price: Float,
     created_date: Date
@@ -39,13 +39,13 @@ export const orderTypeDef = gql`
       quantity: Int
     ): Invoice,
     changeOrderSize(
-      invoice_id: String
-      order_id: String
-      size_id: String
+      invoice_id: ID
+      order_id: ID
+      size_id: ID
     ): Invoice,
     deleteOrder(
-      invoice_id: String
-      order_id: String
+      invoice_id: ID
+      order_id: ID
     ): Invoice,
   }
 `;

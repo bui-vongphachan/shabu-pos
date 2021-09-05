@@ -2,7 +2,7 @@ import { gql } from "apollo-server";
 
 export const productTypeDef = gql`
   type Product {
-    id: String
+    id: ID
     name: String
     category: String
     sizes: [ProductSize]
