@@ -1,40 +1,61 @@
 import DefaultLayout from "../../../layouts/default";
 import { InvoiceModel } from "../../../models/invoice";
 import { useRouter } from "next/router";
-import { useQuery } from "@apollo/client";
-import { MAIN_QUERY } from "./main.query";
+import { DocumentNode, gql, useQuery } from "@apollo/client";
 import { createContext } from "react";
 import TableInvoice from "../../../components/tableInvoice/index";
+import { useState } from "react";
+import { OrderModel } from "../../../models/order";
 
 export const TableInvoiceContext = createContext<{
   table_id: any;
   invoice: InvoiceModel | null;
+  selectedOrder: OrderModel | null;
+  isUpdateOrderModalOpen: boolean;
+  GET_INVOICE: DocumentNode | null;
+  setUpdateOrderModalOpen: (status: boolean) => void;
+  setSelectedOrder: (order: OrderModel) => void;
 }>({
   table_id: null,
-  invoice: null
+  invoice: null,
+  selectedOrder: null,
+  isUpdateOrderModalOpen: false,
+  GET_INVOICE: null,
+  setUpdateOrderModalOpen: () => {},
+  setSelectedOrder: () => {}
 });
 
 const TableDetail = () => {
+  const [selectedOrder, setSelectedOrder] = useState<OrderModel | null>(null);
+  const [isUpdateOrderModalOpen, setUpdateOrderModalOpen] = useState(false);
   const router = useRouter();
   const { table_id } = router.query;
-  const { loading, error, data } = useQuery(MAIN_QUERY, {
+  const { loading, error, data } = useQuery(GET_INVOICE, {
     variables: {
       getInvoiceTableId: table_id,
       getInvoiceIsPaid: false
     }
   });
-  
+
   if (loading) return <TableInvoice.LoadingTableInvoiceComponent />;
 
   const invoice = data.getInvoice as InvoiceModel;
 
-  const context = { invoice, table_id };
+  const context = {
+    invoice,
+    table_id,
+    selectedOrder,
+    isUpdateOrderModalOpen,
+    GET_INVOICE,
+    setUpdateOrderModalOpen,
+    setSelectedOrder
+  };
 
-  if (data === undefined || !invoice)
-    return <TableInvoice.InvoiceRecordTableInvoiceComponent />;
+  if (!invoice) return <TableInvoice.InvoiceRecordTableInvoiceComponent />;
 
   return (
     <TableInvoiceContext.Provider value={context}>
+      <TableInvoice.UpdateOrderTableInvoiceComponent />
       <div className="container my-3 mx-auto">
         <TableInvoice.InvoiceRecordTableInvoiceComponent />
         <TableInvoice.ActionsTableInvoiceComponent />
@@ -47,3 +68,48 @@ const TableDetail = () => {
 TableDetail.getLayout = DefaultLayout;
 
 export default TableDetail;
+
+const GET_INVOICE = gql`
+  query Query($getInvoiceTableId: String, $getInvoiceIsPaid: Boolean) {
+    getProducts {
+      id
+      name
+      sizes {
+        id
+        name
+        price
+      }
+    }
+    getInvoice(table_id: $getInvoiceTableId, isPaid: $getInvoiceIsPaid) {
+      id
+      table {
+        name
+      }
+      customers
+      arrived_time
+      orders {
+        id
+        name
+        quantity
+        totalPrice
+        product {
+          name
+          sizes {
+            id
+            name
+            price
+          }
+        }
+        size {
+          id {
+            id
+          }
+          name
+          price
+        }
+      }
+      time_spent
+      total_price
+    }
+  }
+`;

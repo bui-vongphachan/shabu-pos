@@ -5,10 +5,12 @@ import { TableInvoiceContext } from "../../pages/report/[table_id]";
 
 const OrderListTableInvoiceComponent = () => {
   const tableInvoiceContext = useContext(TableInvoiceContext);
-  const { invoice, table_id } = tableInvoiceContext;
+  const { invoice, table_id, setSelectedOrder, setUpdateOrderModalOpen } =
+    tableInvoiceContext;
+
   const router = useRouter();
 
-  if (!invoice) return <span>ss</span>
+  if (!invoice) return <span>ss</span>;
 
   return (
     <Fragment>
@@ -25,7 +27,8 @@ const OrderListTableInvoiceComponent = () => {
                 href={`${table_id}/edit-order`}
                 onClick={(e) => {
                   e.preventDefault();
-                  router.push(`${table_id}/${item.id}/edit-order`);
+                  setSelectedOrder(item);
+                  setUpdateOrderModalOpen(true);
                 }}
               >
                 ແກ້ໄຂ
