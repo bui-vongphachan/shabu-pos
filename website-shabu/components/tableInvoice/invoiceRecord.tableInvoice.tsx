@@ -8,7 +8,7 @@ const InvoiceRecordTableInvoiceComponent = () => {
   const { invoice } = tableInvoiceContext;
 
   if (!invoice) {
-    return <span>Error</span>
+    return <span>Error</span>;
   }
 
   let totalSpentTime = moment
@@ -42,7 +42,9 @@ const InvoiceRecordTableInvoiceComponent = () => {
           </tr>
           <tr>
             <td className=" px-3 py-1">ອໍເດີ້</td>
-            <td className=" px-3 py-1">{invoice.orders.length}</td>
+            <td className=" px-3 py-1">
+              {invoice.orders.filter((order) => !order.isDeleted).length}
+            </td>
           </tr>
           <tr>
             <td className=" px-3 py-1">ລາຄາລວມ</td>

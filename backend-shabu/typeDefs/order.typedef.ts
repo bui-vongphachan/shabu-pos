@@ -35,6 +35,6 @@ export const orderTypeDef = gql`
     ): Invoice
     updateOrderQuantity(invoice_id: ID, order_id: ID, quantity: Int): Boolean
     changeOrderSize(invoice_id: ID, order_id: ID, size_id: ID): Boolean
-    deleteOrder(invoice_id: ID, order_id: ID): Invoice
+    deleteOrder(invoice_id: ID, order_id: ID): Boolean
   }
 `;
