@@ -45,7 +45,7 @@ const UpdateOrderTableInvoiceComponent = () => {
         <Form.Item
           label="ຂະໜາດ"
           name="size"
-          hasFeedback
+          hasFeedback={updateSizeResult.data}
           initialValue={order.size.name}
           validateStatus={
             updateSizeResult.loading
@@ -100,7 +100,7 @@ const UpdateOrderTableInvoiceComponent = () => {
           label="ຈຳນວນ"
           name="quantity"
           className="mb-2"
-          hasFeedback
+          hasFeedback={updateQuantityResult.data}
           validateStatus={
             updateQuantityResult.loading
               ? "validating"
