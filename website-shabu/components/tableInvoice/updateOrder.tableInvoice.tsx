@@ -34,7 +34,6 @@ const UpdateOrderTableInvoiceComponent = () => {
 
   const { sizes } = order.product;
 
-  // console.log(order.totalPrice);
   return (
     <Modal
       title={order.name}
@@ -133,7 +132,12 @@ const UpdateOrderTableInvoiceComponent = () => {
                       getInvoiceIsPaid: false
                     }
                   }
-                ]
+                ],
+                (data) => {
+                  const { orders } = data.getInvoice as InvoiceModel;
+                  const found = orders.find((item) => item.id === order.id);
+                  setOrder(found!);
+                }
               );
             }}
           />
