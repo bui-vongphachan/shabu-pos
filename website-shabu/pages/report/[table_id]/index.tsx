@@ -39,10 +39,11 @@ const TableDetail = () => {
 
   if (loading) return <TableInvoice.LoadingTableInvoiceComponent />;
 
-  const invoice = data.getInvoice as InvoiceModel;
+  if (!data.getInvoice)
+    return <TableInvoice.InvoiceRecordTableInvoiceComponent />;
 
   const context = {
-    invoice,
+    invoice: data.getInvoice,
     table_id,
     selectedOrder,
     isUpdateOrderModalOpen,
@@ -50,8 +51,6 @@ const TableDetail = () => {
     setUpdateOrderModalOpen,
     setSelectedOrder
   };
-
-  if (!invoice) return <TableInvoice.InvoiceRecordTableInvoiceComponent />;
 
   return (
     <TableInvoiceContext.Provider value={context}>
@@ -71,15 +70,6 @@ export default TableDetail;
 
 const GET_INVOICE = gql`
   query Query($getInvoiceTableId: String, $getInvoiceIsPaid: Boolean) {
-    getProducts {
-      id
-      name
-      sizes {
-        id
-        name
-        price
-      }
-    }
     getInvoice(table_id: $getInvoiceTableId, isPaid: $getInvoiceIsPaid) {
       id
       table {
