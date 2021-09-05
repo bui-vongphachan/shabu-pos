@@ -51,6 +51,7 @@ Schema.statics.getFullDetail = async (params: {
 
     const order = await OrderModel.findOne(condition)
         .populate({ path: "product", populate: { path: "sizes" } })
+        .populate({ path: "size.id" })
 
     return order
 }
