@@ -39,8 +39,7 @@ const TableDetail = () => {
 
   if (loading) return <TableInvoice.LoadingTableInvoiceComponent />;
 
-  if (!data.getInvoice)
-    return <TableInvoice.InvoiceRecordTableInvoiceComponent />;
+  if (!data.getInvoice) return <TableInvoice.NoInvoiceTableInvoiceComponent />;
 
   const context = {
     invoice: data.getInvoice,
