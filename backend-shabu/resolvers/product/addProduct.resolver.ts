@@ -1,19 +1,30 @@
 import { ProductModel } from "../../models/product.model";
+import { ProductOptionModel } from "../../models/productOption.model";
 import { ProductSizeModel } from "../../models/productSize.model";
 
-export const addProduct = async (_: any, args: {
-    name: string,
-    category: string,
-    sizes: [{ name: string, price: number }]
-}) => {
+export const addProduct = async (
+  _: any,
+  args: {
+    name: string;
+    sizes: [{ name: string; price: number }];
+    options: [{ name: string; price: number }];
+  }
+) => {
+  const { name, sizes, options } = args;
 
-    const { name, category, sizes } = args
+  const productSizes = await ProductSizeModel.insertMany(sizes);
 
-    const productSizes = (await ProductSizeModel.insertMany(sizes)).map((item) => item.id)
+  const productOptions = await ProductOptionModel.insertMany(options);
 
-    await new ProductModel({ name, category, sizes: productSizes }).save()
+  await new ProductModel({
+    name,
+    sizes: productSizes.map((item) => item.id),
+    options: productOptions.map((item) => item.id),
+  }).save();
 
-    const items = await ProductModel.find().populate("sizes").sort({ created_date: -1 })
+  const items = await ProductModel.find()
+    .populate("sizes")
+    .sort({ created_date: -1 });
 
-    return items
-}
+  return true;
+};

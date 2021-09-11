@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { DocumentNode, gql, useQuery } from "@apollo/client";
 import { createContext, useContext, useState } from "react";
 import { useEffect } from "react";
 import DefaultLayout from "../../layouts/default";
@@ -11,19 +11,38 @@ import ProductListMenuComponent from "./productList.menu";
 
 export const MenuPageContext = createContext<{
   products: ProductModel[];
+  getProductGQL: DocumentNode | null;
   setProducts: (products: ProductModel[]) => void;
 }>({
+  getProductGQL: null,
   products: [],
   setProducts: function () {}
 });
 
 const Menu = () => {
+  const getProductGQL = gql`
+    query Query {
+      getProducts {
+        id
+        name
+        options {
+          name
+          price
+        }
+        sizes {
+          name
+          price
+        }
+      }
+    }
+  `;
+
   const [products, setProducts] = useState<ProductModel[]>([]);
-  const { loading, error, data } = useQuery(getProductsQueryString);
+  const { loading, error, data } = useQuery(getProductGQL);
 
   if (loading) return "loading";
 
-  const context = { products: data.getProducts, setProducts };
+  const context = { getProductGQL, products: data.getProducts, setProducts };
 
   return (
     <MenuPageContext.Provider value={context}>

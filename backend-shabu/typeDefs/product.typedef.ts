@@ -5,6 +5,7 @@ export const productTypeDef = gql`
     id: ID
     name: String
     category: String
+    options: [ProductOption]
     sizes: [ProductSize]
     created_date: Date
     schema_version: Int
@@ -23,9 +24,9 @@ export const productTypeDef = gql`
   }
   type Mutation {
     addProduct(
-      name: String,
-      category: String,
+      name: String
       sizes: [ProductSizeInput]
-    ): [Product]
+      options: [addProductOptionInput]
+    ): Boolean
   }
 `;

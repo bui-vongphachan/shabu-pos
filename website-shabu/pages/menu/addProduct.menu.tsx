@@ -1,21 +1,32 @@
 import { Button, Card, Form, Input, Space } from "antd";
 import { Fragment, useContext } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { AddProductMutationString } from "../../lib/graphql/product/addProduct.gql";
 import { MenuPageContext } from ".";
 import { getProductsQueryString } from "../../lib/graphql/product/getProducts.gql";
 
 const AddProductMenuComponent = () => {
   const menuPageContext = useContext(MenuPageContext);
-
+  const [form] = Form.useForm();
   const [addProduct, addProductResponse] = useMutation(
-    AddProductMutationString
+    gql`
+      mutation AddProductMutation(
+        $addProductName: String
+        $addProductSizes: [ProductSizeInput]
+        $addProductOptions: [addProductOptionInput]
+      ) {
+        addProduct(
+          name: $addProductName
+          sizes: $addProductSizes
+          options: $addProductOptions
+        )
+      }
+    `
   );
 
   const submitForm = async (formValue: {
     name: string;
-    category: string;
     price_one: string;
     size_one: string;
     sizes: [
@@ -24,11 +35,17 @@ const AddProductMenuComponent = () => {
         price: number;
       }
     ];
+    options: [
+      {
+        name: string;
+        price: number;
+      }
+    ];
   }) => {
     try {
       let size: any[] = [];
-
-      if (formValue.sizes) {
+      let option: any[] = [];
+      if (!!formValue.sizes) {
         size = formValue.sizes.map((size) => {
           return {
             name: size.name,
@@ -36,23 +53,32 @@ const AddProductMenuComponent = () => {
           };
         });
       }
+      if (!!formValue.options) {
+        option = formValue.options.map((options) => {
+          return {
+            name: options.name,
+            price: parseFloat(`${options.price}`)
+          };
+        });
+      }
 
       const { data } = await addProduct({
         variables: {
           addProductName: formValue.name,
-          addProductCategory: formValue.category,
           addProductSizes: [
             {
               name: formValue.size_one,
               price: parseFloat(`${formValue.price_one}}`)
             },
             ...size
-          ]
+          ],
+          addProductOptions: option
         },
         refetchQueries: [{ query: getProductsQueryString }],
         onQueryUpdated: async (observableQuery) => {
           const { data } = await observableQuery.refetch();
           menuPageContext.setProducts(data);
+          form.resetFields();
         }
       });
 
@@ -65,7 +91,7 @@ const AddProductMenuComponent = () => {
   return (
     <div>
       <Card className=" rounded-md" title="ເພີ່ມລາຍການອາຫານ">
-        <Form layout="vertical" requiredMark onFinish={submitForm}>
+        <Form form={form} layout="vertical" requiredMark onFinish={submitForm}>
           <Form.Item
             label="ຊື່ອາຫານ"
             name="name"
@@ -74,14 +100,6 @@ const AddProductMenuComponent = () => {
           >
             <Input disabled={addProductResponse.loading} />
           </Form.Item>
-          {/*    <Form.Item
-            label="ປະເພດ"
-            name="category"
-            key="category"
-            rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
-          >
-            <Input disabled={addProductResponse.loading} />
-          </Form.Item> */}
           <Space align="baseline">
             <Form.Item
               label="ຂະໜາດ"
@@ -93,7 +111,7 @@ const AddProductMenuComponent = () => {
               <Input type="text" />
             </Form.Item>
             <Form.Item
-              label="ຂະໜາດ"
+              label="ລາຄາ"
               name="price_one"
               key="price_one"
               fieldKey="price_one"
@@ -117,7 +135,7 @@ const AddProductMenuComponent = () => {
                           { required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }
                         ]}
                       >
-                        <Input type="text" />
+                        <Input type="text" autoFocus={true} />
                       </Form.Item>
                       <Form.Item
                         {...field}
@@ -133,10 +151,7 @@ const AddProductMenuComponent = () => {
                       <div className=" relative">
                         <MinusCircleOutlined
                           className=" top-6 absolute"
-                          onClick={() => {
-                            console.log(field);
-                            remove(field.name);
-                          }}
+                          onClick={() => remove(field.name)}
                         />
                       </div>
                     </Space>
@@ -155,6 +170,57 @@ const AddProductMenuComponent = () => {
               </Fragment>
             )}
           </Form.List>
+          <Form.List name="options">
+            {(fields, { add, remove }) => (
+              <Fragment>
+                {fields.map((field) => (
+                  <div>
+                    <Space key={field.key} align="baseline">
+                      <Form.Item
+                        {...field}
+                        label="ຊື່ຕົວເລືອກ"
+                        name={[field.name, "name"]}
+                        fieldKey={[field.fieldKey, "name"]}
+                        rules={[
+                          { required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }
+                        ]}
+                      >
+                        <Input type="text" autoFocus={true} />
+                      </Form.Item>
+                      <Form.Item
+                        {...field}
+                        label="ລາຄາ"
+                        name={[field.name, "price"]}
+                        fieldKey={[field.fieldKey, "price"]}
+                        rules={[
+                          { required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }
+                        ]}
+                      >
+                        <Input type="number" />
+                      </Form.Item>
+                      <div className=" relative">
+                        <MinusCircleOutlined
+                          className=" top-6 absolute"
+                          onClick={() => remove(field.name)}
+                        />
+                      </div>
+                    </Space>
+                  </div>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    ເພີ່ມຕົວເລືອກອາຫານ
+                  </Button>
+                </Form.Item>
+              </Fragment>
+            )}
+          </Form.List>
+
           <Form.Item>
             <Button htmlType="submit">ເພີ່ມ</Button>
           </Form.Item>
