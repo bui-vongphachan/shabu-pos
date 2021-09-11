@@ -86,7 +86,11 @@ Schema.statics.updateTotalPrice = async function (invoice_id: string) {
 
   const total_price = invoice.orders.reduce((prev, curr) => {
     if (curr.isDeleted) return prev + 0;
-    return prev + curr.size.id.price * curr.quantity;
+    const option = curr.options.reduce((sumOption, option) => {
+      return sumOption + option.price * option.quantity;
+    }, 0);
+    const size = curr.size.id.price * curr.quantity;
+    return prev + option + size;
   }, 0);
 
   await InvoiceModel.findOneAndUpdate(
