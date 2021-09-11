@@ -1,59 +1,40 @@
-import { useQuery } from "@apollo/client"
-import { createContext, useContext, useState } from "react"
-import { useEffect } from "react"
-import DefaultLayout from "../../layouts/default"
-import { client } from "../../lib/apolloSetup"
-import { getProductsQueryString } from "../../lib/graphql/product/getProducts.gql"
-import { ProductModel } from "../../models"
-import AddProductMenuComponent from "./addProduct.menu"
-import ProductEditorMenuComponent from "./productEditor.menu"
-import ProductListMenuComponent from "./productList.menu"
+import { useQuery } from "@apollo/client";
+import { createContext, useContext, useState } from "react";
+import { useEffect } from "react";
+import DefaultLayout from "../../layouts/default";
+import { client } from "../../lib/apolloSetup";
+import { getProductsQueryString } from "../../lib/graphql/product/getProducts.gql";
+import { ProductModel } from "../../models";
+import AddProductMenuComponent from "./addProduct.menu";
+import ProductEditorMenuComponent from "./productEditor.menu";
+import ProductListMenuComponent from "./productList.menu";
 
 export const MenuPageContext = createContext<{
-    products: ProductModel[],
-    setProducts: (products: ProductModel[]) => void
+  products: ProductModel[];
+  setProducts: (products: ProductModel[]) => void;
 }>({
-    products: [],
-    setProducts: function () { },
+  products: [],
+  setProducts: function () {}
 });
 
-const Menu = (props: {
-    products: ProductModel[]
-}) => {
-    const [products, setProducts] = useState<ProductModel[]>([]);
+const Menu = () => {
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  const { loading, error, data } = useQuery(getProductsQueryString);
 
-    const context = { products, setProducts };
+  if (loading) return "loading";
 
-    useEffect(() => {
-        setProducts(props.products)
-    }, [])
+  const context = { products: data.getProducts, setProducts };
 
-    return (
-        <MenuPageContext.Provider value={context}>
-            <div className="mt-3 mx-auto grid gap-3 md:grid-cols-3 sm:grid-cols-1 container">
-              
-                    <AddProductMenuComponent />
-               
-                    <ProductListMenuComponent />
-              
-                    <ProductEditorMenuComponent /> 
+  return (
+    <MenuPageContext.Provider value={context}>
+      <div className="mt-3 mx-auto grid gap-3 lg:w-4/12 container">
+        <AddProductMenuComponent />
+        <ProductListMenuComponent />
+      </div>
+    </MenuPageContext.Provider>
+  );
+};
 
-            </div>
-        </MenuPageContext.Provider>
-    )
-}
+Menu.getLayout = DefaultLayout;
 
-export const getStaticProps = async () => {
-    const { data } = await client.query({
-        query: getProductsQueryString
-    })
-    return {
-        props: {
-            products: data.getProducts
-        }
-    }
-}
-
-Menu.getLayout = DefaultLayout
-
-export default Menu
+export default Menu;
