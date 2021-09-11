@@ -98,7 +98,7 @@ const AddProductMenuComponent = () => {
             key="name"
             rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
           >
-            <Input disabled={addProductResponse.loading} />
+            <Input disabled={addProductResponse.loading} type="text" />
           </Form.Item>
           <Space align="baseline">
             <Form.Item
@@ -108,7 +108,7 @@ const AddProductMenuComponent = () => {
               fieldKey="size_one"
               rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
             >
-              <Input type="text" />
+              <Input type="text" disabled={addProductResponse.loading} />
             </Form.Item>
             <Form.Item
               label="ລາຄາ"
@@ -117,7 +117,7 @@ const AddProductMenuComponent = () => {
               fieldKey="price_one"
               rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
             >
-              <Input type="number" />
+              <Input type="number" disabled={addProductResponse.loading} />
             </Form.Item>
           </Space>
           <Form.List name="sizes">
@@ -135,7 +135,11 @@ const AddProductMenuComponent = () => {
                           { required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }
                         ]}
                       >
-                        <Input type="text" autoFocus={true} />
+                        <Input
+                          type="text"
+                          disabled={addProductResponse.loading}
+                          autoFocus={true}
+                        />
                       </Form.Item>
                       <Form.Item
                         {...field}
@@ -146,10 +150,14 @@ const AddProductMenuComponent = () => {
                           { required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }
                         ]}
                       >
-                        <Input type="number" />
+                        <Input
+                          type="number"
+                          disabled={addProductResponse.loading}
+                        />
                       </Form.Item>
                       <div className=" relative">
                         <MinusCircleOutlined
+                          disabled={addProductResponse.loading}
                           className=" top-6 absolute"
                           onClick={() => remove(field.name)}
                         />
@@ -159,6 +167,7 @@ const AddProductMenuComponent = () => {
                 ))}
                 <Form.Item>
                   <Button
+                    disabled={addProductResponse.loading}
                     type="dashed"
                     onClick={() => add()}
                     block
@@ -185,7 +194,11 @@ const AddProductMenuComponent = () => {
                           { required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }
                         ]}
                       >
-                        <Input type="text" autoFocus={true} />
+                        <Input
+                          type="text"
+                          disabled={addProductResponse.loading}
+                          autoFocus={true}
+                        />
                       </Form.Item>
                       <Form.Item
                         {...field}
@@ -196,11 +209,15 @@ const AddProductMenuComponent = () => {
                           { required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }
                         ]}
                       >
-                        <Input type="number" />
+                        <Input
+                          type="number"
+                          disabled={addProductResponse.loading}
+                        />
                       </Form.Item>
                       <div className=" relative">
                         <MinusCircleOutlined
                           className=" top-6 absolute"
+                          disabled={addProductResponse.loading}
                           onClick={() => remove(field.name)}
                         />
                       </div>
@@ -209,6 +226,7 @@ const AddProductMenuComponent = () => {
                 ))}
                 <Form.Item>
                   <Button
+                    disabled={addProductResponse.loading}
                     type="dashed"
                     onClick={() => add()}
                     block

@@ -1,9 +1,7 @@
 import { DocumentNode, gql, useQuery } from "@apollo/client";
-import { createContext, useContext, useState } from "react";
-import { useEffect } from "react";
+import { Spin } from "antd";
+import { createContext, useState } from "react";
 import DefaultLayout from "../../layouts/default";
-import { client } from "../../lib/apolloSetup";
-import { getProductsQueryString } from "../../lib/graphql/product/getProducts.gql";
 import { ProductModel } from "../../models";
 import AddProductMenuComponent from "./addProduct.menu";
 import ProductEditorMenuComponent from "./productEditor.menu";
@@ -40,15 +38,28 @@ const Menu = () => {
   const [products, setProducts] = useState<ProductModel[]>([]);
   const { loading, error, data } = useQuery(getProductGQL);
 
-  if (loading) return "loading";
+  if (loading)
+    return (
+      <Spin
+        size="large"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "100vh"
+        }}
+      />
+    );
 
   const context = { getProductGQL, products: data.getProducts, setProducts };
 
   return (
     <MenuPageContext.Provider value={context}>
-      <div className="mt-3 mx-auto grid gap-3 lg:w-4/12 container">
+      <div className="mt-3 mx-auto grid gap-3 lg:grid-cols-3 container">
         <AddProductMenuComponent />
         <ProductListMenuComponent />
+        <ProductEditorMenuComponent />
       </div>
     </MenuPageContext.Provider>
   );
