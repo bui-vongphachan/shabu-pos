@@ -1,8 +1,9 @@
-import { addInvoice } from "./addInvoice.mutation"
-import { getInvoice } from "./getInvoice.query"
-import { completeInvoice } from "./completeInvoice.mutation"
+import { addInvoice } from "./addInvoice.mutation";
+import { getInvoices } from "./getInvoices.query";
+import { completeInvoice } from "./completeInvoice.mutation";
+import { newInvoice } from "./newInvoice.mutation";
 
 export const invoiceResolver = {
-    Query: { getInvoice },
-    Mutation: { addInvoice, completeInvoice }
+  Query: { getInvoices },
+  Mutation: { addInvoice, completeInvoice, newInvoice },
 };

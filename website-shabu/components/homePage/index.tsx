@@ -1,5 +1,5 @@
 import NewOrderFormComponent from "./newOrderForm.component";
-import OrderListComponent from "./orderList.componen";
+import OrderListComponent from "./invoiceList.componen";
 
 export default {
   NewOrderFormComponent,
