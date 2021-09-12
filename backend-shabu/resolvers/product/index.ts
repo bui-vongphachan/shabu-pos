@@ -1,4 +1,5 @@
 import { getProductCategories } from "./getProductCategories.query";
+import { getProduct } from "./getProduct.query";
 import { getProducts } from "./getProducts.query";
 import { addProduct } from "./addProduct.resolver";
 import { updateProduct } from "./updateProduct.mutation";
@@ -7,7 +8,7 @@ import { deleteProductSizes } from "./deleteProductSizes.mutation";
 import { deleteProduct } from "./deleteProduct.mutation";
 
 export const productResolver = {
-  Query: { getProducts, getProductCategories },
+  Query: { getProduct, getProducts, getProductCategories },
   Mutation: {
     addProduct,
     updateProduct,

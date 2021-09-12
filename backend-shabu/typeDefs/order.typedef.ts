@@ -12,6 +12,7 @@ export const orderTypeDef = gql`
     product: Product
     name: String
     isReceived: Boolean
+    size_id: ID
     size: OrderProductSize
     quantity: Int
     totalPrice: Float

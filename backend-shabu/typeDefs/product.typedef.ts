@@ -16,6 +16,7 @@ export const productTypeDef = gql`
     count: Int
   }
   type Query {
+    getProduct(product_id: ID): Product
     getProducts: [Product]
     getProductCategories: [ProductCategory]
   }

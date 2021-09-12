@@ -35,26 +35,13 @@ const OrderListComponent = () => {
         dataSource={invoices}
         locale={{ emptyText: "ບໍ່ມີລາຍການ" }}
         renderItem={(item, index) => (
-          <List.Item
-            key={index}
-            actions={[
-              <a key="list-loadmore-edit">ແກ້ໄຂ</a>,
-              <Popconfirm
-                title="ຕ້ອງການລົບລາຍການນີ້ບໍ່?"
-                okText="ຢືນຢັນ"
-                cancelText="ຍົກເລີກ"
-              >
-                <a key="list-loadmore-more">ລົບ</a>
-              </Popconfirm>
-            ]}
-            className=" hover:shadow-md p-3 "
-          >
+          <List.Item key={index} className=" hover:shadow-md p-3 ">
             <Skeleton loading={false}>
               <List.Item.Meta
                 title={`${invoices.length - index}. ${item.customer_name}`}
-                description={item.total_price}
+                description={item.orders.length + " ລາຍການ"}
               />
-              {item.created_date}
+              {item.total_price.toLocaleString()}
             </Skeleton>
           </List.Item>
         )}

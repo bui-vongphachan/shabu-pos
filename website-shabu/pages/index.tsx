@@ -11,19 +11,31 @@ import NewOrderFormComponent from "../components/homePage/newInvoiceForm.compone
 import OrderListComponent from "../components/homePage/invoiceList.componen";
 import DefaultLayout from "../layouts/default";
 import { InvoiceModel } from "../models/invoice";
+import ProductListComponent from "../components/homePage/productList.component";
+import { useState } from "react";
+import { ProductModel } from "../models";
 
 export const MainPageContext = createContext<{
-  getProductGQL: QueryResult | null;
+  selectedProducts: ProductModel[];
+  getProductsResult: QueryResult | null;
   getInvoicesResult: QueryResult | null;
   getInvoicesString: DocumentNode | null;
+  addToCart: (item: ProductModel) => void;
+  removeFromCart: (index: number) => void;
+  clearCart: () => void;
 }>({
-  getProductGQL: null,
+  selectedProducts: [],
+  getProductsResult: null,
   getInvoicesResult: null,
-  getInvoicesString: null
+  getInvoicesString: null,
+  addToCart: () => {},
+  removeFromCart: () => {},
+  clearCart: () => {}
 });
 
 const Home = () => {
-  const getProductGQL = useQuery(gql`
+  const [selectedProducts, setSelectedProducts] = useState<ProductModel[]>([]);
+  const getProductsResult = useQuery(gql`
     query Query {
       getProducts {
         id
@@ -50,19 +62,39 @@ const Home = () => {
           id
           name
         }
+        total_price
       }
     }
   `;
 
   const getInvoicesResult = useQuery(getInvoicesString);
 
-  let context = { getProductGQL, getInvoicesResult, getInvoicesString };
+  const addToCart = (item: ProductModel) => {
+    setSelectedProducts([...selectedProducts, item]);
+  };
+
+  const removeFromCart = (itemIndex: number) => {
+    selectedProducts.splice(itemIndex, 1);
+    setSelectedProducts([...selectedProducts]);
+  };
+
+  const clearCart = () => setSelectedProducts([]);
+
+  let context = {
+    getProductsResult,
+    getInvoicesResult,
+    getInvoicesString,
+    selectedProducts,
+    addToCart,
+    removeFromCart,
+    clearCart
+  };
 
   return (
     <MainPageContext.Provider value={context}>
-      <div className=" gap-3 grid grid-cols-2 lg:w-6/12 m-auto mt-3">
+      <div className=" container gap-3 grid grid-cols-3 m-auto mt-3">
+        <ProductListComponent />
         <NewOrderFormComponent />
-
         <OrderListComponent />
       </div>
     </MainPageContext.Provider>

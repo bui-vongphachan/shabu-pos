@@ -19,6 +19,7 @@ export interface OrderDoc extends mongoose.Document {
     name: string;
     price: number;
   };
+  size_id: string;
   quantity: number;
   totalPrice: number;
   isPaid: boolean;
@@ -34,6 +35,12 @@ const Schema = new mongoose.Schema({
   product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "products",
+    default: null,
+    require: true,
+  },
+  size_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "product_sizes",
     default: null,
     require: true,
   },
