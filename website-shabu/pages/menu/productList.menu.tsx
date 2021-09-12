@@ -16,7 +16,15 @@ const ProductListMenuComponent = () => {
         <List.Item
           key={index}
           actions={[
-            <a key="list-loadmore-edit">edit</a>,
+            <a
+              key="list-loadmore-edit"
+              onClick={() => {
+                menuPageContext.setUpdateModal(true);
+                menuPageContext.setSelectedProduct(item);
+              }}
+            >
+              edit
+            </a>,
             <a key="list-loadmore-more">delete</a>
           ]}
           className=" hover:shadow-md p-3 "

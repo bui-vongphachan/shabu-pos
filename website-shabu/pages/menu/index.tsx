@@ -1,5 +1,5 @@
 import { DocumentNode, gql, useQuery } from "@apollo/client";
-import { Spin } from "antd";
+import { Button, Result, Spin } from "antd";
 import { createContext, useState } from "react";
 import DefaultLayout from "../../layouts/default";
 import { ProductModel } from "../../models";
@@ -8,13 +8,21 @@ import ProductEditorMenuComponent from "./productEditor.menu";
 import ProductListMenuComponent from "./productList.menu";
 
 export const MenuPageContext = createContext<{
+  isUpdateModalOpen: boolean;
+  selectedProduct: ProductModel | null;
   products: ProductModel[];
   getProductGQL: DocumentNode | null;
   setProducts: (products: ProductModel[]) => void;
+  setSelectedProduct: (product: ProductModel) => void;
+  setUpdateModal: (status: boolean) => void;
 }>({
+  isUpdateModalOpen: false,
+  selectedProduct: null,
   getProductGQL: null,
   products: [],
-  setProducts: function () {}
+  setProducts: function () {},
+  setSelectedProduct: function () {},
+  setUpdateModal: function () {}
 });
 
 const Menu = () => {
@@ -35,6 +43,10 @@ const Menu = () => {
     }
   `;
 
+  const [selectedProduct, setSelectedProduct] = useState<ProductModel | null>(
+    null
+  );
+  const [isUpdateModalOpen, setUpdateModal] = useState(false);
   const [products, setProducts] = useState<ProductModel[]>([]);
   const { loading, error, data } = useQuery(getProductGQL);
 
@@ -52,7 +64,18 @@ const Menu = () => {
       />
     );
 
-  const context = { getProductGQL, products: data.getProducts, setProducts };
+  if (error)
+    return <Result status="error" title="ເກີດຂໍ້ຜິດພາດໃນການດຶງຂໍ້ມູນ." />;
+
+  const context = {
+    getProductGQL,
+    isUpdateModalOpen,
+    selectedProduct,
+    products: data.getProducts,
+    setProducts,
+    setSelectedProduct,
+    setUpdateModal
+  };
 
   return (
     <MenuPageContext.Provider value={context}>

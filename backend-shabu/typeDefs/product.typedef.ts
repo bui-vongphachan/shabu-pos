@@ -28,5 +28,6 @@ export const productTypeDef = gql`
       sizes: [ProductSizeInput]
       options: [addProductOptionInput]
     ): Boolean
+    updateProduct(product_id: ID, name: String): Boolean
   }
 `;
