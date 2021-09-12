@@ -1,11 +1,11 @@
 import { DocumentNode, gql, useQuery } from "@apollo/client";
-import { Button, Result, Spin } from "antd";
+import { Result, Spin } from "antd";
 import { createContext, useState } from "react";
-import DefaultLayout from "../../layouts/default";
-import { ProductModel } from "../../models";
-import AddProductMenuComponent from "./addProduct.menu";
-import ProductEditorMenuComponent from "./productEditor.menu";
-import ProductListMenuComponent from "./productList.menu";
+import AddProductMenuComponent from "../components/productMenu/addProduct.menu";
+import ProductEditorMenuComponent from "../components/productMenu/productEditor.menu";
+import ProductListMenuComponent from "../components/productMenu/productList.menu";
+import DefaultLayout from "../layouts/default";
+import { ProductModel } from "../models";
 
 export const MenuPageContext = createContext<{
   isUpdateModalOpen: boolean;

@@ -3,7 +3,7 @@ import { Fragment, useContext } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { gql, useMutation } from "@apollo/client";
 import { AddProductMutationString } from "../../lib/graphql/product/addProduct.gql";
-import { MenuPageContext } from ".";
+import { MenuPageContext } from "../../pages/menu";
 import { getProductsQueryString } from "../../lib/graphql/product/getProducts.gql";
 
 const AddProductMenuComponent = () => {

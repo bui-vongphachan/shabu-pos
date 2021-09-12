@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client";
 import { Avatar, List, notification, Popconfirm, Skeleton } from "antd";
 import gql from "graphql-tag";
 import { useContext } from "react";
-import { MenuPageContext } from ".";
+import { MenuPageContext } from "../../pages/menu";
 import { GiHotMeal } from "react-icons/gi";
 
 const ProductListMenuComponent = () => {

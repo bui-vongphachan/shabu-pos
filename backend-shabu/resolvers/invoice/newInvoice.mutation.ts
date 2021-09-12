@@ -30,5 +30,7 @@ export const newInvoice = async (
     customer_name,
   }).save();
 
+  console.log(invoice);
+
   return true;
 };

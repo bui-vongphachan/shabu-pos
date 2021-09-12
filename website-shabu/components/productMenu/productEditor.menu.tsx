@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 import { Fragment, useEffect } from "react";
 import { useContext } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { MenuPageContext } from ".";
+import { MenuPageContext } from "../../pages/menu";
 
 const ProductEditorMenuComponent = () => {
   const menuPageContext = useContext(MenuPageContext);
