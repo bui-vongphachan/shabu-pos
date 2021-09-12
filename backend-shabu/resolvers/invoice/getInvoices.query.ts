@@ -7,5 +7,7 @@ export const getInvoices = async (
     isPaid: boolean;
   }
 ) => {
-  return await InvoiceModel.find().populate("orders");
+  return await InvoiceModel.find()
+    .populate("orders")
+    .sort({ created_date: -1 });
 };

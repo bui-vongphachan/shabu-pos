@@ -8,9 +8,10 @@ export const newInvoice = async (
         product_id: string;
       }
     ];
+    customer_name: string;
   }
 ) => {
-  const { foods } = args;
+  const { foods, customer_name } = args;
 
   const orders = await Promise.all(
     foods.map(async (item) => {
@@ -26,6 +27,7 @@ export const newInvoice = async (
 
   const invoice = await new InvoiceModel({
     orders: newOrders.map((item) => item.id),
+    customer_name,
   }).save();
 
   return true;

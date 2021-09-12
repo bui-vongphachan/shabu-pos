@@ -13,6 +13,7 @@ export interface InvoiceDoc extends mongoose.Document {
     name: string;
   };
   customers: number;
+  customer_name: string;
   arrived_time: string;
   orders: OrderDoc[];
   time_spent: number;
@@ -49,6 +50,7 @@ const Schema = new mongoose.Schema({
     name: { type: String, default: null, require: true },
   },
   customers: { type: Number, default: 0, require: true },
+  customer_name: { type: String, default: null, require: true },
   arrived_time: { type: Date, default: Date.now },
   orders: [
     { type: mongoose.Schema.Types.ObjectId, ref: "orders", require: true },

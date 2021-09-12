@@ -1,4 +1,4 @@
-import NewOrderFormComponent from "./newOrderForm.component";
+import NewOrderFormComponent from "./newInvoiceForm.component";
 import OrderListComponent from "./invoiceList.componen";
 
 export default {

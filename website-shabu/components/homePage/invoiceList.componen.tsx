@@ -51,7 +51,7 @@ const OrderListComponent = () => {
           >
             <Skeleton loading={false}>
               <List.Item.Meta
-                title={`${invoices.length - index}.`}
+                title={`${invoices.length - index}. ${item.customer_name}`}
                 description={item.total_price}
               />
               {item.created_date}

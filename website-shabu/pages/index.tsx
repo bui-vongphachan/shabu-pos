@@ -7,7 +7,7 @@ import {
 import gql from "graphql-tag";
 import { useEffect } from "react";
 import { createContext } from "react";
-import NewOrderFormComponent from "../components/homePage/newOrderForm.component";
+import NewOrderFormComponent from "../components/homePage/newInvoiceForm.component";
 import OrderListComponent from "../components/homePage/invoiceList.componen";
 import DefaultLayout from "../layouts/default";
 import { InvoiceModel } from "../models/invoice";
@@ -45,6 +45,7 @@ const Home = () => {
     query Query {
       getInvoices {
         id
+        customer_name
         orders {
           id
           name

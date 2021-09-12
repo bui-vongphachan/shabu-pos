@@ -5,6 +5,7 @@ export const invoiceTypeDef = gql`
     id: String
     table: Table
     customers: Int
+    customer_name: String
     arrived_time: Date
     orders: [Order]
     time_spent: Int
@@ -49,50 +50,6 @@ export const invoiceTypeDef = gql`
       payer_contact: String
       isLeft: Boolean
     ): Invoice
-    newInvoice(foods: [NewInvoiceProductInput]): Boolean
-  }
-`;
-
-export const gqlInvoiceFields = gql`
-  {
-    id
-    table {
-      id
-      name
-      created_date
-    }
-    customers
-    arrived_time
-    orders {
-      id
-      name
-      isReceived
-      size {
-        id {
-          id
-          name
-          price
-        }
-        name
-        price
-        created_date
-      }
-      quantity
-      totalPrice
-      isDeleted
-      ordered_date
-    }
-    time_spent
-    total_price
-    final_price
-    payment_method
-    money_received
-    change
-    isPaid
-    payer_name
-    payer_contact
-    isLeft
-    created_date
-    schema_version
+    newInvoice(customer_name: String, foods: [NewInvoiceProductInput]): Boolean
   }
 `;
