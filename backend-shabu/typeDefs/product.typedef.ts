@@ -43,5 +43,6 @@ export const productTypeDef = gql`
       sizes: [UpdateProductSizeInput]
     ): Boolean
     addProductSizes(product_id: ID, sizes: [AddProductSizesInput]): Boolean
+    deleteProductSizes(sizes: [String]): Boolean
   }
 `;

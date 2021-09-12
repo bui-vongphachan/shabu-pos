@@ -16,6 +16,7 @@ const ProductEditorMenuComponent = () => {
         $updateProductProductId: ID
         $updateProductName: String
         $updateProductSizes: [UpdateProductSizeInput]
+        $deleteProductSizesSizes: [String]
       ) {
         addProductSizes(
           product_id: $addProductSizesProductId
@@ -26,6 +27,7 @@ const ProductEditorMenuComponent = () => {
           name: $updateProductName
           sizes: $updateProductSizes
         )
+        deleteProductSizes(sizes: $deleteProductSizesSizes)
       }
     `
   );
@@ -47,6 +49,9 @@ const ProductEditorMenuComponent = () => {
         addProductSizesSizes: formValue.sizes
           .filter((item) => !item.size_id)
           .map((item) => ({ ...item, price: parseFloat(item.price + "") })),
+        deleteProductSizesSizes: selectedProduct?.sizes
+          .filter((item) => !formValue.sizes.find((a) => a.size_id === item.id))
+          .map((item) => item.id),
         updateProductProductId: selectedProduct?.id,
         updateProductName: formValue.name,
         updateProductSizes: formValue.sizes
