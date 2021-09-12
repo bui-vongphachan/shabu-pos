@@ -22,12 +22,21 @@ export const productTypeDef = gql`
     name: String
     price: Float
   }
+  input UpdateProductSizeInput {
+    size_id: ID
+    name: String
+    price: Float
+  }
   type Mutation {
     addProduct(
       name: String
       sizes: [ProductSizeInput]
       options: [addProductOptionInput]
     ): Boolean
-    updateProduct(product_id: ID, name: String): Boolean
+    updateProduct(
+      product_id: ID
+      name: String
+      sizes: [UpdateProductSizeInput]
+    ): Boolean
   }
 `;

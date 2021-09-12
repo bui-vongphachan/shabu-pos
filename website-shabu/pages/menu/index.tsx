@@ -36,6 +36,7 @@ const Menu = () => {
           price
         }
         sizes {
+          id
           name
           price
         }
