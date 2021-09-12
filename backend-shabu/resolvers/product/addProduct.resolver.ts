@@ -22,9 +22,5 @@ export const addProduct = async (
     options: productOptions.map((item) => item.id),
   }).save();
 
-  const items = await ProductModel.find()
-    .populate("sizes")
-    .sort({ created_date: -1 });
-
   return true;
 };

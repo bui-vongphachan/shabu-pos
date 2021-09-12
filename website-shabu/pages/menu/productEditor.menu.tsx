@@ -11,10 +11,16 @@ const ProductEditorMenuComponent = () => {
   const [updateProduct, updateProductResponse] = useMutation(
     gql`
       mutation AddProductMutation(
+        $addProductSizesProductId: ID
+        $addProductSizesSizes: [AddProductSizesInput]
         $updateProductProductId: ID
         $updateProductName: String
         $updateProductSizes: [UpdateProductSizeInput]
       ) {
+        addProductSizes(
+          product_id: $addProductSizesProductId
+          sizes: $addProductSizesSizes
+        )
         updateProduct(
           product_id: $updateProductProductId
           name: $updateProductName
@@ -37,11 +43,15 @@ const ProductEditorMenuComponent = () => {
   }) => {
     await updateProduct({
       variables: {
+        addProductSizesProductId: selectedProduct?.id,
+        addProductSizesSizes: formValue.sizes
+          .filter((item) => !item.size_id)
+          .map((item) => ({ ...item, price: parseFloat(item.price + "") })),
         updateProductProductId: selectedProduct?.id,
         updateProductName: formValue.name,
-        updateProductSizes: formValue.sizes.map((item) => {
-          return { ...item, price: parseFloat(item.price + "") };
-        })
+        updateProductSizes: formValue.sizes
+          .filter((item) => item.size_id)
+          .map((item) => ({ ...item, price: parseFloat(item.price + "") }))
       },
       refetchQueries: [{ query: getProductGQL! }],
       onQueryUpdated: async (observableQuery) => {

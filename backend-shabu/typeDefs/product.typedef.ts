@@ -27,6 +27,10 @@ export const productTypeDef = gql`
     name: String
     price: Float
   }
+  input AddProductSizesInput {
+    name: String
+    price: Float
+  }
   type Mutation {
     addProduct(
       name: String
@@ -38,5 +42,6 @@ export const productTypeDef = gql`
       name: String
       sizes: [UpdateProductSizeInput]
     ): Boolean
+    addProductSizes(product_id: ID, sizes: [AddProductSizesInput]): Boolean
   }
 `;
