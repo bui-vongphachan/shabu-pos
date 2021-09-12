@@ -1,20 +1,14 @@
 import { Button, Typography } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
-import { TableInvoiceContext } from "../../pages/report/[table_id]";
+import { useRouter } from "next/router";
 
 const NoInvoiceTableInvoiceComponent = () => {
-  const tableInvoiceContext = useContext(TableInvoiceContext);
-  const { table_id } = tableInvoiceContext;
+  const router = useRouter();
+  const { table_id } = router.query;
   return (
-    <div className=" text-center">
-      <Image
-        sizes="lg"
-        width="100%"
-        height="100%"
-        src="/assets/images/nDkF0901.svg"
-      />
+    <div className=" text-center container m-auto">
+      <Image width="50%" height="50%" src="/assets/images/nDkF0901.svg" />
       <Typography.Title level={4}>ຍັງບໍ່ມີອໍເດີ້</Typography.Title>
       <Link href={`/report/${table_id}/new-invoice`}>
         <Button

@@ -1,59 +1,94 @@
-import { useQuery } from "@apollo/client"
-import { createContext, useContext, useState } from "react"
-import { useEffect } from "react"
-import DefaultLayout from "../../layouts/default"
-import { client } from "../../lib/apolloSetup"
-import { getProductsQueryString } from "../../lib/graphql/product/getProducts.gql"
-import { ProductModel } from "../../models"
-import AddProductMenuComponent from "./addProduct.menu"
-import ProductEditorMenuComponent from "./productEditor.menu"
-import ProductListMenuComponent from "./productList.menu"
+import { DocumentNode, gql, useQuery } from "@apollo/client";
+import { Button, Result, Spin } from "antd";
+import { createContext, useState } from "react";
+import DefaultLayout from "../../layouts/default";
+import { ProductModel } from "../../models";
+import AddProductMenuComponent from "./addProduct.menu";
+import ProductEditorMenuComponent from "./productEditor.menu";
+import ProductListMenuComponent from "./productList.menu";
 
 export const MenuPageContext = createContext<{
-    products: ProductModel[],
-    setProducts: (products: ProductModel[]) => void
+  isUpdateModalOpen: boolean;
+  selectedProduct: ProductModel | null;
+  products: ProductModel[];
+  getProductGQL: DocumentNode | null;
+  setProducts: (products: ProductModel[]) => void;
+  setSelectedProduct: (product: ProductModel) => void;
+  setUpdateModal: (status: boolean) => void;
 }>({
-    products: [],
-    setProducts: function () { },
+  isUpdateModalOpen: false,
+  selectedProduct: null,
+  getProductGQL: null,
+  products: [],
+  setProducts: function () {},
+  setSelectedProduct: function () {},
+  setUpdateModal: function () {}
 });
 
-const Menu = (props: {
-    products: ProductModel[]
-}) => {
-    const [products, setProducts] = useState<ProductModel[]>([]);
-
-    const context = { products, setProducts };
-
-    useEffect(() => {
-        setProducts(props.products)
-    }, [])
-
-    return (
-        <MenuPageContext.Provider value={context}>
-            <div className="mt-3 mx-auto grid gap-3 md:grid-cols-3 sm:grid-cols-1 container">
-              
-                    <AddProductMenuComponent />
-               
-                    <ProductListMenuComponent />
-              
-                    <ProductEditorMenuComponent /> 
-
-            </div>
-        </MenuPageContext.Provider>
-    )
-}
-
-export const getStaticProps = async () => {
-    const { data } = await client.query({
-        query: getProductsQueryString
-    })
-    return {
-        props: {
-            products: data.getProducts
+const Menu = () => {
+  const getProductGQL = gql`
+    query Query {
+      getProducts {
+        id
+        name
+        options {
+          name
+          price
         }
+        sizes {
+          id
+          name
+          price
+        }
+      }
     }
-}
+  `;
 
-Menu.getLayout = DefaultLayout
+  const [selectedProduct, setSelectedProduct] = useState<ProductModel | null>(
+    null
+  );
+  const [isUpdateModalOpen, setUpdateModal] = useState(false);
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  const { loading, error, data } = useQuery(getProductGQL);
 
-export default Menu
+  if (loading)
+    return (
+      <Spin
+        size="large"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "100vh"
+        }}
+      />
+    );
+
+  if (error)
+    return <Result status="error" title="ເກີດຂໍ້ຜິດພາດໃນການດຶງຂໍ້ມູນ." />;
+
+  const context = {
+    getProductGQL,
+    isUpdateModalOpen,
+    selectedProduct,
+    products: data.getProducts,
+    setProducts,
+    setSelectedProduct,
+    setUpdateModal
+  };
+
+  return (
+    <MenuPageContext.Provider value={context}>
+      <div className="mt-3 mx-auto grid gap-3 lg:grid-cols-2 lg:w-8/12 xl:w-6/12 container">
+        <AddProductMenuComponent />
+        <ProductListMenuComponent />
+        <ProductEditorMenuComponent />
+      </div>
+    </MenuPageContext.Provider>
+  );
+};
+
+Menu.getLayout = DefaultLayout;
+
+export default Menu;

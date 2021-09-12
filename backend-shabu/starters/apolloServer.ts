@@ -3,6 +3,7 @@ import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLFormattedError } from "graphql";
 import { invoiceResolver, orderResolver, productResolver, productSizeResolver, tableResolver } from "../resolvers";
 import { invoiceTypeDef, orderTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from "../typeDefs";
+import { productOptionTypeDef } from "../typeDefs/productOption.typede";
 
 const schema = makeExecutableSchema({
     typeDefs: [
@@ -11,7 +12,8 @@ const schema = makeExecutableSchema({
         productTypeDef,
         productSizeTypeDef,
         invoiceTypeDef,
-        orderTypeDef
+        orderTypeDef,
+        productOptionTypeDef
     ],
     resolvers: [
         tableResolver,
@@ -24,7 +26,7 @@ const schema = makeExecutableSchema({
 
 const server = new ApolloServer({
     schema, formatError: (err): GraphQLFormattedError => {
-        console.trace(err)
+        console.log(err)
 
         if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
             err.message = "ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ"
