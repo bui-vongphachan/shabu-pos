@@ -7,6 +7,7 @@ export const productTypeDef = gql`
     category: String
     options: [ProductOption]
     sizes: [ProductSize]
+    isDeleted: Boolean
     created_date: Date
     schema_version: Int
   }
@@ -43,6 +44,7 @@ export const productTypeDef = gql`
       sizes: [UpdateProductSizeInput]
     ): Boolean
     addProductSizes(product_id: ID, sizes: [AddProductSizesInput]): Boolean
-    deleteProductSizes(sizes: [String]): Boolean
+    deleteProductSizes(sizes: [String]): Boolean,
+    deleteProduct(product_id: ID): Boolean
   }
 `;

@@ -1,11 +1,12 @@
 import { ProductModel } from "../../models/product.model";
 
 export const getProducts = async () => {
-  return await ProductModel.find()
-    .populate("sizes")
+  const item = await ProductModel.find({ isDeleted: false })
     .populate({
       path: "sizes",
       match: { isDeleted: false },
     })
     .sort({ created_date: -1 });
+
+  return item;
 };

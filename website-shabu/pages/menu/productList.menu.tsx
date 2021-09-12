@@ -1,10 +1,20 @@
-import { Avatar, List, Skeleton } from "antd";
+import { useMutation } from "@apollo/client";
+import { Avatar, List, notification, Popconfirm, Skeleton } from "antd";
+import gql from "graphql-tag";
 import { useContext } from "react";
 import { MenuPageContext } from ".";
-import { ProductModel } from "../../models";
+import { GiHotMeal } from "react-icons/gi";
 
 const ProductListMenuComponent = () => {
   const menuPageContext = useContext(MenuPageContext);
+  const [deleteProduct, deleteProductResponse] = useMutation(
+    gql`
+      mutation DeleteProductMutation($deleteProductProductId: ID) {
+        deleteProduct(product_id: $deleteProductProductId)
+      }
+    `
+  );
+  const { getProductGQL } = menuPageContext;
 
   return (
     <List
@@ -23,24 +33,33 @@ const ProductListMenuComponent = () => {
                 menuPageContext.setSelectedProduct(item);
               }}
             >
-              edit
+              ແກ້ໄຂ
             </a>,
-            <a key="list-loadmore-more">delete</a>
+            <Popconfirm
+              title="ຕ້ອງການລົບລາຍການນີ້ບໍ່?"
+              onConfirm={async () =>
+                await deleteProduct({
+                  variables: { deleteProductProductId: item.id },
+                  refetchQueries: [{ query: getProductGQL! }],
+                  onQueryUpdated: async (observableQuery) => {
+                    const { data } = await observableQuery.refetch();
+                    menuPageContext.setProducts(data);
+                    notification.open({ message: "ລົບມູນສຳເລັດ" });
+                  }
+                })
+              }
+              okText="ຢືນຢັນ"
+              cancelText="ຍົກເລີກ"
+            >
+              <a key="list-loadmore-more">ລົບ</a>
+            </Popconfirm>
           ]}
           className=" hover:shadow-md p-3 "
         >
           <Skeleton loading={false}>
             <List.Item.Meta
-              avatar={
-                <Avatar
-                  src={
-                    "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  }
-                />
-              }
-              title={`${menuPageContext.products.length - ++index}. ${
-                item.name
-              }`}
+              avatar={<GiHotMeal size="25px" className=" text-indigo-400 hover:text-indigo-500" />}
+              title={`${menuPageContext.products.length - index}. ${item.name}`}
               description={item.category}
             />
             {item.category}

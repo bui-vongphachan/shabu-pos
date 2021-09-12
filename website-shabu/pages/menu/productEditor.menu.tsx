@@ -32,13 +32,8 @@ const ProductEditorMenuComponent = () => {
     `
   );
   const [form] = Form.useForm();
-  const {
-    selectedProduct,
-    isUpdateModalOpen,
-    setUpdateModal,
-    getProductGQL,
-    setSelectedProduct
-  } = menuPageContext;
+  const { selectedProduct, isUpdateModalOpen, setUpdateModal, getProductGQL } =
+    menuPageContext;
   const submitForm = async (formValue: {
     name: string;
     sizes: [{ size_id: string; name: string; price: number }];

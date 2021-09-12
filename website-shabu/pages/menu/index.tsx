@@ -80,7 +80,7 @@ const Menu = () => {
 
   return (
     <MenuPageContext.Provider value={context}>
-      <div className="mt-3 mx-auto grid gap-3 lg:grid-cols-3 container">
+      <div className="mt-3 mx-auto grid gap-3 lg:grid-cols-2 lg:w-8/12 xl:w-6/12 container">
         <AddProductMenuComponent />
         <ProductListMenuComponent />
         <ProductEditorMenuComponent />

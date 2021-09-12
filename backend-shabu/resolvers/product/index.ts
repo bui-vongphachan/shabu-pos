@@ -4,8 +4,15 @@ import { addProduct } from "./addProduct.resolver";
 import { updateProduct } from "./updateProduct.mutation";
 import { addProductSizes } from "./addProductSizes.mutation";
 import { deleteProductSizes } from "./deleteProductSizes.mutation";
+import { deleteProduct } from "./deleteProduct.mutation";
 
 export const productResolver = {
   Query: { getProducts, getProductCategories },
-  Mutation: { addProduct, updateProduct, addProductSizes, deleteProductSizes },
+  Mutation: {
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    addProductSizes,
+    deleteProductSizes,
+  },
 };

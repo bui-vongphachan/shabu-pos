@@ -7,6 +7,7 @@ export interface ProductDoc extends mongoose.Document {
   category: string;
   options: ProductOptionDoc[];
   sizes: SizeDoc[];
+  isDeleted: boolean;
   created_date: string;
   schema_version: number;
 }
@@ -20,6 +21,7 @@ const Schema = new mongoose.Schema({
   category: { type: String, default: null, require: true },
   options: [{ type: mongoose.Schema.Types.ObjectId, ref: "product_options" }],
   sizes: [{ type: mongoose.Schema.Types.ObjectId, ref: "product_sizes" }],
+  isDeleted: { type: Boolean, default: false, require: true },
   created_date: { type: Date, default: Date.now },
   schema_version: { type: Number, default: 2 },
 });

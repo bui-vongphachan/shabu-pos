@@ -26,7 +26,7 @@ const schema = makeExecutableSchema({
 
 const server = new ApolloServer({
     schema, formatError: (err): GraphQLFormattedError => {
-        console.trace(err)
+        console.log(err)
 
         if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
             err.message = "ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ"
