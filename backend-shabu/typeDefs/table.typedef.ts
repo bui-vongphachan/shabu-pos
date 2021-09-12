@@ -6,16 +6,16 @@ export const tableTypeDef = gql`
     name: String
     created_date: Date
     schema_version: Int
-  },
+  }
   type ReadtTable {
-    table: Table,
-    status: String,
+    table: Table
+    status: String
     orders: Int
   }
   type Query {
-    getTables: [Table],
+    getTables: [Table]
     getReadyTables: [ReadtTable]
-  },
+  }
   type Mutation {
     addTable(name: String): [Table]
   }

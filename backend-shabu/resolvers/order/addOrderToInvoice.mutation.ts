@@ -1,68 +1,65 @@
 import { gql, UserInputError } from "apollo-server-express";
 import { InvoiceModel, OrderModel, ProductModel } from "../../models";
-import { gqlInvoiceFields } from "../../typeDefs";
 
-export const addOrderToInvoice = async (_: any, args: {
-    invoice_id: string,
+export const addOrderToInvoice = async (
+  _: any,
+  args: {
+    invoice_id: string;
     products: [
-        {
-            id: string,
-            quantity: number,
-            size: string
-        }
-    ]
-}) => {
-    const fullDetailProducts = await ProductModel.find({
-        _id: {
-            $in: args.products.map(item => item.id)
-        }
-    }).populate("sizes")
+      {
+        id: string;
+        quantity: number;
+        size: string;
+      }
+    ];
+  }
+) => {
+  const fullDetailProducts = await ProductModel.find({
+    _id: {
+      $in: args.products.map((item) => item.id),
+    },
+  }).populate("sizes");
 
-    const orders = fullDetailProducts.map(fullDetailProduct => {
-        const inputProduct = args.products.find(inputProduct => fullDetailProduct.id === inputProduct.id)
-        const fullDetailProductSize = fullDetailProduct.sizes.find(fullDetailProductSize => fullDetailProductSize.id === inputProduct?.size)
-        if (!inputProduct || !fullDetailProductSize) throw new UserInputError("Error occurs")
-        return {
-            product: fullDetailProduct.id,
-            name: fullDetailProduct.name,
-            size: {
-                id: fullDetailProductSize!.id,
-                name: fullDetailProductSize!.name,
-                price: fullDetailProductSize!.price
-            },
-            quantity: inputProduct!.quantity,
-            totalPrice: inputProduct!.quantity * fullDetailProductSize!.price
-        }
-    })
+  const orders = fullDetailProducts.map((fullDetailProduct) => {
+    const inputProduct = args.products.find(
+      (inputProduct) => fullDetailProduct.id === inputProduct.id
+    );
+    const fullDetailProductSize = fullDetailProduct.sizes.find(
+      (fullDetailProductSize) => fullDetailProductSize.id === inputProduct?.size
+    );
+    if (!inputProduct || !fullDetailProductSize)
+      throw new UserInputError("Error occurs");
+    return {
+      product: fullDetailProduct.id,
+      name: fullDetailProduct.name,
+      size: {
+        id: fullDetailProductSize!.id,
+        name: fullDetailProductSize!.name,
+        price: fullDetailProductSize!.price,
+      },
+      quantity: inputProduct!.quantity,
+      totalPrice: inputProduct!.quantity * fullDetailProductSize!.price,
+    };
+  });
 
-    const newOrders = await OrderModel.insertMany(orders)
+  const newOrders = await OrderModel.insertMany(orders);
 
-    await InvoiceModel.findOneAndUpdate(
-        { _id: args.invoice_id },
-        {
-            $addToSet: {
-                orders: {
-                    $each: newOrders.map(order => order.id)
-                }
-            },
-            $inc: {
-                total_price: newOrders.reduce((prev, curr) => prev + curr.totalPrice, 0)
-            }
-        }
-    )
-
-    return await InvoiceModel.getFullDetail({ invoice_id: args.invoice_id })
-}
-
-export const addOrderToInvoiceMutation = gql`
-    mutation AddOrderToInvoiceMutation(
-        $addOrderToInvoiceInvoiceId: ID
-        $addOrderToInvoiceProducts: [addOrderToInvoiceInput]
-    ) {
-        addOrderToInvoice(
-            invoice_id: $addOrderToInvoiceInvoiceId
-            products: $addOrderToInvoiceProducts
-        )
-        ${gqlInvoiceFields}
+  await InvoiceModel.findOneAndUpdate(
+    { _id: args.invoice_id },
+    {
+      $addToSet: {
+        orders: {
+          $each: newOrders.map((order) => order.id),
+        },
+      },
+      $inc: {
+        total_price: newOrders.reduce(
+          (prev, curr) => prev + curr.totalPrice,
+          0
+        ),
+      },
     }
-`
+  );
+
+  return await InvoiceModel.getFullDetail({ invoice_id: args.invoice_id });
+};

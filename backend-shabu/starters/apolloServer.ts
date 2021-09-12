@@ -1,47 +1,60 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer, gql } from "apollo-server-express";
 import { GraphQLFormattedError } from "graphql";
-import { invoiceResolver, orderResolver, productResolver, productSizeResolver, tableResolver } from "../resolvers";
-import { invoiceTypeDef, orderTypeDef, productSizeTypeDef, productTypeDef, tableTypeDef } from "../typeDefs";
+import {
+  invoiceResolver,
+  orderResolver,
+  productResolver,
+  productSizeResolver,
+  tableResolver,
+} from "../resolvers";
+import {
+  invoiceTypeDef,
+  orderTypeDef,
+  productSizeTypeDef,
+  productTypeDef,
+  tableTypeDef,
+} from "../typeDefs";
 import { productOptionTypeDef } from "../typeDefs/productOption.typede";
 
 const schema = makeExecutableSchema({
-    typeDefs: [
-        gql` scalar Date `,
-        tableTypeDef,
-        productTypeDef,
-        productSizeTypeDef,
-        invoiceTypeDef,
-        orderTypeDef,
-        productOptionTypeDef
-    ],
-    resolvers: [
-        tableResolver,
-        productResolver,
-        productSizeResolver,
-        invoiceResolver,
-        orderResolver
-    ]
+  typeDefs: [
+    gql`
+      scalar Date
+    `,
+    tableTypeDef,
+    productTypeDef,
+    productSizeTypeDef,
+    invoiceTypeDef,
+    orderTypeDef,
+    productOptionTypeDef,
+  ],
+  resolvers: [
+    tableResolver,
+    productResolver,
+    productSizeResolver,
+    invoiceResolver,
+    orderResolver,
+  ],
 });
 
 const server = new ApolloServer({
-    schema, formatError: (err): GraphQLFormattedError => {
-        console.log(err)
+  schema,
+  formatError: (err): GraphQLFormattedError => {
+    console.log(err);
 
-        if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
-            err.message = "ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ"
-        } else if (err?.extensions?.code === "BAD_USER_INPUT") {
-            err.message = "ໄດ້ຮັບຂໍ້ມູນທີ່ຜິດພາດ"
-        } else if (err.extensions?.exception.name === "MongoError") {
-            if (err.extensions?.exception.code === 11000) {
-                err.message = "ຂໍ້ມູນຊ້ຳກັນ"
-            }
-        }
+    if (err?.extensions?.code === "GRAPHQL_VALIDATION_FAILED") {
+      err.message = "ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ";
+    } else if (err?.extensions?.code === "BAD_USER_INPUT") {
+      err.message = "ໄດ້ຮັບຂໍ້ມູນທີ່ຜິດພາດ";
+    } else if (err.extensions?.exception.name === "MongoError") {
+      if (err.extensions?.exception.code === 11000) {
+        err.message = "ຂໍ້ມູນຊ້ຳກັນ";
+      }
+    }
 
-        return err
-
-    },
+    return err;
+  },
 });
 
-export { server, schema }
-
+export { server, schema };

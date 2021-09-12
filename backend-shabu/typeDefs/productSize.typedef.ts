@@ -8,13 +8,13 @@ export const productSizeTypeDef = gql`
     isDeleted: Boolean
     created_date: Date
     schema_version: Int
-  },
+  }
   input addSizeInput {
     name: String
     price: Float
   }
   type Mutation {
-    addSize(product_id: ID, sizes: [addSizeInput]): Product,
+    addSize(product_id: ID, sizes: [addSizeInput]): Product
     deleteSize(size_id: ID): [Product]
   }
 `;
