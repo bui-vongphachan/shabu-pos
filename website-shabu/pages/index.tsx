@@ -95,7 +95,6 @@ const Home = () => {
     selectedProducts[index] = { ...selectedProducts[index], [key]: value };
     const newArray = selectedProducts;
     setSelectedProducts([...newArray]);
-    console.log(newArray)
   };
 
   let context = {

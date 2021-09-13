@@ -1,49 +1,36 @@
 import { Form, Input, Radio, Space, Typography } from "antd";
-import { FormListFieldData } from "antd/lib/form/FormList";
-import { useState } from "react";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import { MainPageContext } from "../../pages";
 
-const OrderFieldComponent = (props: {
-  index: number;
-  field: FormListFieldData;
-  remove: (index: number) => void;
-}) => {
+const OrderFieldComponent = (props: { index: number }) => {
   const mainPageContext = useContext(MainPageContext);
-  const { index, field, remove } = props;
+  const { index } = props;
   const { selectedProducts, removeFromCart, updateCart } = mainPageContext;
   return (
     <div className=" w-full border-2 px-3 pt-3 my-3 rounded-md">
-      <Space className=" grid grid-cols-2" key={field.key} align="baseline">
+      <Space className=" grid grid-cols-2" align="baseline">
         <Typography.Title level={5}>
-          {`${1 + index}. ${selectedProducts[index].product.name}`}
+          {`${1 + index}. ${selectedProducts[index]?.product.name}`}
         </Typography.Title>
         <div className=" text-right">
-          <a
-            onClick={() => {
-              remove(index);
-              removeFromCart(index);
-            }}
-          >
-            ລົບ
-          </a>
+          <a onClick={() => removeFromCart(index)}>ລົບ</a>
         </div>
       </Space>
       <Form.Item
         label="ຂະໜາດ"
-        name={[field.name, "size"]}
-        fieldKey={[field.fieldKey, "size"]}
+        name={["orders", index, "size"]}
+        fieldKey={["orders", index, "size"]}
         style={{ margin: 0 }}
         rules={[{ required: true, message: "ກະລຸນາເລືອກຂະໜາດ" }]}
-        initialValue={selectedProducts[index].size}
+        initialValue={selectedProducts[index]?.product.sizes[0].id}
       >
         <Radio.Group
-          options={selectedProducts[index].product.sizes.map((item) => ({
+          options={selectedProducts[index]?.product.sizes.map((item) => ({
             value: item.id,
             label: item.name
           }))}
           onChange={(e) => {
-            const size = selectedProducts[index].product.sizes.find(
+            const size = selectedProducts[index]?.product.sizes.find(
               (item) => item.id === e.target.value
             );
             updateCart(index, "sizeData", size);
@@ -53,8 +40,8 @@ const OrderFieldComponent = (props: {
       </Form.Item>
       <Space className="grid grid-cols-2" align="baseline">
         <Form.Item
-          name={[field.name, "quantity"]}
-          fieldKey={[field.fieldKey, "quantity"]}
+          name={["orders", index, "quantity"]}
+          fieldKey={["orders", index, "quantity"]}
           rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
           initialValue={1}
           style={{ marginBottom: "1rem" }}
@@ -64,15 +51,15 @@ const OrderFieldComponent = (props: {
             type="number"
             max={20}
             min={1}
-            onChange={(e) => {
-              updateCart(index, "quantity", parseInt(e.target.value));
-            }}
+            onChange={(e) =>
+              updateCart(index, "quantity", parseInt(e.target.value))
+            }
           />
         </Form.Item>
         <div className=" text-right">
           {(
-            selectedProducts[index].quantity *
-            selectedProducts[index].sizeData.price
+            selectedProducts[index]?.quantity *
+            selectedProducts[index]?.sizeData.price
           ).toLocaleString()}
         </div>
       </Space>
