@@ -1,19 +1,10 @@
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
-import {
-  Button,
-  Card,
-  Input,
-  List,
-  Radio,
-  Select,
-  Space,
-  Spin,
-  Typography
-} from "antd";
+import { gql, useMutation } from "@apollo/client";
+import { Button, Card, Input } from "antd";
 import { Form } from "antd";
 import QueueAnim from "rc-queue-anim";
 import { useContext, useEffect } from "react";
 import { MainPageContext } from "../../pages";
+import OrderFieldComponent from "./orderField.component";
 
 const NewOrderFormComponent = () => {
   const mainPageContext = useContext(MainPageContext);
@@ -54,14 +45,9 @@ const NewOrderFormComponent = () => {
   };
 
   useEffect(() => {
-    
-      form.setFieldsValue({
-        orders: selectedProducts.map((item) => ({
-          product: item.id,
-          size: item.sizes[0].id,
-          quantity: 1
-        }))
-      });
+    form.setFieldsValue({
+      orders: selectedProducts.map((item) => ({ ...item }))
+    });
   }, [selectedProducts]);
 
   return (
@@ -85,45 +71,12 @@ const NewOrderFormComponent = () => {
             {(fields, { add, remove }) =>
               fields.map((field, index) => (
                 <QueueAnim key={index}>
-                  <div
-                    key={index}
-                    className=" w-full border-2 px-3 pt-3 my-3 rounded-md"
-                  >
-                    <Space
-                      className="   grid grid-cols-2"
-                      key={field.key}
-                      align="baseline"
-                    >
-                      <Typography.Title level={5}>
-                        {`${1 + index}. ${selectedProducts[index]?.name}`}
-                      </Typography.Title>
-                      <div className=" text-right">
-                        <a
-                          onClick={() => {
-                            remove(index);
-                            removeFromCart(index);
-                          }}
-                        >
-                          ລົບ
-                        </a>
-                      </div>
-                    </Space>
-                    <Form.Item
-                      label="ຂະໜາດ"
-                      name={[field.name, "size"]}
-                      fieldKey={[field.fieldKey, "size"]}
-                      style={{ margin: 0 }}
-                      rules={[{ required: true, message: "ກະລຸນາເລືອກຂະໜາດ" }]}
-                      initialValue={selectedProducts[index]?.sizes[0].id}
-                    >
-                      <Radio.Group
-                        options={selectedProducts[index]?.sizes.map((item) => ({
-                          key: item.id,
-                          value: item.id,
-                          label: item.name
-                        }))}
-                      />
-                    </Form.Item>
+                  <div key={index}>
+                    <OrderFieldComponent
+                      index={index}
+                      field={field}
+                      remove={(index: number) => remove(index)}
+                    />
                   </div>
                 </QueueAnim>
               ))

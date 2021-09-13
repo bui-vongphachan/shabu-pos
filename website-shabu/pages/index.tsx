@@ -1,28 +1,29 @@
-import {
-  DocumentNode,
-  QueryResult,
-  useLazyQuery,
-  useQuery
-} from "@apollo/client";
+import { DocumentNode, QueryResult, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import { useEffect } from "react";
 import { createContext } from "react";
 import NewOrderFormComponent from "../components/homePage/newInvoiceForm.component";
 import OrderListComponent from "../components/homePage/invoiceList.componen";
 import DefaultLayout from "../layouts/default";
-import { InvoiceModel } from "../models/invoice";
 import ProductListComponent from "../components/homePage/productList.component";
 import { useState } from "react";
-import { ProductModel } from "../models";
+import { ProductModel, ProductSizeModel } from "../models";
+
+interface productInCart {
+  product: ProductModel;
+  size: string;
+  sizeData: ProductSizeModel;
+  quantity: number;
+}
 
 export const MainPageContext = createContext<{
-  selectedProducts: ProductModel[];
+  selectedProducts: productInCart[];
   getProductsResult: QueryResult | null;
   getInvoicesResult: QueryResult | null;
   getInvoicesString: DocumentNode | null;
   addToCart: (item: ProductModel) => void;
   removeFromCart: (index: number) => void;
   clearCart: () => void;
+  updateCart: (index: number, key: any, value: any) => void;
 }>({
   selectedProducts: [],
   getProductsResult: null,
@@ -30,11 +31,12 @@ export const MainPageContext = createContext<{
   getInvoicesString: null,
   addToCart: () => {},
   removeFromCart: () => {},
-  clearCart: () => {}
+  clearCart: () => {},
+  updateCart: () => {}
 });
 
 const Home = () => {
-  const [selectedProducts, setSelectedProducts] = useState<ProductModel[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<productInCart[]>([]);
   const getProductsResult = useQuery(gql`
     query Query {
       getProducts {
@@ -70,7 +72,16 @@ const Home = () => {
   const getInvoicesResult = useQuery(getInvoicesString);
 
   const addToCart = (item: ProductModel) => {
-    setSelectedProducts([...selectedProducts, item]);
+    const newArray = [
+      ...selectedProducts,
+      {
+        product: item,
+        sizeData: item.sizes[0],
+        size: item.sizes[0].id,
+        quantity: 1
+      }
+    ];
+    setSelectedProducts(newArray);
   };
 
   const removeFromCart = (itemIndex: number) => {
@@ -80,6 +91,13 @@ const Home = () => {
 
   const clearCart = () => setSelectedProducts([]);
 
+  const updateCart = (index: number, key: any, value: any) => {
+    selectedProducts[index] = { ...selectedProducts[index], [key]: value };
+    const newArray = selectedProducts;
+    setSelectedProducts([...newArray]);
+    console.log(newArray)
+  };
+
   let context = {
     getProductsResult,
     getInvoicesResult,
@@ -87,7 +105,8 @@ const Home = () => {
     selectedProducts,
     addToCart,
     removeFromCart,
-    clearCart
+    clearCart,
+    updateCart
   };
 
   return (
