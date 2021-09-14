@@ -1,14 +1,11 @@
-import { List, Popconfirm, Skeleton, Spin } from "antd";
-import { useEffect } from "react";
+import { List, Skeleton, Spin } from "antd";
 import { useContext } from "react";
 import { InvoiceModel } from "../../models/invoice";
 import { MainPageContext } from "../../pages";
 
 const OrderListComponent = () => {
   const mainPageContext = useContext(MainPageContext);
-
   const { data, error, loading } = mainPageContext.getInvoicesResult!;
-
   if (loading) {
     return (
       <Spin
@@ -28,7 +25,7 @@ const OrderListComponent = () => {
   const invoices: InvoiceModel[] = !data.getInvoices ? [] : data.getInvoices;
 
   return (
-    <div>
+    <div className=" overflow-scroll" style={{ maxHeight: `calc(89vh)` }}>
       <List
         className=""
         itemLayout="horizontal"

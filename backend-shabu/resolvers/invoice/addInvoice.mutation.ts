@@ -1,4 +1,3 @@
-import { gql } from "apollo-server-express";
 import {
   InvoiceModel,
   ProductModel,
@@ -42,7 +41,7 @@ export const addInvoice = async (
           fullDetailProductSize.id === inputProduct?.size
       );
       if (!size) throw new Error("Size not found");
-
+        
       return {
         product: product.id,
         name: product.name,

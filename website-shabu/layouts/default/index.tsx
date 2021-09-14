@@ -1,37 +1,41 @@
-import { Layout, Menu } from "antd"
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import dynamic from 'next/dynamic'
+import { Layout } from "antd";
+import { createContext, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 
-const Navbar = dynamic(() => import('../../components/navbar'))
+const Navbar = dynamic(() => import("../../components/navbar"));
 
-const { Footer, Content } = Layout;
+const { Content } = Layout;
 
+export const LayoutContext = createContext<{
+  navHeight: number;
+}>({
+  navHeight: 0
+});
 
 const DefaultLayout = (props: any) => {
-    const [navHeight, setNavHeight] = useState(0)
-    const [footerHeight, footerNavHeight] = useState(0)
-    const navRef: any = useRef(null)
-    const footerRef: any = useRef(null)
-    useEffect(() => {
-        setNavHeight(navRef.current.clientHeight)
-        footerNavHeight(footerRef.current.clientHeight)
-    })
-    return (
-        <Layout>
-            <div ref={navRef}>
-                <Navbar />
-            </div>
-            <div style={{
-                height: `calc(100vh - ${navHeight + footerHeight}px)`,
-                overflow: "auto"
-            }}>
-                <Content>{props.children}</Content>
-            </div>
-            <div ref={footerRef}>
-                {/* <Footer>Footer</Footer> */}
-            </div>
-        </Layout>
-    )
-}
+  const [navHeight, setNavHeight] = useState(0);
+  const navRef: any = useRef(null);
+  useEffect(() => {
+    setNavHeight(navRef.current.clientHeight);
+  });
+  const context = { navHeight };
+  return (
+    <Layout>
+      <LayoutContext.Provider value={context}>
+        <div ref={navRef}>
+          <Navbar />
+        </div>
+        <div
+          style={{
+            height: `calc(100vh - ${navHeight}px)`,
+            overflow: "auto"
+          }}
+        >
+          <Content>{props.children}</Content>
+        </div>
+      </LayoutContext.Provider>
+    </Layout>
+  );
+};
 
-export default DefaultLayout
+export default DefaultLayout;

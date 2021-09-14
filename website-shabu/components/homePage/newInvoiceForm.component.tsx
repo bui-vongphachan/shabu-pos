@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { Button, Card, Input } from "antd";
+import { Button, Card, Input, Modal } from "antd";
 import { Form } from "antd";
 import QueueAnim from "rc-queue-anim";
 import { useContext } from "react";
@@ -8,7 +8,6 @@ import OrderFieldComponent from "./orderField.component";
 
 interface FormFields {
   customer_name: string;
-  orders: [{ size: string; quantity: number }];
 }
 
 const NewOrderFormComponent = () => {
@@ -29,21 +28,28 @@ const NewOrderFormComponent = () => {
   const [form] = Form.useForm();
 
   const submitForm = async (formValues: FormFields) => {
-    const { customer_name, orders } = formValues;
+    const { customer_name } = formValues;
     addInvoice({
       variables: {
         newInvoiceCustomerName: customer_name,
-        newInvoiceFoods: orders.map((item, index) => ({
-          product_id: selectedProducts[index].product.id,
+        newInvoiceFoods: selectedProducts.map((item) => ({
+          product_id: item.product.id,
           size_id: item.size,
           quantity: parseInt(item.quantity + "")
         }))
       },
       refetchQueries: [{ query: mainPageContext.getInvoicesString! }]
-    }).then(() => {
-      form.resetFields();
-      clearCart();
-    });
+    })
+      .then(() => {
+        form.resetFields();
+        clearCart();
+      })
+      .catch((er) =>
+        Modal.error({
+          title: "Server error",
+          content: er.message
+        })
+      );
   };
 
   return (
@@ -59,10 +65,10 @@ const NewOrderFormComponent = () => {
           title="ເພີ່ມອໍເດີ້ໃໝ່"
           extra={
             <Button
+              htmlType="submit"
               disabled={
                 addInvoiceResult.loading || selectedProducts.length === 0
               }
-              htmlType="submit"
             >
               ຢືນຢັນ
             </Button>
@@ -73,16 +79,19 @@ const NewOrderFormComponent = () => {
             name="customer_name"
             key="customer_name"
             rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
+            style={{ margin: 0 }}
           >
             <Input type="text" disabled={addInvoiceResult.loading} />
           </Form.Item>
-          {selectedProducts.map((item, index) => (
-            <QueueAnim key={index}>
-              <div key={index}>
-                <OrderFieldComponent index={index} />
-              </div>
-            </QueueAnim>
-          ))}
+          <div className=" overflow-scroll" style={{ maxHeight: `calc(65vh)` }}>
+            {selectedProducts.map((item, index) => (
+              <QueueAnim key={index}>
+                <div key={index}>
+                  <OrderFieldComponent productInCart={item} index={index} />
+                </div>
+              </QueueAnim>
+            ))}
+          </div>
           <Button
             disabled={addInvoiceResult.loading || selectedProducts.length === 0}
             htmlType="submit"

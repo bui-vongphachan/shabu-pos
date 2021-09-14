@@ -8,7 +8,7 @@ import ProductListComponent from "../components/homePage/productList.component";
 import { useState } from "react";
 import { ProductModel, ProductSizeModel } from "../models";
 
-interface productInCart {
+export interface ProductInCart {
   product: ProductModel;
   size: string;
   sizeData: ProductSizeModel;
@@ -16,7 +16,7 @@ interface productInCart {
 }
 
 export const MainPageContext = createContext<{
-  selectedProducts: productInCart[];
+  selectedProducts: ProductInCart[];
   getProductsResult: QueryResult | null;
   getInvoicesResult: QueryResult | null;
   getInvoicesString: DocumentNode | null;
@@ -36,7 +36,7 @@ export const MainPageContext = createContext<{
 });
 
 const Home = () => {
-  const [selectedProducts, setSelectedProducts] = useState<productInCart[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<ProductInCart[]>([]);
   const getProductsResult = useQuery(gql`
     query Query {
       getProducts {

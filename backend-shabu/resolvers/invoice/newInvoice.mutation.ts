@@ -18,6 +18,7 @@ export const newInvoice = async (
     foods.map(async (item) => {
       const product = await ProductModel.findOne({ _id: item.product_id });
       const size = await ProductSizeModel.findOne({ _id: item.size_id });
+
       return {
         product: product?.id,
         name: product?.name,
