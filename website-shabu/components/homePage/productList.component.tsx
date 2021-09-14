@@ -10,7 +10,7 @@ const ProductListComponent = () => {
   return (
     <div className=" overflow-scroll" style={{ maxHeight: `calc(89vh)` }}>
       <List
-        grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 2, xl: 2, xxl: 2 }}
+        grid={{ gutter: 0, xs: 1, sm: 1, md: 1, lg: 2, xl: 2, xxl: 2 }}
         itemLayout="horizontal"
         locale={{ emptyText: "ບໍ່ມີລາຍການອາຫານ" }}
         loading={loading}

@@ -54,19 +54,23 @@ const OrderFieldComponent = (props: {
           fieldKey={["orders", index, "quantity"]}
           rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
           initialValue={productInCart.quantity}
-          style={{ marginBottom: "1rem", width: "100px" }}
+          style={{ marginBottom: "1rem" }}
         >
           <small className=" hidden">{productInCart.quantity}</small>
-          <Input
-            placeholder="ຈຳນວນ"
-            type="number"
-            max={20}
-            min={1}
-            value={productInCart.quantity}
-            onChange={(e) =>
-              updateCart(index, "quantity", parseInt(e.target.value))
-            }
-          />
+          <Space align="baseline">
+            <Typography.Text>ຈຳນວນ: </Typography.Text>
+            <Input
+            style={{width: 70}}
+              placeholder="ຈຳນວນ"
+              type="number"
+              max={20}
+              min={1}
+              value={productInCart.quantity}
+              onChange={(e) =>
+                updateCart(index, "quantity", parseInt(e.target.value))
+              }
+            />
+          </Space>
         </Form.Item>
         <div className=" text-right">
           {(
