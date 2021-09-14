@@ -38,7 +38,7 @@ const OrderListComponent = () => {
                 title={`${invoices.length - index}. ${item.customer_name}`}
                 description={item.orders.length + " ລາຍການ"}
               />
-              {item.total_price.toLocaleString()}
+              {item.final_price.toLocaleString()}
             </Skeleton>
           </List.Item>
         )}

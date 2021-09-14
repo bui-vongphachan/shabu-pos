@@ -60,11 +60,11 @@ const Home = () => {
       getInvoices {
         id
         customer_name
+        final_price
         orders {
           id
           name
         }
-        total_price
       }
     }
   `;

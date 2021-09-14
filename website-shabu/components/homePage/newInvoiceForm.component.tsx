@@ -8,6 +8,7 @@ import OrderFieldComponent from "./orderField.component";
 
 interface FormFields {
   customer_name: string;
+  delivery_price: string | number
 }
 
 const NewOrderFormComponent = () => {
@@ -17,10 +18,12 @@ const NewOrderFormComponent = () => {
     mutation NewInvoiceMutation(
       $newInvoiceCustomerName: String
       $newInvoiceFoods: [NewInvoiceProductInput]
+      $newInvoiceDeliveryPrice: Float
     ) {
       newInvoice(
         customer_name: $newInvoiceCustomerName
         foods: $newInvoiceFoods
+        delivery_price: $newInvoiceDeliveryPrice
       )
     }
   `);
@@ -28,10 +31,11 @@ const NewOrderFormComponent = () => {
   const [form] = Form.useForm();
 
   const submitForm = async (formValues: FormFields) => {
-    const { customer_name } = formValues;
+    const { customer_name, delivery_price } = formValues;
     addInvoice({
       variables: {
         newInvoiceCustomerName: customer_name,
+        newInvoiceDeliveryPrice: parseFloat(delivery_price + ""),
         newInvoiceFoods: selectedProducts.map((item) => ({
           product_id: item.product.id,
           size_id: item.size,
@@ -79,9 +83,21 @@ const NewOrderFormComponent = () => {
             name="customer_name"
             key="customer_name"
             rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
-            style={{ margin: 0 }}
           >
             <Input type="text" disabled={addInvoiceResult.loading} />
+          </Form.Item>
+          <Form.Item
+            label="ຄ່າສົ່ງ"
+            name="delivery_price"
+            key="delivery_price"
+            initialValue="0"
+          >
+            <Input
+              type="number"
+              inputMode="numeric"
+              min="0"
+              disabled={addInvoiceResult.loading}
+            />
           </Form.Item>
           <div className=" overflow-scroll" style={{ maxHeight: `calc(65vh)` }}>
             {selectedProducts.map((item, index) => (

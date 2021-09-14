@@ -10,6 +10,7 @@ export const invoiceTypeDef = gql`
     orders: [Order]
     time_spent: Int
     total_price: Float
+    delivery_price: Float
     final_price: Float
     payment_method: String
     money_received: Float
@@ -52,6 +53,10 @@ export const invoiceTypeDef = gql`
       payer_contact: String
       isLeft: Boolean
     ): Invoice
-    newInvoice(customer_name: String, foods: [NewInvoiceProductInput]): Boolean
+    newInvoice(
+      customer_name: String
+      foods: [NewInvoiceProductInput]
+      delivery_price: Float
+    ): Boolean
   }
 `;

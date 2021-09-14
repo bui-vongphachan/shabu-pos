@@ -18,6 +18,7 @@ export interface InvoiceDoc extends mongoose.Document {
   orders: OrderDoc[];
   time_spent: number;
   total_price: number;
+  delivery_price: number;
   final_price: number;
   payment_method: PaymentMethods;
   money_received: number;
@@ -57,6 +58,7 @@ const Schema = new mongoose.Schema({
   ],
   time_spent: { type: Number, default: 0, require: true },
   total_price: { type: Number, default: 0, require: true },
+  delivery_price: { type: Number, default: 0, require: true },
   final_price: { type: Number, default: 0, require: true },
   payment_method: {
     type: String,
