@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Avatar, List, notification, Popconfirm, Skeleton } from "antd";
+import { List, notification, Popconfirm, Skeleton } from "antd";
 import gql from "graphql-tag";
 import { useContext } from "react";
 import { MenuPageContext } from "../../pages/menu";
@@ -58,7 +58,12 @@ const ProductListMenuComponent = () => {
         >
           <Skeleton loading={false}>
             <List.Item.Meta
-              avatar={<GiHotMeal size="25px" className=" text-indigo-400 hover:text-indigo-500" />}
+              avatar={
+                <GiHotMeal
+                  size="25px"
+                  className=" text-indigo-400 hover:text-indigo-500"
+                />
+              }
               title={`${menuPageContext.products.length - index}. ${item.name}`}
               description={item.category}
             />

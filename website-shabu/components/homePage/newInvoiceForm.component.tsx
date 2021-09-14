@@ -41,8 +41,7 @@ const NewOrderFormComponent = () => {
           size_id: item.size,
           quantity: parseInt(item.quantity + "")
         }))
-      },
-      refetchQueries: [{ query: mainPageContext.getInvoicesString! }]
+      }
     })
       .then(() => {
         form.resetFields();
