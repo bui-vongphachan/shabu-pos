@@ -13,8 +13,7 @@ const Navbar = (props: any) => {
     const checkPath = (currentPath: string, activePath: string) =>
       currentPath.startsWith(activePath, 0);
     if (checkPath(router.pathname, "/menu")) setActive("menu");
-    else if (checkPath(router.pathname, "/table")) setActive("table");
-    else if (checkPath(router.pathname, "/report")) setActive("report");
+    else if (checkPath(router.pathname, "/orders")) setActive("orders");
     else if (checkPath(router.pathname, "/")) setActive("home");
   }, [router.pathname]);
 
@@ -23,6 +22,9 @@ const Navbar = (props: any) => {
       <Menu mode="horizontal" selectedKeys={[active]}>
         <Menu.Item key="home">
           <Link href="/">Home</Link>
+        </Menu.Item>
+        <Menu.Item key="orders">
+          <Link href="/orders">Orders</Link>
         </Menu.Item>
         <Menu.Item key="menu">
           <Link href="/menu">Menu</Link>
