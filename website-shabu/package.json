@@ -20,6 +20,7 @@
     "graphql-tag": "^2.12.5",
     "moment": "^2.29.1",
     "next": "11.1.0",
+    "nextjs-progressbar": "0.0.11",
     "rc-queue-anim": "^2.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
