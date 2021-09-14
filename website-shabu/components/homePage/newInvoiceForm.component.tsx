@@ -41,7 +41,7 @@ const NewOrderFormComponent = () => {
           size_id: item.size,
           quantity: parseInt(item.quantity + "")
         }))
-      }
+      },
     })
       .then(() => {
         form.resetFields();

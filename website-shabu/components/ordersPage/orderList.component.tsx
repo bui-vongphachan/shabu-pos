@@ -1,32 +1,12 @@
 import { List, Skeleton, Spin } from "antd";
 import classNames from "classnames";
 import { useContext } from "react";
-import { InvoiceModel } from "../../models/invoice";
 import { OrdersPageContext } from "../../pages/orders";
 
 const OrderListComponent = () => {
   const orderPageContext = useContext(OrdersPageContext);
 
-  const { getInvoicesResult, selectedInvoice, setSelectedInvoice } = orderPageContext;
-
-  const { data, error, loading } = getInvoicesResult!;
-  if (loading) {
-    return (
-      <Spin
-        size="large"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%"
-        }}
-      />
-    );
-  }
-
-  if (error) return <span>ERROR</span>;
-
-  const invoices: InvoiceModel[] = !data.getInvoices ? [] : data.getInvoices;
+  const { invoices, selectedInvoice, setSelectedInvoice } = orderPageContext;
 
   return (
     <div>
