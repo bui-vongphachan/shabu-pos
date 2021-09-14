@@ -10,7 +10,7 @@ export const newInvoice = async (
   args: {
     foods: [{ product_id: string; size_id: string; quantity: number }];
     customer_name: string;
-    delivery_price: number
+    delivery_price: number;
   }
 ) => {
   const { foods, customer_name, delivery_price } = args;
@@ -26,19 +26,24 @@ export const newInvoice = async (
         size_id: size?.id,
         quantity: item.quantity,
         totalPrice: item.quantity * size!.price,
+        size: {
+          id: size?.id,
+          name: size?.name,
+          price: size?.price,
+        },
       };
     })
   );
 
   const newOrders = await OrderModel.insertMany(orders);
-  const totalPrice = newOrders.reduce((sum, item) => (sum + item.totalPrice), 0)
+  const totalPrice = newOrders.reduce((sum, item) => sum + item.totalPrice, 0);
 
   await new InvoiceModel({
     orders: newOrders.map((item) => item.id),
     customer_name,
     total_price: totalPrice,
     delivery_price: delivery_price,
-    final_price: totalPrice + delivery_price
+    final_price: totalPrice + delivery_price,
   }).save();
 
   return true;

@@ -1,12 +1,11 @@
-import { DocumentNode, QueryResult, useQuery } from "@apollo/client";
+import { QueryResult, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import { createContext } from "react";
-import NewOrderFormComponent from "../components/homePage/newInvoiceForm.component";
-import OrderListComponent from "../components/homePage/invoiceList.componen";
-import DefaultLayout from "../layouts/default";
-import ProductListComponent from "../components/homePage/productList.component";
+import { createContext } from "react"; 
+import DefaultLayout from "../layouts/default"; 
 import { useState } from "react";
 import { ProductModel, ProductSizeModel } from "../models";
+import ProductListComponent from "../components/homePage/productList.component";
+import NewOrderFormComponent from "../components/homePage/newInvoiceForm.component";
 
 export interface ProductInCart {
   product: ProductModel;
@@ -18,8 +17,6 @@ export interface ProductInCart {
 export const MainPageContext = createContext<{
   selectedProducts: ProductInCart[];
   getProductsResult: QueryResult | null;
-  getInvoicesResult: QueryResult | null;
-  getInvoicesString: DocumentNode | null;
   addToCart: (item: ProductModel) => void;
   removeFromCart: (index: number) => void;
   clearCart: () => void;
@@ -27,8 +24,6 @@ export const MainPageContext = createContext<{
 }>({
   selectedProducts: [],
   getProductsResult: null,
-  getInvoicesResult: null,
-  getInvoicesString: null,
   addToCart: () => {},
   removeFromCart: () => {},
   clearCart: () => {},
@@ -54,22 +49,6 @@ const Home = () => {
       }
     }
   `);
-
-  const getInvoicesString = gql`
-    query Query {
-      getInvoices {
-        id
-        customer_name
-        final_price
-        orders {
-          id
-          name
-        }
-      }
-    }
-  `;
-
-  const getInvoicesResult = useQuery(getInvoicesString);
 
   const addToCart = (item: ProductModel) => {
     const newArray = [
@@ -99,8 +78,6 @@ const Home = () => {
 
   let context = {
     getProductsResult,
-    getInvoicesResult,
-    getInvoicesString,
     selectedProducts,
     addToCart,
     removeFromCart,
