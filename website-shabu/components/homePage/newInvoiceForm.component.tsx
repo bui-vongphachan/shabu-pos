@@ -1,5 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
-import { Button, Card, Input, Modal } from "antd";
+import { Button, Card, Input, Modal, notification } from "antd";
 import { Form } from "antd";
 import QueueAnim from "rc-queue-anim";
 import { useContext } from "react";
@@ -8,7 +8,7 @@ import OrderFieldComponent from "./orderField.component";
 
 interface FormFields {
   customer_name: string;
-  delivery_price: string | number
+  delivery_price: string | number;
 }
 
 const NewOrderFormComponent = () => {
@@ -47,6 +47,9 @@ const NewOrderFormComponent = () => {
       .then(() => {
         form.resetFields();
         clearCart();
+        notification.success({
+          message: "ສ້າງອໍເດີ້ສຳເລັດ"
+        });
       })
       .catch((er) =>
         Modal.error({
@@ -57,64 +60,77 @@ const NewOrderFormComponent = () => {
   };
 
   return (
-    <div>
+    <div className=" col-span-2">
       <Form
         form={form}
         layout="vertical"
         requiredMark={false}
         onFinish={submitForm}
+        className=" gap-3 grid grid-cols-2"
       >
-        <Card
-          className=" rounded-md"
-          title="ເພີ່ມອໍເດີ້ໃໝ່"
-          extra={
+        <div>
+          <Card className=" rounded-md" title="ລາຍການອາຫານ">
+            <div
+              className=" overflow-scroll"
+              style={{ maxHeight: `calc(65vh)` }}
+            >
+              {selectedProducts.map((item, index) => (
+                <QueueAnim key={index}>
+                  <div key={index}>
+                    <OrderFieldComponent productInCart={item} index={index} />
+                  </div>
+                </QueueAnim>
+              ))}
+            </div>
+          </Card>
+        </div>
+        <div>
+          <Card
+            className=" rounded-md"
+            title="ເພີ່ມອໍເດີ້ໃໝ່"
+            extra={
+              <Button
+                htmlType="submit"
+                disabled={
+                  addInvoiceResult.loading || selectedProducts.length === 0
+                }
+              >
+                ຢືນຢັນ
+              </Button>
+            }
+          >
+            <Form.Item
+              label="ຊື່ລູກຄ້າ"
+              name="customer_name"
+              key="customer_name"
+              rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
+            >
+              <Input type="text" disabled={addInvoiceResult.loading} />
+            </Form.Item>
+            <Form.Item
+              label="ຄ່າສົ່ງ"
+              name="delivery_price"
+              key="delivery_price"
+              initialValue="0"
+            >
+              <Input
+                type="number"
+                inputMode="numeric"
+                min="0"
+                disabled={addInvoiceResult.loading}
+              />
+            </Form.Item>
+
             <Button
-              htmlType="submit"
               disabled={
                 addInvoiceResult.loading || selectedProducts.length === 0
               }
+              htmlType="submit"
             >
               ຢືນຢັນ
             </Button>
-          }
-        >
-          <Form.Item
-            label="ຊື່ລູກຄ້າ"
-            name="customer_name"
-            key="customer_name"
-            rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
-          >
-            <Input type="text" disabled={addInvoiceResult.loading} />
-          </Form.Item>
-          <Form.Item
-            label="ຄ່າສົ່ງ"
-            name="delivery_price"
-            key="delivery_price"
-            initialValue="0"
-          >
-            <Input
-              type="number"
-              inputMode="numeric"
-              min="0"
-              disabled={addInvoiceResult.loading}
-            />
-          </Form.Item>
-          <div className=" overflow-scroll" style={{ maxHeight: `calc(65vh)` }}>
-            {selectedProducts.map((item, index) => (
-              <QueueAnim key={index}>
-                <div key={index}>
-                  <OrderFieldComponent productInCart={item} index={index} />
-                </div>
-              </QueueAnim>
-            ))}
-          </div>
-          <Button
-            disabled={addInvoiceResult.loading || selectedProducts.length === 0}
-            htmlType="submit"
-          >
-            ຢືນຢັນ
-          </Button>
-        </Card>
+          </Card>
+        </div>
       </Form>
     </div>
   );

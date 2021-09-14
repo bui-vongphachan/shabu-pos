@@ -10,7 +10,7 @@ const OrderFieldComponent = (props: {
   const { index, productInCart } = props;
   const { removeFromCart, updateCart } = mainPageContext;
   return (
-    <div className=" w-full border-2 px-3 pt-3 my-3 rounded-md">
+    <div className=" w-full border-2 px-3 pt-3 mb-1 hover:shadow-sm rounded-md">
       <Form.Item
         className=" hidden"
         fieldKey={["orders", index, "product_id"]}
@@ -49,12 +49,12 @@ const OrderFieldComponent = (props: {
           }}
         />
       </Form.Item>
-      <Space className="grid grid-cols-2" align="baseline">
+      <Space className="grid grid-cols-2 mt-2" align="baseline">
         <Form.Item
           fieldKey={["orders", index, "quantity"]}
           rules={[{ required: true, message: "ກະລຸນາປ້ອນຂໍ້ມູນ" }]}
           initialValue={productInCart.quantity}
-          style={{ marginBottom: "1rem" }}
+          style={{ marginBottom: "1rem", width: "100px" }}
         >
           <small className=" hidden">{productInCart.quantity}</small>
           <Input

@@ -113,7 +113,6 @@ const Home = () => {
       <div className=" container gap-3 grid grid-cols-3 m-auto mt-3">
         <ProductListComponent />
         <NewOrderFormComponent />
-        <OrderListComponent />
       </div>
     </MainPageContext.Provider>
   );
