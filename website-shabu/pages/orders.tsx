@@ -71,7 +71,9 @@ const getInvoicesString = gql`
         name
         size {
           name
+          price
         }
+        quantity
         totalPrice
       }
     }
