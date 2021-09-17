@@ -1,4 +1,3 @@
-import { QueryResult, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { GetServerSidePropsContext } from "next";
 import { useState } from "react";
@@ -69,6 +68,8 @@ const getInvoicesString = gql`
       id
       customer_name
       final_price
+      totalFoodPrice
+      delivery_price
       orders {
         id
         name

@@ -19,6 +19,7 @@ export interface InvoiceDoc extends mongoose.Document {
   time_spent: number;
   total_price: number;
   delivery_price: number;
+  totalFoodPrice: number;
   final_price: number;
   payment_method: PaymentMethods;
   money_received: number;
@@ -57,6 +58,7 @@ const Schema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "orders", require: true },
   ],
   time_spent: { type: Number, default: 0, require: true },
+  totalFoodPrice: { type: Number, default: 0, require: true },
   total_price: { type: Number, default: 0, require: true },
   delivery_price: { type: Number, default: 0, require: true },
   final_price: { type: Number, default: 0, require: true },

@@ -10,6 +10,7 @@ export const invoiceTypeDef = gql`
     orders: [Order]
     time_spent: Int
     total_price: Float
+    totalFoodPrice: Float
     delivery_price: Float
     final_price: Float
     payment_method: String

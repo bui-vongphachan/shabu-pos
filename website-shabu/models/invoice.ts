@@ -12,6 +12,8 @@ export interface InvoiceModel {
   arrived_time: string;
   orders: OrderModel[];
   time_spent: number;
+  delivery_price: number;
+  totalFoodPrice: number;
   total_price: number;
   final_price: number;
   payment_method: string;

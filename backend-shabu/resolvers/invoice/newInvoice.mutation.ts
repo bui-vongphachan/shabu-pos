@@ -76,6 +76,7 @@ export const newInvoice = async (
     orders: newOrders.map((item) => item.id),
     customer_name,
     total_price: totalPrice,
+    totalFoodPrice: totalPrice,
     delivery_price: delivery_price,
     final_price: totalPrice + delivery_price,
   }).save();
