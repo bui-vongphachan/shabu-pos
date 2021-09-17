@@ -1,4 +1,4 @@
-import { Form, Input, Radio, Space, Typography } from "antd";
+import { Checkbox, Form, Input, Radio, Space, Typography } from "antd";
 import { useContext } from "react";
 import { MainPageContext, ProductInCart } from "../../pages";
 
@@ -29,7 +29,7 @@ const OrderFieldComponent = (props: {
       <Form.Item
         label="ຂະໜາດ"
         fieldKey={["orders", index, "size_id"]}
-        style={{ margin: 0 }}
+        style={{ margin: 0, marginBottom: "1rem" }}
         rules={[{ required: true, message: "ກະລຸນາເລືອກຂະໜາດ" }]}
         initialValue={productInCart.size}
       >
@@ -49,6 +49,31 @@ const OrderFieldComponent = (props: {
           }}
         />
       </Form.Item>
+      {productInCart.options.length === 0 ? null : (
+        <Form.Item
+          label="ຕົວເລືອກພິເສດ"
+          fieldKey={["orders", index, "options"]}
+          style={{ margin: 0, marginBottom: "1rem" }}
+          initialValue={productInCart.selectedOptions}
+        >
+          <Checkbox.Group
+            options={productInCart.options.map((item) => ({
+              label: item.name,
+              value: item.id
+            }))}
+            defaultValue={[]}
+            onChange={(values) =>
+              updateCart(
+                index,
+                "selectedOptions",
+                productInCart.options.filter((item) =>
+                  values.find((value) => value === item.id)
+                )
+              )
+            }
+          />
+        </Form.Item>
+      )}
       <Space className="grid grid-cols-2 mt-2" align="baseline">
         <Form.Item
           fieldKey={["orders", index, "quantity"]}
@@ -60,7 +85,7 @@ const OrderFieldComponent = (props: {
           <Space align="baseline">
             <Typography.Text>ຈຳນວນ: </Typography.Text>
             <Input
-            style={{width: 70}}
+              style={{ width: 70 }}
               placeholder="ຈຳນວນ"
               type="number"
               max={20}
@@ -72,12 +97,26 @@ const OrderFieldComponent = (props: {
             />
           </Space>
         </Form.Item>
+
         <div className=" text-right">
           {(
-            productInCart.quantity * productInCart.sizeData.price
+            productInCart.quantity * productInCart.sizeData.price +
+            productInCart.selectedOptions.reduce(
+              (sum, item) => sum + item.price,
+              0
+            )
           ).toLocaleString()}
         </div>
       </Space>
+      <Form.Item
+        label="ລາຍລະອຽດເພີ່ມເຕີມ"
+        fieldKey={["orders", index, "description"]}
+      >
+        <Input.TextArea
+          value={productInCart.description}
+          onChange={(e) => updateCart(index, "description", e.target.value)}
+        />
+      </Form.Item>
     </div>
   );
 };

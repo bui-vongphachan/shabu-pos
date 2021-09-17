@@ -72,6 +72,11 @@ const getInvoicesString = gql`
       orders {
         id
         name
+        options {
+          id
+          name
+          price
+        }
         size {
           name
           price

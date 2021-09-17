@@ -6,6 +6,9 @@ export const getProducts = async () => {
       path: "sizes",
       match: { isDeleted: false },
     })
+    .populate({
+      path: "options",
+    })
     .sort({ created_date: -1 });
 
   return item;

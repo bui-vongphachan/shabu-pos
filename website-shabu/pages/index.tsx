@@ -1,17 +1,21 @@
 import { QueryResult, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import { createContext } from "react"; 
-import DefaultLayout from "../layouts/default"; 
+import { createContext } from "react";
+import DefaultLayout from "../layouts/default";
 import { useState } from "react";
 import { ProductModel, ProductSizeModel } from "../models";
 import ProductListComponent from "../components/homePage/productList.component";
 import NewOrderFormComponent from "../components/homePage/newInvoiceForm.component";
+import { ProductOptionModel } from "../models/productOption";
 
 export interface ProductInCart {
   product: ProductModel;
   size: string;
   sizeData: ProductSizeModel;
   quantity: number;
+  options: ProductOptionModel[];
+  selectedOptions: ProductOptionModel[];
+  description: string;
 }
 
 export const MainPageContext = createContext<{
@@ -32,24 +36,7 @@ export const MainPageContext = createContext<{
 
 const Home = () => {
   const [selectedProducts, setSelectedProducts] = useState<ProductInCart[]>([]);
-  const getProductsResult = useQuery(gql`
-    query Query {
-      getProducts {
-        id
-        name
-        options {
-          name
-          price
-        }
-        sizes {
-          id
-          name
-          price
-        }
-      }
-    }
-  `);
-
+  const getProductsResult = useQuery(getInvoicesString);
   const addToCart = (item: ProductModel) => {
     const newArray = [
       ...selectedProducts,
@@ -57,7 +44,10 @@ const Home = () => {
         product: item,
         sizeData: item.sizes[0],
         size: item.sizes[0].id,
-        quantity: 1
+        quantity: 1,
+        options: item.options,
+        selectedOptions: [],
+        description: ""
       }
     ];
     setSelectedProducts(newArray);
@@ -98,3 +88,22 @@ const Home = () => {
 Home.getLayout = DefaultLayout;
 
 export default Home;
+
+const getInvoicesString = gql`
+  query Query {
+    getProducts {
+      id
+      name
+      options {
+        id
+        name
+        price
+      }
+      sizes {
+        id
+        name
+        price
+      }
+    }
+  }
+`;

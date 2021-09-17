@@ -12,10 +12,12 @@ export const orderTypeDef = gql`
     product: Product
     name: String
     isReceived: Boolean
+    options: [ProductOption]
     size_id: ID
     size: OrderProductSize
     quantity: Int
     totalPrice: Float
+    description: String
     isPaid: Boolean
     isDeleted: Boolean
     ordered_date: Date

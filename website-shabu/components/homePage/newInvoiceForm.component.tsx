@@ -39,7 +39,9 @@ const NewOrderFormComponent = () => {
         newInvoiceFoods: selectedProducts.map((item) => ({
           product_id: item.product.id,
           size_id: item.size,
-          quantity: parseInt(item.quantity + "")
+          quantity: parseInt(item.quantity + ""),
+          options: item.selectedOptions.map(item => item.id),
+          description: item.description
         }))
       },
     })

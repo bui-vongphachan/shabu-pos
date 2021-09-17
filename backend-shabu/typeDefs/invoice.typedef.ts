@@ -34,6 +34,8 @@ export const invoiceTypeDef = gql`
     product_id: ID
     size_id: ID
     quantity: Int
+    options: [ID]
+    description: String
   }
   type Mutation {
     addInvoice(

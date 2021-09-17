@@ -22,6 +22,7 @@ export interface OrderDoc extends mongoose.Document {
   size_id: string;
   quantity: number;
   totalPrice: number;
+  description: string;
   isPaid: boolean;
   isDeleted: boolean;
   ordered_date: string;
@@ -46,6 +47,13 @@ const Schema = new mongoose.Schema({
   },
   name: { type: String, default: null, require: true },
   isReceived: { type: Boolean, default: false, require: true },
+  options: [
+    {
+      name: { type: String },
+      price: { type: Number, default: 0 },
+      quantity: { type: Number, default: 1 },
+    },
+  ],
   size: {
     id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -58,6 +66,7 @@ const Schema = new mongoose.Schema({
   },
   quantity: { type: Number, default: 0, require: true },
   totalPrice: { type: Number, default: 0, require: true },
+  description: { type: String, default: 0, require: true },
   isPaid: { type: Boolean, default: false, require: true },
   isDeleted: { type: Boolean, default: false, require: true },
   ordered_date: { type: Date, default: Date.now },
