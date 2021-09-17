@@ -16,6 +16,7 @@ export const orderTypeDef = gql`
     size_id: ID
     size: OrderProductSize
     quantity: Int
+    totalFoodPrice: Float
     totalPrice: Float
     description: String
     isPaid: Boolean

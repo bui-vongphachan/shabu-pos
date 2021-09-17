@@ -49,6 +49,7 @@ export const newInvoice = async (
         };
       });
 
+      const totalFoodPrice = item.quantity * size!.price;
       return {
         product: product?.id,
         name: product?.name,
@@ -61,9 +62,9 @@ export const newInvoice = async (
         },
         description: item.description,
         options: options,
+        totalFoodPrice: totalFoodPrice,
         totalPrice:
-          item.quantity * size!.price +
-          options.reduce((sum, item) => sum + item.price, 0),
+          totalFoodPrice + options.reduce((sum, item) => sum + item.price, 0),
       };
     })
   );

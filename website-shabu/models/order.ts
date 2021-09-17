@@ -19,6 +19,7 @@ export interface OrderModel {
     price: number;
   };
   quantity: number;
+  totalFoodPrice: number;
   totalPrice: number;
   description: string;
   isPaid: boolean;

@@ -21,6 +21,7 @@ export interface OrderDoc extends mongoose.Document {
   };
   size_id: string;
   quantity: number;
+  totalFoodPrice: number;
   totalPrice: number;
   description: string;
   isPaid: boolean;
@@ -65,6 +66,7 @@ const Schema = new mongoose.Schema({
     price: { type: Number, default: 0, require: true },
   },
   quantity: { type: Number, default: 0, require: true },
+  totalFoodPrice: { type: Number, default: 0, require: true },
   totalPrice: { type: Number, default: 0, require: true },
   description: { type: String, default: 0, require: true },
   isPaid: { type: Boolean, default: false, require: true },

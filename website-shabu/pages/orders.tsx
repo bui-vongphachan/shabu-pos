@@ -82,6 +82,7 @@ const getInvoicesString = gql`
           price
         }
         quantity
+        totalFoodPrice
         totalPrice
       }
     }
