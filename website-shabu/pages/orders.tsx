@@ -47,10 +47,13 @@ const OrdersPage = (props: { invoices: InvoiceModel[] }) => {
 
   return (
     <OrdersPageContext.Provider value={context}>
-      <div className=" container mt-3 mx-auto grid grid-cols-3 gap-3">
-        <OrderListComponent />
-        <OrderDetailComponent />
-        <div>XXXX</div>
+      <div className=" container mt-3 mx-auto grid grid-cols-6 gap-3">
+        <div className=" md:col-span-3 lg:col-span-3">
+          <OrderListComponent />
+        </div>
+        <div className=" md:col-span-3 lg:col-span-3">
+          <OrderDetailComponent />
+        </div>
       </div>
     </OrdersPageContext.Provider>
   );
