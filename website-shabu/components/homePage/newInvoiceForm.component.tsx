@@ -55,7 +55,7 @@ const NewOrderFormComponent = () => {
 
   const submitForm = async (formValues: FormFields) => {
     const { customer_name, delivery_price } = formValues;
-    addInvoice({
+    const response = await addInvoice({
       variables: {
         newInvoiceCustomerName: customer_name,
         newInvoiceDeliveryPrice: parseFloat(delivery_price + ""),
@@ -67,22 +67,23 @@ const NewOrderFormComponent = () => {
           description: item.description
         }))
       }
-    })
-      .then(() => {
-        form.resetFields();
-        clearCart();
-        notification.success({
-          message: "ສ້າງອໍເດີ້ສຳເລັດ"
-        });
-        const invoice = addInvoiceResult.data.newInvoice;
-        getInvoice(invoice)
-      })
-      .catch((er) =>
-        Modal.error({
-          title: "Server error",
-          content: er.message
-        })
-      );
+    });
+
+    if (response.errors) {
+      Modal.error({
+        title: "Server error",
+        content: response.errors.map((er) => er.message).toString()
+      });
+    }
+
+    if (response.data) {
+      form.resetFields();
+      clearCart();
+      notification.success({
+        message: "ສ້າງອໍເດີ້ສຳເລັດ"
+      });
+      getInvoice(response.data.newInvoice);
+    }
   };
 
   return (
