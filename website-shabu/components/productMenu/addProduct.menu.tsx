@@ -122,8 +122,8 @@ const AddProductMenuComponent = () => {
           <Form.List name="sizes">
             {(fields, { add, remove }) => (
               <Fragment>
-                {fields.map((field) => (
-                  <div>
+                {fields.map((field, index) => (
+                  <div key={index}>
                     <Space key={field.key} align="baseline">
                       <Form.Item
                         {...field}
@@ -181,8 +181,8 @@ const AddProductMenuComponent = () => {
           <Form.List name="options">
             {(fields, { add, remove }) => (
               <Fragment>
-                {fields.map((field) => (
-                  <div>
+                {fields.map((field, index) => (
+                  <div key={index}>
                     <Space key={field.key} align="baseline">
                       <Form.Item
                         {...field}
