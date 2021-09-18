@@ -1,0 +1,13 @@
+{
+  "name": "website-shabu",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon serve.js"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.12",
+    "express": "^4.17.1",
+    "dotenv": "^10.0.0"
+  }
+}
