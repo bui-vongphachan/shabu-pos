@@ -25,7 +25,8 @@ import 'dotenv/config'
         { server: httpServer, path: server.graphqlPath }
     );
 
-    const PORT = 4000;
+    const PORT = process.env.PORT
+    
     httpServer.listen(PORT, async () => {
         console.log(`Server is now running on http://localhost:${PORT}/graphql`)
         await connectToMongoDB()
