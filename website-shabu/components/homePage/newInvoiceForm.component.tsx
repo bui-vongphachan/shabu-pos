@@ -4,6 +4,7 @@ import { Form } from "antd";
 import QueueAnim from "rc-queue-anim";
 import { useContext } from "react";
 import { MainPageContext } from "../../pages";
+import { getInvoice } from "../ordersPage/generateInvoice.function";
 import OrderFieldComponent from "./orderField.component";
 
 interface FormFields {
@@ -24,7 +25,29 @@ const NewOrderFormComponent = () => {
         customer_name: $newInvoiceCustomerName
         foods: $newInvoiceFoods
         delivery_price: $newInvoiceDeliveryPrice
-      )
+      ) {
+        id
+        customer_name
+        final_price
+        totalFoodPrice
+        delivery_price
+        orders {
+          id
+          name
+          options {
+            id
+            name
+            price
+          }
+          size {
+            name
+            price
+          }
+          quantity
+          totalFoodPrice
+          totalPrice
+        }
+      }
     }
   `);
 
@@ -40,10 +63,10 @@ const NewOrderFormComponent = () => {
           product_id: item.product.id,
           size_id: item.size,
           quantity: parseInt(item.quantity + ""),
-          options: item.selectedOptions.map(item => item.id),
+          options: item.selectedOptions.map((item) => item.id),
           description: item.description
         }))
-      },
+      }
     })
       .then(() => {
         form.resetFields();
@@ -51,6 +74,8 @@ const NewOrderFormComponent = () => {
         notification.success({
           message: "ສ້າງອໍເດີ້ສຳເລັດ"
         });
+        const invoice = addInvoiceResult.data.newInvoice;
+        getInvoice(invoice)
       })
       .catch((er) =>
         Modal.error({

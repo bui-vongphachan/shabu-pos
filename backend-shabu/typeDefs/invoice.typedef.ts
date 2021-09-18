@@ -60,6 +60,6 @@ export const invoiceTypeDef = gql`
       customer_name: String
       foods: [NewInvoiceProductInput]
       delivery_price: Float
-    ): Boolean
+    ): Invoice
   }
 `;

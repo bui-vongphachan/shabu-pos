@@ -72,7 +72,7 @@ export const newInvoice = async (
   const newOrders = await OrderModel.insertMany(orders);
   const totalPrice = newOrders.reduce((sum, item) => sum + item.totalPrice, 0);
 
-  await new InvoiceModel({
+  const newInvoice = await new InvoiceModel({
     orders: newOrders.map((item) => item.id),
     customer_name,
     total_price: totalPrice,
@@ -81,5 +81,5 @@ export const newInvoice = async (
     final_price: totalPrice + delivery_price,
   }).save();
 
-  return true;
+  return await InvoiceModel.findOne({ _id: newInvoice.id }).populate("orders");
 };
