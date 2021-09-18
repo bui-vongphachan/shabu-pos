@@ -6,6 +6,7 @@ import { connectToMongoDB } from './starters/mongo';
 import { server, schema } from './starters/apolloServer';
 import { printBillRoute } from './routes/printBill.route';
 import cors from "cors"
+import 'dotenv/config'
 
 (async function () {
     const app = express();
