@@ -36,7 +36,10 @@ const ProductListMenuComponent = () => {
               ແກ້ໄຂ
             </a>,
             <Popconfirm
+              key={"confirm"}
               title="ຕ້ອງການລົບລາຍການນີ້ບໍ່?"
+              okText="ຢືນຢັນ"
+              cancelText="ຍົກເລີກ"
               onConfirm={async () =>
                 await deleteProduct({
                   variables: { deleteProductProductId: item.id },
@@ -48,8 +51,6 @@ const ProductListMenuComponent = () => {
                   }
                 })
               }
-              okText="ຢືນຢັນ"
-              cancelText="ຍົກເລີກ"
             >
               <a key="list-loadmore-more">ລົບ</a>
             </Popconfirm>

@@ -1,45 +1,30 @@
+import { QueryResult, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import { GetServerSidePropsContext } from "next";
 import { useState } from "react";
 import { createContext } from "react";
 import OrderDetailComponent from "../components/ordersPage/orderDetail.component";
 import OrderListComponent from "../components/ordersPage/orderList.component";
 import DefaultLayout from "../layouts/default";
-import { client } from "../lib/apolloSetup";
 import { InvoiceModel } from "../models/invoice";
 
 export const OrdersPageContext = createContext<{
-  invoices: InvoiceModel[];
+  GetInvoicesResult: QueryResult | null;
   selectedInvoice: InvoiceModel | null;
   setSelectedInvoice: (data: InvoiceModel | null) => void;
 }>({
-  invoices: [],
+  GetInvoicesResult: null,
   selectedInvoice: null,
   setSelectedInvoice: () => {}
 });
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const { data, error, loading } = await client.query({
-    query: getInvoicesString,
-    fetchPolicy: "network-only"
-  });
-
-  return {
-    props: {
-      invoices: data.getInvoices
-    }
-  };
-};
-
 const OrdersPage = (props: { invoices: InvoiceModel[] }) => {
+  const GetInvoicesResult = useQuery(getInvoicesString);
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceModel | null>(
     null
   );
 
   const context = {
-    invoices: props.invoices,
+    GetInvoicesResult,
     selectedInvoice,
     setSelectedInvoice
   };

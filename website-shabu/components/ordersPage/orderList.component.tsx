@@ -1,12 +1,35 @@
-import { List, Skeleton, Spin } from "antd";
+import { List, Result, Skeleton, Spin } from "antd";
 import classNames from "classnames";
 import { useContext } from "react";
+import { InvoiceModel } from "../../models/invoice";
 import { OrdersPageContext } from "../../pages/orders";
 
 const OrderListComponent = () => {
   const orderPageContext = useContext(OrdersPageContext);
 
-  const { invoices, selectedInvoice, setSelectedInvoice } = orderPageContext;
+  const { GetInvoicesResult, selectedInvoice, setSelectedInvoice } =
+    orderPageContext;
+
+  if (GetInvoicesResult?.loading) {
+    return (
+      <Spin
+        size="large"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "100vh"
+        }}
+      />
+    );
+  }
+
+  if (GetInvoicesResult?.error) {
+    return <Result status="error" title="ເກີດຂໍ້ຜິດພາດໃນການດຶງຂໍ້ມູນ." />;
+  }
+
+  const invoices = GetInvoicesResult?.data.getInvoices as InvoiceModel[];
 
   return (
     <div>
