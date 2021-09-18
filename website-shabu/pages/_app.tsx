@@ -1,14 +1,16 @@
-import '../styles/globals.css'
-import { Fragment } from 'react';
-import 'antd/dist/antd.css';
-import 'tailwindcss/tailwind.css'
-import { ApolloProvider } from '@apollo/client';
-import { client } from '../lib/apolloSetup';
-import Head from 'next/head'
-import NextNprogress from 'nextjs-progressbar';
+import "../styles/globals.css";
+import { Fragment } from "react";
+import "antd/dist/antd.css";
+import "tailwindcss/tailwind.css";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "../lib/apolloSetup";
+import Head from "next/head";
+import NextNprogress from "nextjs-progressbar";
 
 function MyApp({ Component, pageProps }: any) {
-  const Layout = Component.getLayout || ((props: any) => <Fragment>{props.children}</Fragment>);
+  const Layout =
+    Component.getLayout ||
+    ((props: any) => <Fragment>{props.children}</Fragment>);
   return (
     <ApolloProvider client={client}>
       <NextNprogress />
@@ -21,8 +23,7 @@ function MyApp({ Component, pageProps }: any) {
         <Component {...pageProps} />
       </Layout>
     </ApolloProvider>
-  )
+  );
 }
 
-
-export default MyApp
+export default MyApp;
